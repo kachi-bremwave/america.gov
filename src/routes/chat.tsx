@@ -111,7 +111,11 @@ If you want a specific period (Revolution, Civil War, World War II), a document,
   }
 
   // Veteran care
-  if (lower.includes("veteran") || lower.includes("va") || (lower.includes("care") && lower.includes("get"))) {
+  if (
+    lower.includes("veteran") ||
+    lower.includes("va") ||
+    (lower.includes("care") && lower.includes("get"))
+  ) {
     return {
       text: `As a veteran, you can apply for VA health care online, by phone, or by mail.
 
@@ -122,11 +126,30 @@ Here's the short version:
 
 Many veterans receive full enrollment with zero copays depending on service history and income.`,
       sources: [
-        { title: "Apply for VA health care", domain: "va.gov", note: "Official application", url: "https://www.va.gov/health-care/apply/" },
-        { title: "VA health benefits overview", domain: "va.gov", note: "Eligibility & priority groups", url: "https://www.va.gov/health-care/about-va-health-benefits/" },
-        { title: "Veterans' health care records", domain: "usa.gov", note: "Government-wide guide", url: "https://www.usa.gov/veterans-health-care" },
+        {
+          title: "Apply for VA health care",
+          domain: "va.gov",
+          note: "Official application",
+          url: "https://www.va.gov/health-care/apply/",
+        },
+        {
+          title: "VA health benefits overview",
+          domain: "va.gov",
+          note: "Eligibility & priority groups",
+          url: "https://www.va.gov/health-care/about-va-health-benefits/",
+        },
+        {
+          title: "Veterans' health care records",
+          domain: "usa.gov",
+          note: "Government-wide guide",
+          url: "https://www.usa.gov/veterans-health-care",
+        },
       ],
-      followUps: ["What documents do I need to apply?", "Will I pay copays?", "How do I replace my social security card?"],
+      followUps: [
+        "What documents do I need to apply?",
+        "Will I pay copays?",
+        "How do I replace my social security card?",
+      ],
     };
   }
 
@@ -142,16 +165,40 @@ How to request a replacement:
 
 You are limited to three replacement cards per calendar year and ten in a lifetime.`,
       sources: [
-        { title: "Replace your Social Security card", domain: "ssa.gov", note: "Step-by-step application", url: "https://www.ssa.gov/number-card/replace-card" },
-        { title: "Get or replace a card", domain: "ssa.gov", note: "Required documents", url: "https://www.ssa.gov/ssnumber/" },
-        { title: "Social Security cards", domain: "usa.gov", note: "Official government guide", url: "https://www.usa.gov/social-security-card" },
+        {
+          title: "Replace your Social Security card",
+          domain: "ssa.gov",
+          note: "Step-by-step application",
+          url: "https://www.ssa.gov/number-card/replace-card",
+        },
+        {
+          title: "Get or replace a card",
+          domain: "ssa.gov",
+          note: "Required documents",
+          url: "https://www.ssa.gov/ssnumber/",
+        },
+        {
+          title: "Social Security cards",
+          domain: "usa.gov",
+          note: "Official government guide",
+          url: "https://www.usa.gov/social-security-card",
+        },
       ],
-      followUps: ["I'm a veteran. How do I get care?", "When do I qualify for Medicare?", "How do I book a campsite in a national park?"],
+      followUps: [
+        "I'm a veteran. How do I get care?",
+        "When do I qualify for Medicare?",
+        "How do I book a campsite in a national park?",
+      ],
     };
   }
 
   // National park campsite
-  if (lower.includes("campsite") || lower.includes("park") || lower.includes("camp") || lower.includes("recreation")) {
+  if (
+    lower.includes("campsite") ||
+    lower.includes("park") ||
+    lower.includes("camp") ||
+    lower.includes("recreation")
+  ) {
     return {
       text: `Campsite reservations for federal lands and national parks are managed through Recreation.gov — the official reservation system.
 
@@ -162,16 +209,40 @@ Quick booking steps:
 
 First-come, first-served campsites remain available at select locations — arrive early morning to secure a site.`,
       sources: [
-        { title: "Find a campsite", domain: "recreation.gov", note: "Official booking platform", url: "https://www.recreation.gov" },
-        { title: "Plan your visit", domain: "nps.gov", note: "National Park Service", url: "https://www.nps.gov/findapark/index.htm" },
-        { title: "National park passes", domain: "usa.gov", note: "Passes & entry fees", url: "https://www.usa.gov/national-park-passes" },
+        {
+          title: "Find a campsite",
+          domain: "recreation.gov",
+          note: "Official booking platform",
+          url: "https://www.recreation.gov",
+        },
+        {
+          title: "Plan your visit",
+          domain: "nps.gov",
+          note: "National Park Service",
+          url: "https://www.nps.gov/findapark/index.htm",
+        },
+        {
+          title: "National park passes",
+          domain: "usa.gov",
+          note: "Passes & entry fees",
+          url: "https://www.usa.gov/national-park-passes",
+        },
       ],
-      followUps: ["How do I get an America the Beautiful pass?", "How do I replace my social security card?", "Help me find a new job"],
+      followUps: [
+        "How do I get an America the Beautiful pass?",
+        "How do I replace my social security card?",
+        "Help me find a new job",
+      ],
     };
   }
 
   // Medicare
-  if (lower.includes("medicare") || lower.includes("65") || lower.includes("part a") || lower.includes("part b")) {
+  if (
+    lower.includes("medicare") ||
+    lower.includes("65") ||
+    lower.includes("part a") ||
+    lower.includes("part b")
+  ) {
     return {
       text: `Most individuals become eligible for Medicare at age 65, even if they remain actively employed.
 
@@ -182,11 +253,30 @@ Key guidelines:
 
 Under 65? You may qualify earlier through SSDI or conditions such as ALS or ESRD.`,
       sources: [
-        { title: "Medicare eligibility & enrollment", domain: "medicare.gov", note: "Official Medicare portal", url: "https://www.medicare.gov/basics/get-started-with-medicare" },
-        { title: "Apply for Medicare", domain: "ssa.gov", note: "Social Security Administration", url: "https://www.ssa.gov/medicare" },
-        { title: "Medicare benefits overview", domain: "usa.gov", note: "Government-wide guide", url: "https://www.usa.gov/medicare" },
+        {
+          title: "Medicare eligibility & enrollment",
+          domain: "medicare.gov",
+          note: "Official Medicare portal",
+          url: "https://www.medicare.gov/basics/get-started-with-medicare",
+        },
+        {
+          title: "Apply for Medicare",
+          domain: "ssa.gov",
+          note: "Social Security Administration",
+          url: "https://www.ssa.gov/medicare",
+        },
+        {
+          title: "Medicare benefits overview",
+          domain: "usa.gov",
+          note: "Government-wide guide",
+          url: "https://www.usa.gov/medicare",
+        },
       ],
-      followUps: ["What does Part B cost?", "I'm a veteran. How do I get care?", "How do I replace my social security card?"],
+      followUps: [
+        "What does Part B cost?",
+        "I'm a veteran. How do I get care?",
+        "How do I replace my social security card?",
+      ],
     };
   }
 
@@ -200,11 +290,30 @@ Under 65? You may qualify earlier through SSDI or conditions such as ALS or ESRD
 • Minors under 16 — Both parents or legal guardians must appear in person or provide notarized consent (Form DS-3053).
 • Processing times — Standard processing takes 6 to 8 weeks; expedited service is 2 to 3 weeks for an additional fee.`,
       sources: [
-        { title: "U.S. Passports", domain: "travel.state.gov", note: "Department of State", url: "https://travel.state.gov/content/travel/en/passports.html" },
-        { title: "Passports for children under 16", domain: "travel.state.gov", note: "Child requirements", url: "https://travel.state.gov/content/travel/en/passports/need-passport/under-16.html" },
-        { title: "Get a U.S. passport", domain: "usa.gov", note: "Official overview", url: "https://www.usa.gov/passport" },
+        {
+          title: "U.S. Passports",
+          domain: "travel.state.gov",
+          note: "Department of State",
+          url: "https://travel.state.gov/content/travel/en/passports.html",
+        },
+        {
+          title: "Passports for children under 16",
+          domain: "travel.state.gov",
+          note: "Child requirements",
+          url: "https://travel.state.gov/content/travel/en/passports/need-passport/under-16.html",
+        },
+        {
+          title: "Get a U.S. passport",
+          domain: "usa.gov",
+          note: "Official overview",
+          url: "https://www.usa.gov/passport",
+        },
       ],
-      followUps: ["What documents do I need for my child's passport?", "How long does passport renewal take?", "How do I replace my social security card?"],
+      followUps: [
+        "What documents do I need for my child's passport?",
+        "How long does passport renewal take?",
+        "How do I replace my social security card?",
+      ],
     };
   }
 
@@ -218,8 +327,18 @@ Under 65? You may qualify earlier through SSDI or conditions such as ALS or ESRD
 
 For personalized program details, specify the department or service you need.`,
     sources: [
-      { title: "USA.gov Government Services", domain: "usa.gov", note: "Official portal", url: "https://www.usa.gov" },
-      { title: "Federal Agency Directory", domain: "usa.gov", note: "A-Z Agency List", url: "https://www.usa.gov/agency-index" },
+      {
+        title: "USA.gov Government Services",
+        domain: "usa.gov",
+        note: "Official portal",
+        url: "https://www.usa.gov",
+      },
+      {
+        title: "Federal Agency Directory",
+        domain: "usa.gov",
+        note: "A-Z Agency List",
+        url: "https://www.usa.gov/agency-index",
+      },
     ],
     followUps: [
       "How do I replace my social security card?",
@@ -352,7 +471,7 @@ function ChatPage() {
         } else {
           return { ...msg, disliked: !msg.disliked, liked: false };
         }
-      })
+      }),
     );
   };
 
@@ -377,12 +496,28 @@ function ChatPage() {
 
   const handleVoiceInput = () => {
     if (typeof window === "undefined") return;
-    const SpeechRecognition =
-      (window as any).SpeechRecognition ||
-      (window as any).webkitSpeechRecognition;
+    interface SpeechRecognitionEvent {
+      results: Array<Array<{ transcript: string }>>;
+    }
+    interface SpeechRecognitionInstance {
+      continuous: boolean;
+      interimResults: boolean;
+      lang: string;
+      onstart: () => void;
+      onend: () => void;
+      onerror: () => void;
+      onresult: (event: SpeechRecognitionEvent) => void;
+      start: () => void;
+    }
+    type SpeechRecognitionConstructor = new () => SpeechRecognitionInstance;
+
+    const win = window as unknown as {
+      SpeechRecognition?: SpeechRecognitionConstructor;
+      webkitSpeechRecognition?: SpeechRecognitionConstructor;
+    };
+    const SpeechRecognition = win.SpeechRecognition || win.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      alert("Voice input is not supported in this browser.");
       return;
     }
 
@@ -396,7 +531,7 @@ function ChatPage() {
       recognition.onend = () => setIsListening(false);
       recognition.onerror = () => setIsListening(false);
 
-      recognition.onresult = (event: any) => {
+      recognition.onresult = (event: SpeechRecognitionEvent) => {
         const transcript = event.results[0]?.[0]?.transcript;
         if (transcript) {
           setInputText(transcript);
@@ -505,9 +640,7 @@ function ChatPage() {
                   {hasSources && (
                     <button
                       type="button"
-                      onClick={() =>
-                        setOpenSourcesId(isSourcesExpanded ? null : message.id)
-                      }
+                      onClick={() => setOpenSourcesId(isSourcesExpanded ? null : message.id)}
                       className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border transition-all cursor-pointer ${
                         isSourcesExpanded
                           ? "bg-blue-600 text-white border-blue-600 shadow-sm"
@@ -548,8 +681,18 @@ function ChatPage() {
                     aria-label="Helpful"
                     title="Helpful"
                   >
-                    <svg className="size-4" fill="none" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M2 18H5V8H2V18ZM19 9C19 8.47 18.79 7.96 18.41 7.59C18.04 7.21 17.53 7 17 7H12.69L13.34 3.86L13.36 3.65C13.36 3.37 13.25 3.12 13.07 2.93L12.14 2L7.07 7.07C6.71 7.43 6.5 7.93 6.5 8.45V16.5C6.5 17.03 6.71 17.54 7.09 17.91C7.46 18.29 7.97 18.5 8.5 18.5H15C15.62 18.5 16.16 18.14 16.39 17.59L18.87 11.81C18.96 11.56 19 11.29 19 11V9Z" fill="currentColor" />
+                    <svg
+                      className="size-4"
+                      fill="none"
+                      height="16"
+                      viewBox="0 0 20 20"
+                      width="16"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M2 18H5V8H2V18ZM19 9C19 8.47 18.79 7.96 18.41 7.59C18.04 7.21 17.53 7 17 7H12.69L13.34 3.86L13.36 3.65C13.36 3.37 13.25 3.12 13.07 2.93L12.14 2L7.07 7.07C6.71 7.43 6.5 7.93 6.5 8.45V16.5C6.5 17.03 6.71 17.54 7.09 17.91C7.46 18.29 7.97 18.5 8.5 18.5H15C15.62 18.5 16.16 18.14 16.39 17.59L18.87 11.81C18.96 11.56 19 11.29 19 11V9Z"
+                        fill="currentColor"
+                      />
                     </svg>
                   </button>
 
@@ -565,8 +708,18 @@ function ChatPage() {
                     aria-label="Not helpful"
                     title="Not helpful"
                   >
-                    <svg className="size-4" fill="none" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M18 2H15V12H18V2ZM1 11C1 11.53 1.21 12.04 1.59 12.41C1.96 12.79 2.47 13 3 13H7.31L6.66 16.14L6.64 16.35C6.64 16.63 6.75 16.88 6.93 17.07L7.86 18L12.93 12.93C13.29 12.57 13.5 12.07 13.5 11.55V3.5C13.5 2.97 13.29 2.46 12.91 2.09C12.54 1.71 12.03 1.5 11.5 1.5H5C4.38 1.5 3.84 1.86 3.61 2.41L1.13 8.19C1.04 8.44 1 8.71 1 9V11Z" fill="currentColor" />
+                    <svg
+                      className="size-4"
+                      fill="none"
+                      height="16"
+                      viewBox="0 0 20 20"
+                      width="16"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M18 2H15V12H18V2ZM1 11C1 11.53 1.21 12.04 1.59 12.41C1.96 12.79 2.47 13 3 13H7.31L6.66 16.14L6.64 16.35C6.64 16.63 6.75 16.88 6.93 17.07L7.86 18L12.93 12.93C13.29 12.57 13.5 12.07 13.5 11.55V3.5C13.5 2.97 13.29 2.46 12.91 2.09C12.54 1.71 12.03 1.5 11.5 1.5H5C4.38 1.5 3.84 1.86 3.61 2.41L1.13 8.19C1.04 8.44 1 8.71 1 9V11Z"
+                        fill="currentColor"
+                      />
                     </svg>
                   </button>
 
@@ -579,12 +732,32 @@ function ChatPage() {
                     title={copiedId === message.id ? "Copied!" : "Copy answer"}
                   >
                     {copiedId === message.id ? (
-                      <svg className="size-4 text-green-500" fill="none" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M7.77 13.78L4.22 10.23L3.17 11.28L7.77 15.89L17.5 6.16L16.45 5.11L7.77 13.78Z" fill="currentColor" />
+                      <svg
+                        className="size-4 text-green-500"
+                        fill="none"
+                        height="16"
+                        viewBox="0 0 20 20"
+                        width="16"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M7.77 13.78L4.22 10.23L3.17 11.28L7.77 15.89L17.5 6.16L16.45 5.11L7.77 13.78Z"
+                          fill="currentColor"
+                        />
                       </svg>
                     ) : (
-                      <svg className="size-4" fill="none" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M16 1H4C2.9 1 2 1.9 2 3V14H4V3H16V1ZM15 5H8C6.9 5 6 5.9 6 7V17C6 18.1 6.9 19 8 19H15C16.1 19 17 18.1 17 17V7C17 5.9 16.1 5 15 5ZM15 17H8V7H15V17Z" fill="currentColor" />
+                      <svg
+                        className="size-4"
+                        fill="none"
+                        height="16"
+                        viewBox="0 0 20 20"
+                        width="16"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M16 1H4C2.9 1 2 1.9 2 3V14H4V3H16V1ZM15 5H8C6.9 5 6 5.9 6 7V17C6 18.1 6.9 19 8 19H15C16.1 19 17 18.1 17 17V7C17 5.9 16.1 5 15 5ZM15 17H8V7H15V17Z"
+                          fill="currentColor"
+                        />
                       </svg>
                     )}
                   </button>
@@ -597,8 +770,18 @@ function ChatPage() {
                     aria-label="Download answer"
                     title="Download response"
                   >
-                    <svg className="size-4" fill="none" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M17 13V17H3V13H1V17C1 18.1 1.9 19 3 19H17C18.1 19 19 18.1 19 17V13H17ZM11 10.17L13.59 7.58L15 9L10 14L5 9L6.41 7.59L9 10.17V1H11V10.17Z" fill="currentColor" />
+                    <svg
+                      className="size-4"
+                      fill="none"
+                      height="16"
+                      viewBox="0 0 20 20"
+                      width="16"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M17 13V17H3V13H1V17C1 18.1 1.9 19 3 19H17C18.1 19 19 18.1 19 17V13H17ZM11 10.17L13.59 7.58L15 9L10 14L5 9L6.41 7.59L9 10.17V1H11V10.17Z"
+                        fill="currentColor"
+                      />
                     </svg>
                   </button>
                 </div>
@@ -633,8 +816,16 @@ function ChatPage() {
           {/* Privacy & How SI works notice */}
           <div className="flex items-center gap-2 text-xs text-muted-foreground select-none">
             <span className="flex items-center gap-1">
-              <svg className="size-3.5" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M18 8.4H16.8V6C16.8 3.35 14.65 1.2 12 1.2C9.35 1.2 7.2 3.35 7.2 6V8.4H6C4.68 8.4 3.6 9.48 3.6 10.8V20.4C3.6 21.72 4.68 22.8 6 22.8H18C19.32 22.8 20.4 21.72 20.4 20.4V10.8C20.4 9.48 19.32 8.4 18 8.4ZM9.6 6C9.6 4.68 10.68 3.6 12 3.6C13.32 3.6 14.4 4.68 14.4 6V8.4H9.6V6ZM18 20.4H6V10.8H18V20.4Z" fill="currentColor" />
+              <svg
+                className="size-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18 8.4H16.8V6C16.8 3.35 14.65 1.2 12 1.2C9.35 1.2 7.2 3.35 7.2 6V8.4H6C4.68 8.4 3.6 9.48 3.6 10.8V20.4C3.6 21.72 4.68 22.8 6 22.8H18C19.32 22.8 20.4 21.72 20.4 20.4V10.8C20.4 9.48 19.32 8.4 18 8.4ZM9.6 6C9.6 4.68 10.68 3.6 12 3.6C13.32 3.6 14.4 4.68 14.4 6V8.4H9.6V6ZM18 20.4H6V10.8H18V20.4Z"
+                  fill="currentColor"
+                />
               </svg>
               <button
                 type="button"
@@ -646,8 +837,18 @@ function ChatPage() {
             </span>
             <span>-</span>
             <span className="flex items-center gap-1">
-              <svg className="size-3.5" fill="none" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fillRule="evenodd" clipRule="evenodd" d="M10 1C5 1 1 5 1 10C1 15 5 19 10 19C15 19 19 15 19 10C19 5 15 1 10 1ZM10 3C13.9 3 17 6.1 17 10C17 13.9 13.9 17 10 17C6.1 17 3 13.9 3 10C3 6.1 6.1 3 10 3ZM11 15H9V9H11V15ZM11.2 6.2C11.2 6.86 10.9 7.4 10 7.4C9.1 7.4 8.8 6.86 8.8 6.2C8.8 5.54 9.1 5 10 5C10.9 5 11.2 5.54 11.2 6.2Z" fill="currentColor" />
+              <svg
+                className="size-3.5"
+                fill="none"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M10 1C5 1 1 5 1 10C1 15 5 19 10 19C15 19 19 15 19 10C19 5 15 1 10 1ZM10 3C13.9 3 17 6.1 17 10C17 13.9 13.9 17 10 17C6.1 17 3 13.9 3 10C3 6.1 6.1 3 10 3ZM11 15H9V9H11V15ZM11.2 6.2C11.2 6.86 10.9 7.4 10 7.4C9.1 7.4 8.8 6.86 8.8 6.2C8.8 5.54 9.1 5 10 5C10.9 5 11.2 5.54 11.2 6.2Z"
+                  fill="currentColor"
+                />
               </svg>
               <button
                 type="button"
@@ -685,8 +886,18 @@ function ChatPage() {
                 aria-label="Attach document"
                 title="Attach document"
               >
-                <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                <svg
+                  className="size-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                  />
                 </svg>
               </button>
 
@@ -702,8 +913,18 @@ function ChatPage() {
                 aria-label="Voice input"
                 title="Voice input"
               >
-                <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                <svg
+                  className="size-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
+                  />
                 </svg>
               </button>
 
@@ -718,8 +939,16 @@ function ChatPage() {
                 }`}
                 aria-label="Send message"
               >
-                <svg className="size-4" fill="none" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M10 3L8.59 4.41L13.17 9H3V11H13.17L8.59 15.59L10 17L17 10L10 3Z" fill="currentColor" />
+                <svg
+                  className="size-4"
+                  fill="none"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M10 3L8.59 4.41L13.17 9H3V11H13.17L8.59 15.59L10 17L17 10L10 3Z"
+                    fill="currentColor"
+                  />
                 </svg>
               </button>
             </div>
@@ -755,7 +984,9 @@ function ChatPage() {
               </button>
             </div>
             <p className="text-sm leading-relaxed text-muted-foreground">
-              America.gov is designed with privacy-first architecture. Your queries are never sold to advertisers, never shared with third parties, and no persistent commercial tracking cookies are deployed.
+              America.gov is designed with privacy-first architecture. Your queries are never sold
+              to advertisers, never shared with third parties, and no persistent commercial tracking
+              cookies are deployed.
             </p>
             <div className="flex justify-end pt-2">
               <button
@@ -791,7 +1022,9 @@ function ChatPage() {
               </button>
             </div>
             <p className="text-sm leading-relaxed text-muted-foreground">
-              SI (Structured Intelligence) searches verified .gov repositories, official state registries, and federal guidelines in real time to assemble concise, step-by-step guidance backed by primary citations.
+              SI (Structured Intelligence) searches verified .gov repositories, official state
+              registries, and federal guidelines in real time to assemble concise, step-by-step
+              guidance backed by primary citations.
             </p>
             <div className="flex justify-end pt-2">
               <button
@@ -827,7 +1060,8 @@ function ChatPage() {
               </button>
             </div>
             <p className="text-sm text-muted-foreground">
-              Help us improve America.gov. Your anonymous feedback helps make official services accessible to all Americans.
+              Help us improve America.gov. Your anonymous feedback helps make official services
+              accessible to all Americans.
             </p>
             <textarea
               rows={3}

@@ -9,10 +9,18 @@ const VETERAN: Script = {
     "As a veteran, you can apply for VA health care online, by phone, or by mail. [1]\n\nHere's the short version:\n\n1. Check that you served on active duty and weren't dishonorably discharged. [1]\n2. Apply at va.gov/health-care/apply — it takes about 15 minutes. [1]\n3. VA determines your priority group and sends your decision letter, usually within a few weeks. [2]\n\nMany veterans are enrolled with no copays at all, depending on service history and income. [2]",
   sources: [
     { title: "Apply for VA health care", domain: "va.gov", note: "Official application" },
-    { title: "VA health benefits overview", domain: "va.gov", note: "Eligibility & priority groups" },
+    {
+      title: "VA health benefits overview",
+      domain: "va.gov",
+      note: "Eligibility & priority groups",
+    },
     { title: "Veterans' health care records", domain: "usa.gov", note: "Government-wide guide" },
   ],
-  followUps: ["What documents do I need to apply?", "Will I pay copays?", "How do I replace my social security card?"],
+  followUps: [
+    "What documents do I need to apply?",
+    "Will I pay copays?",
+    "How do I replace my social security card?",
+  ],
 };
 
 const SOCIAL_SECURITY: Script = {
@@ -23,7 +31,11 @@ const SOCIAL_SECURITY: Script = {
     { title: "Get or replace a card", domain: "ssa.gov", note: "Limits & documents" },
     { title: "Social Security cards", domain: "usa.gov", note: "Government-wide guide" },
   ],
-  followUps: ["I'm a veteran. How do I get care?", "When do I qualify for Medicare?", "How do I book a campsite in a national park?"],
+  followUps: [
+    "I'm a veteran. How do I get care?",
+    "When do I qualify for Medicare?",
+    "How do I book a campsite in a national park?",
+  ],
 };
 
 const PARK: Script = {
@@ -34,18 +46,30 @@ const PARK: Script = {
     { title: "Plan your visit", domain: "nps.gov", note: "National Park Service" },
     { title: "National park passes", domain: "usa.gov", note: "Entry fees & passes" },
   ],
-  followUps: ["How do I get a national parks pass?", "How do I replace my social security card?", "Help me find a new job"],
+  followUps: [
+    "How do I get a national parks pass?",
+    "How do I replace my social security card?",
+    "Help me find a new job",
+  ],
 };
 
 const MEDICARE: Script = {
   answer:
     "Most people qualify for Medicare at 65, even if they're still working. [1]\n\nKey dates:\n\n1. Your Initial Enrollment Period is the 7 months starting 3 months before your 65th birthday month. [1]\n2. Sign up for Part A (hospital) and Part B (medical) during that window to avoid a late penalty. [1]\n3. If you already get Social Security benefits, you're usually enrolled automatically at 65. [2]\n\nUnder 65? You may qualify earlier through disability or certain conditions like ESRD. [2]",
   sources: [
-    { title: "Medicare eligibility & enrollment", domain: "medicare.gov", note: "Official program site" },
+    {
+      title: "Medicare eligibility & enrollment",
+      domain: "medicare.gov",
+      note: "Official program site",
+    },
     { title: "Apply for Medicare", domain: "ssa.gov", note: "Social Security Administration" },
     { title: "Medicare", domain: "usa.gov", note: "Government-wide guide" },
   ],
-  followUps: ["What does Part B cost?", "I'm a veteran. How do I get care?", "How do I replace my social security card?"],
+  followUps: [
+    "What does Part B cost?",
+    "I'm a veteran. How do I get care?",
+    "How do I replace my social security card?",
+  ],
 };
 
 const NAME_CHANGE: Script = {
@@ -54,9 +78,17 @@ const NAME_CHANGE: Script = {
   sources: [
     { title: "Change your name with Social Security", domain: "ssa.gov", note: "Form SS-5" },
     { title: "Change your name with the DMV", domain: "usa.gov", note: "State-by-state" },
-    { title: "Change a name on a passport", domain: "travel.state.gov", note: "Department of State" },
+    {
+      title: "Change a name on a passport",
+      domain: "travel.state.gov",
+      note: "Department of State",
+    },
   ],
-  followUps: ["How do I replace my social security card?", "When do I qualify for Medicare?", "Help me find a new job"],
+  followUps: [
+    "How do I replace my social security card?",
+    "When do I qualify for Medicare?",
+    "Help me find a new job",
+  ],
 };
 
 const JOB: Script = {
@@ -67,7 +99,11 @@ const JOB: Script = {
     { title: "Federal government jobs", domain: "usajobs.gov", note: "Official federal hiring" },
     { title: "Find a job center near you", domain: "dol.gov", note: "Dept. of Labor" },
   ],
-  followUps: ["How do I register my new business?", "I'm a veteran. How do I get care?", "When do I qualify for Medicare?"],
+  followUps: [
+    "How do I register my new business?",
+    "I'm a veteran. How do I get care?",
+    "When do I qualify for Medicare?",
+  ],
 };
 
 const BUSINESS: Script = {
@@ -78,7 +114,11 @@ const BUSINESS: Script = {
     { title: "Register your business by state", domain: "usa.gov", note: "State filings" },
     { title: "Apply for an EIN online", domain: "irs.gov", note: "Internal Revenue Service" },
   ],
-  followUps: ["Help me find a new job", "How do I replace my social security card?", "How do I book a campsite in a national park?"],
+  followUps: [
+    "Help me find a new job",
+    "How do I replace my social security card?",
+    "How do I book a campsite in a national park?",
+  ],
 };
 
 const HELLO: Script = {
@@ -86,10 +126,22 @@ const HELLO: Script = {
     "Hi! Great to meet you.\n\nI'm the America.gov assistant. Here's how I work: you ask a question in plain English, and I search official government sources only — ssa.gov, va.gov, medicare.gov, usa.gov and the like — then write a short, step-by-step answer with links you can trust. No ads, no data sold, no account needed. [1]\n\nThere's no live backend connected yet, so this is a preview with sample answers — but the full flow you're watching (search, cross-check, write, cite) is exactly what the real service will do. [2]\n\nTry typing a question above, or tap one of the suggestions below.",
   sources: [
     { title: "How America.gov works", domain: "america.gov", note: "About this service" },
-    { title: "USA.gov — the official guide", domain: "usa.gov", note: "Government-wide information" },
-    { title: "U.S. Government Websites", domain: "gsa.gov", note: "General Services Administration" },
+    {
+      title: "USA.gov — the official guide",
+      domain: "usa.gov",
+      note: "Government-wide information",
+    },
+    {
+      title: "U.S. Government Websites",
+      domain: "gsa.gov",
+      note: "General Services Administration",
+    },
   ],
-  followUps: ["How do I replace my social security card?", "I'm a veteran. How do I get care?", "How do I book a campsite in a national park?"],
+  followUps: [
+    "How do I replace my social security card?",
+    "I'm a veteran. How do I get care?",
+    "How do I book a campsite in a national park?",
+  ],
 };
 
 const GENERIC: Script = {
@@ -97,21 +149,37 @@ const GENERIC: Script = {
     "Good question — here's how I'd answer it once live: I search official government sources only, cross-check that pages are current, and write a short step-by-step answer with citations. [1]\n\nThis preview runs on sample answers while the real search and writing engine is being built, but every part of the flow you see — the source scan, the freshness check, the typed answer, the citations — is the real interface design. [2]\n\nTry one of the example questions below to see a complete answer.",
   sources: [
     { title: "How America.gov works", domain: "america.gov", note: "About this service" },
-    { title: "USA.gov — the official guide", domain: "usa.gov", note: "Government-wide information" },
+    {
+      title: "USA.gov — the official guide",
+      domain: "usa.gov",
+      note: "Government-wide information",
+    },
   ],
-  followUps: ["How do I replace my social security card?", "I'm a veteran. How do I get care?", "When do I qualify for Medicare?", "How do I register my new business?"],
+  followUps: [
+    "How do I replace my social security card?",
+    "I'm a veteran. How do I get care?",
+    "When do I qualify for Medicare?",
+    "How do I register my new business?",
+  ],
 };
 
 function scriptFor(question: string): Script {
   const q = question.toLowerCase();
-  if (/^(hi|hey|hello|yo|sup|hola|good (morning|afternoon|evening))\b/.test(q.trim()) || q.trim() === "hi!") return HELLO;
+  if (
+    /^(hi|hey|hello|yo|sup|hola|good (morning|afternoon|evening))\b/.test(q.trim()) ||
+    q.trim() === "hi!"
+  )
+    return HELLO;
   if (q.includes("social security") || q.includes("card")) return SOCIAL_SECURITY;
   if (q.includes("veteran") || q.includes("va ") || q.includes("va care")) return VETERAN;
-  if (q.includes("camp") || q.includes("park") || q.includes("hike") || q.includes("reservation")) return PARK;
+  if (q.includes("camp") || q.includes("park") || q.includes("hike") || q.includes("reservation"))
+    return PARK;
   if (q.includes("medicare") || q.includes("medicaid")) return MEDICARE;
   if (q.includes("married") || q.includes("name") || q.includes("passport")) return NAME_CHANGE;
-  if (q.includes("job") || q.includes("career") || q.includes("hire") || q.includes("unemploy")) return JOB;
-  if (q.includes("business") || q.includes("llc") || q.includes("company") || q.includes("ein")) return BUSINESS;
+  if (q.includes("job") || q.includes("career") || q.includes("hire") || q.includes("unemploy"))
+    return JOB;
+  if (q.includes("business") || q.includes("llc") || q.includes("company") || q.includes("ein"))
+    return BUSINESS;
   return GENERIC;
 }
 
@@ -205,7 +273,11 @@ const CSS = `
 }
 `;
 
-const STAGE_LABELS = ["Searching official sources", "Cross-checking freshness", "Writing your answer"];
+const STAGE_LABELS = [
+  "Searching official sources",
+  "Cross-checking freshness",
+  "Writing your answer",
+];
 
 export function DemoAnswer({ question, onClose }: { question: string; onClose: () => void }) {
   const [current, setCurrent] = useState(question);
@@ -218,18 +290,27 @@ export function DemoAnswer({ question, onClose }: { question: string; onClose: (
 
   // Reset the whole sequence on a new question.
   useEffect(() => {
-    setStage(0); setTyped(0); setDone(false);
+    setStage(0);
+    setTyped(0);
+    setDone(false);
     const t1 = window.setTimeout(() => setStage(1), 1300);
     const t2 = window.setTimeout(() => setStage(2), 2500);
-    return () => { window.clearTimeout(t1); window.clearTimeout(t2); };
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
   }, [current, runId]);
 
   // Stream the answer.
   useEffect(() => {
     if (stage < 2) return;
     const id = window.setInterval(() => {
-      setTyped(t => {
-        if (t >= script.answer.length) { window.clearInterval(id); setDone(true); return t; }
+      setTyped((t) => {
+        if (t >= script.answer.length) {
+          window.clearInterval(id);
+          setDone(true);
+          return t;
+        }
         return Math.min(script.answer.length, t + 3);
       });
     }, 14);
@@ -246,36 +327,97 @@ export function DemoAnswer({ question, onClose }: { question: string; onClose: (
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
     document.addEventListener("keydown", onKey);
-    return () => { document.body.style.overflow = prev; document.removeEventListener("keydown", onKey); };
+    return () => {
+      document.body.style.overflow = prev;
+      document.removeEventListener("keydown", onKey);
+    };
   }, [onClose]);
 
-  const ask = (next: string) => { setCurrent(next); setRunId(id => id + 1); };
+  const ask = (next: string) => {
+    setCurrent(next);
+    setRunId((id) => id + 1);
+  };
 
   return (
-    <div className="demo-backdrop" role="dialog" aria-modal="true" aria-label="Preview answer" onClick={onClose} data-demo-answer="">
+    <div
+      className="demo-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Preview answer"
+      onClick={onClose}
+      data-demo-answer=""
+    >
       <style dangerouslySetInnerHTML={{ __html: CSS }} />
-      <div className="demo-panel" onClick={e => e.stopPropagation()}>
+      <div className="demo-panel" onClick={(e) => e.stopPropagation()}>
         <div className="demo-orbs" aria-hidden="true">
-          <i style={{ left: "-40px", top: "-30px", width: 180, height: 180, background: "#60a5fa" }} />
-          <i style={{ right: "-50px", top: "80px", width: 220, height: 220, background: "#22d3ee", animationDelay: "1.4s" }} />
-          <i style={{ left: "30%", bottom: "-80px", width: 260, height: 260, background: "#818cf8", animationDelay: "2.6s" }} />
+          <i
+            style={{ left: "-40px", top: "-30px", width: 180, height: 180, background: "#60a5fa" }}
+          />
+          <i
+            style={{
+              right: "-50px",
+              top: "80px",
+              width: 220,
+              height: 220,
+              background: "#22d3ee",
+              animationDelay: "1.4s",
+            }}
+          />
+          <i
+            style={{
+              left: "30%",
+              bottom: "-80px",
+              width: 260,
+              height: 260,
+              background: "#818cf8",
+              animationDelay: "2.6s",
+            }}
+          />
         </div>
         <div className="demo-head">
           <span className="demo-orb" aria-hidden="true" />
           <span style={{ fontSize: 14, fontWeight: 700, color: "#0f172a" }}>America.gov</span>
           <span style={{ fontSize: 12, fontWeight: 600, color: "#64748b" }}>· preview</span>
           <button className="demo-close" type="button" aria-label="Close preview" onClick={onClose}>
-            <svg fill="none" height="16" viewBox="0 0 20 20" width="16" aria-hidden="true"><path d="M16 5.4L14.6 4L10 8.6L5.4 4L4 5.4L8.6 10L4 14.6L5.4 16L10 11.4L14.6 16L16 14.6L11.4 10L16 5.4Z" fill="currentColor" /></svg>
+            <svg fill="none" height="16" viewBox="0 0 20 20" width="16" aria-hidden="true">
+              <path
+                d="M16 5.4L14.6 4L10 8.6L5.4 4L4 5.4L8.6 10L4 14.6L5.4 16L10 11.4L14.6 16L16 14.6L11.4 10L16 5.4Z"
+                fill="currentColor"
+              />
+            </svg>
           </button>
         </div>
         <div className="demo-body" ref={bodyRef}>
           <div className="demo-bubble">{current}</div>
           <div className="demo-stages" aria-live="polite">
             {STAGE_LABELS.map((label, i) => (
-              <span className="demo-stage" key={label} data-on={stage >= i ? "true" : "false"} style={{ animationDelay: `${0.15 + i * 0.12}s` }}>
-                {stage === i ? <span className="demo-dots" aria-hidden="true"><i /><i /><i /></span> : <span style={{ width: 5, height: 5, borderRadius: 99, background: stage > i ? "#1d4ed8" : "rgba(15,40,110,.35)" }} aria-hidden="true" />}
+              <span
+                className="demo-stage"
+                key={label}
+                data-on={stage >= i ? "true" : "false"}
+                style={{ animationDelay: `${0.15 + i * 0.12}s` }}
+              >
+                {stage === i ? (
+                  <span className="demo-dots" aria-hidden="true">
+                    <i />
+                    <i />
+                    <i />
+                  </span>
+                ) : (
+                  <span
+                    style={{
+                      width: 5,
+                      height: 5,
+                      borderRadius: 99,
+                      background: stage > i ? "#1d4ed8" : "rgba(15,40,110,.35)",
+                    }}
+                    aria-hidden="true"
+                  />
+                )}
                 {label}
               </span>
             ))}
@@ -285,11 +427,29 @@ export function DemoAnswer({ question, onClose }: { question: string; onClose: (
             {stage < 2 ? (
               <span className="demo-scan" style={{ display: "block", margin: 0, padding: 12 }}>
                 <span className="demo-scan-row">
-                  {[script.sources[0]?.domain ?? "usa.gov", "gsa.gov", "usa.gov", "nps.gov", "ssa.gov", "medicare.gov"].slice(0, 4).map((domain, i) => (
-                    <span className="demo-pill" key={domain + i} style={{ animationDelay: `${i * 0.14}s` }}><b>↗</b>{domain}</span>
-                  ))}
+                  {[
+                    script.sources[0]?.domain ?? "usa.gov",
+                    "gsa.gov",
+                    "usa.gov",
+                    "nps.gov",
+                    "ssa.gov",
+                    "medicare.gov",
+                  ]
+                    .slice(0, 4)
+                    .map((domain, i) => (
+                      <span
+                        className="demo-pill"
+                        key={domain + i}
+                        style={{ animationDelay: `${i * 0.14}s` }}
+                      >
+                        <b>↗</b>
+                        {domain}
+                      </span>
+                    ))}
                 </span>
-                <span className="demo-bar"><i /></span>
+                <span className="demo-bar">
+                  <i />
+                </span>
               </span>
             ) : (
               <>
@@ -301,17 +461,35 @@ export function DemoAnswer({ question, onClose }: { question: string; onClose: (
           {done && (
             <>
               <span className="demo-badge" style={{ alignSelf: "flex-start" }}>
-                <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 1.5L12.6 7.4L19 8.2L14.3 12.5L15.5 19L10 15.8L4.5 19L5.7 12.5L1 8.2L7.4 7.4L10 1.5Z" fill="currentColor" /></svg>
+                <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path
+                    d="M10 1.5L12.6 7.4L19 8.2L14.3 12.5L15.5 19L10 15.8L4.5 19L5.7 12.5L1 8.2L7.4 7.4L10 1.5Z"
+                    fill="currentColor"
+                  />
+                </svg>
                 Preview mode — sample answer while the live engine is being built
               </span>
-              <p className="demo-label" style={{ marginTop: 16 }}>Sources · only official sites</p>
+              <p className="demo-label" style={{ marginTop: 16 }}>
+                Sources · only official sites
+              </p>
               <div className="demo-sources">
                 {script.sources.map((s, i) => (
-                  <div className="demo-source" key={s.domain + s.title} style={{ animationDelay: `${0.08 * i}s`, "--d": `${0.3 + 0.25 * i}s` } as CSSProperties}>
+                  <div
+                    className="demo-source"
+                    key={s.domain + s.title}
+                    style={
+                      {
+                        animationDelay: `${0.08 * i}s`,
+                        "--d": `${0.3 + 0.25 * i}s`,
+                      } as CSSProperties
+                    }
+                  >
                     <b>{s.domain.slice(0, 1).toUpperCase()}</b>
                     <span style={{ minWidth: 0 }}>
                       <span>{s.title}</span>
-                      <small>{s.domain} · {s.note}</small>
+                      <small>
+                        {s.domain} · {s.note}
+                      </small>
                     </span>
                     <em>[{i + 1}]</em>
                   </div>
@@ -319,7 +497,14 @@ export function DemoAnswer({ question, onClose }: { question: string; onClose: (
               </div>
               <div className="demo-follow">
                 {script.followUps.map((f, i) => (
-                  <button type="button" key={f} style={{ animationDelay: `${0.15 * i}s` }} onClick={() => ask(f)}>{f}</button>
+                  <button
+                    type="button"
+                    key={f}
+                    style={{ animationDelay: `${0.15 * i}s` }}
+                    onClick={() => ask(f)}
+                  >
+                    {f}
+                  </button>
                 ))}
               </div>
             </>

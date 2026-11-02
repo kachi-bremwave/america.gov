@@ -11,14 +11,23 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "America.gov — Whatever you need from government, start here." },
-      { name: "description", content: "Ask anything and get simple answers only from official government sources. Free to use, no ads, privacy protected." },
+      {
+        name: "description",
+        content:
+          "Ask anything and get simple answers only from official government sources. Free to use, no ads, privacy protected.",
+      },
       { property: "og:title", content: "America.gov" },
       { property: "og:description", content: "Whatever you need from government, start here." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  staticData: { importedDocument: { html: { "dir": "ltr", "lang": "en" }, body: { "className": "\x66ont-body \x74ext-primary \x61ntialiased" } } },
+  staticData: {
+    importedDocument: {
+      html: { dir: "ltr", lang: "en" },
+      body: { className: "\x66ont-body \x74ext-primary \x61ntialiased" },
+    },
+  },
   component: Index,
 });
 
@@ -107,7 +116,8 @@ function Index() {
   const handleDemoSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const field = (event.currentTarget.querySelector('input[name="message"]') ||
-      event.currentTarget.querySelector('textarea[name="message"]')) as HTMLInputElement | HTMLTextAreaElement | null;
+      event.currentTarget.querySelector('textarea[name="message"]')) as
+      HTMLInputElement | HTMLTextAreaElement | null;
     const text = (field?.value ?? "").trim();
     window.location.href = `/chat?q=${encodeURIComponent(text || HERO_SLIDES[activeSlideIndex]?.query || "hi")}`;
   };
@@ -131,21 +141,34 @@ function Index() {
   useEffect(() => {
     if (!openMenu0 && !openGovDialog && !openFeedback) return;
     const closeOutside = (event: MouseEvent) => {
-      if (event.target instanceof Node && ![menuRoot0.current].some(root => root?.contains(event.target as Node))) setOpenMenu0(null);
+      if (
+        event.target instanceof Node &&
+        ![menuRoot0.current].some((root) => root?.contains(event.target as Node))
+      )
+        setOpenMenu0(null);
     };
-    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") { setOpenMenu0(null); setOpenGovDialog(false); setOpenFeedback(false); } };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpenMenu0(null);
+        setOpenGovDialog(false);
+        setOpenFeedback(false);
+      }
+    };
     document.addEventListener("click", closeOutside);
     document.addEventListener("keydown", closeOnEscape);
-    return () => { document.removeEventListener("click", closeOutside); document.removeEventListener("keydown", closeOnEscape); };
+    return () => {
+      document.removeEventListener("click", closeOutside);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
   }, [openMenu0, openGovDialog, openFeedback]);
 
   useEffect(() => {
     if (!heroPlaying) return;
     const id = window.setInterval(() => {
-      setActiveSlideIndex(index => (index + 1) % HERO_SLIDES.length);
+      setActiveSlideIndex((index) => (index + 1) % HERO_SLIDES.length);
     }, 6000);
     return () => window.clearInterval(id);
-  }, [heroPlaying]);
+  }, [heroPlaying, HERO_SLIDES.length]);
 
   useImportedLayout();
 
@@ -153,7 +176,10 @@ function Index() {
     <div className="relative">
       <div className="relative isolate" data-site-hero-enter="3">
         {/* Ambient backdrop glow */}
-        <div className="pointer-events-none absolute inset-0 -z-10 translate-y-[8.727273%] opacity-60 dark:opacity-[0.08]" aria-hidden="true">
+        <div
+          className="pointer-events-none absolute inset-0 -z-10 translate-y-[8.727273%] opacity-60 dark:opacity-[0.08]"
+          aria-hidden="true"
+        >
           <div className="absolute -inset-[360px] blur-[120px]">
             <div className="absolute inset-[360px] scale-90">
               <img
@@ -165,38 +191,37 @@ function Index() {
           </div>
         </div>
 
-        {/* Hero Card Container - Slide row showing full image, no slicing across slides */}
+        {/* Hero Card Container - Height increased, width decreased, full image without any cut */}
         <div
-          className="overflow-hidden squircle relative isolate touch-pan-y touch-pinch-zoom cursor-grab rounded-40 shadow-hero-photo after:pointer-events-none after:absolute after:inset-0 after:z-10 after:rounded-[inherit] after:[corner-shape:inherit] after:inset-ring after:inset-ring-border-quaternary dark:after:inset-ring-blue-900/5 active:cursor-grabbing mobile:rounded-[calc(58px*var(--corner-scale))]"
+          className="overflow-hidden relative isolate touch-pan-y touch-pinch-zoom rounded-[36px] sm:rounded-[44px] shadow-hero-photo after:pointer-events-none after:absolute after:inset-0 after:z-10 after:rounded-[inherit] after:inset-ring after:inset-ring-border-quaternary dark:after:inset-ring-blue-900/5 w-full max-w-[540px] mx-auto aspect-[400/470] sm:aspect-[400/460]"
           data-slot="carousel-content"
         >
-          <div
-            className="flex ml-0 transition-transform duration-500 ease-out"
-            style={{ transform: `translate3d(-${activeSlideIndex * 100}%, 0px, 0px)` }}
-          >
+          <div className="relative size-full">
             {HERO_SLIDES.map((slide, idx) => (
               <div
                 key={slide.id}
-                className="min-w-full shrink-0 grow-0 basis-full relative aspect-400/493 pl-0 mobile:aspect-3/2 overflow-hidden"
+                className={`absolute inset-0 size-full overflow-hidden transition-opacity duration-700 ease-in-out ${
+                  idx === activeSlideIndex
+                    ? "opacity-100 z-10 pointer-events-auto"
+                    : "opacity-0 z-0 pointer-events-none"
+                }`}
                 role="group"
                 aria-roledescription="slide"
                 data-slot="carousel-item"
                 aria-hidden={idx !== activeSlideIndex}
                 aria-label={`Example ${idx + 1} of ${HERO_SLIDES.length}: ${slide.query}`}
               >
-                <div className="absolute inset-0 overflow-hidden">
-                  <img
-                    className="absolute inset-0 size-full object-cover"
-                    alt={slide.alt}
-                    src={slide.img}
-                    loading={idx === 2 ? "eager" : "lazy"}
-                    decoding="async"
-                  />
-                  <div
-                    className="pointer-events-none absolute inset-0 bg-background-primary-invert opacity-20 dark:opacity-40"
-                    aria-hidden="true"
-                  />
-                </div>
+                <img
+                  className="absolute inset-0 size-full object-cover"
+                  alt={slide.alt}
+                  src={slide.img}
+                  loading={idx === 2 ? "eager" : "lazy"}
+                  decoding="async"
+                />
+                <div
+                  className="pointer-events-none absolute inset-0 bg-background-primary-invert opacity-20 dark:opacity-40"
+                  aria-hidden="true"
+                />
               </div>
             ))}
           </div>
@@ -204,7 +229,8 @@ function Index() {
       </div>
 
       <p className="sr-only" aria-atomic="true" aria-live="polite">
-        Example {activeSlideIndex + 1} of {HERO_SLIDES.length}: {HERO_SLIDES[activeSlideIndex]?.query}
+        Example {activeSlideIndex + 1} of {HERO_SLIDES.length}:{" "}
+        {HERO_SLIDES[activeSlideIndex]?.query}
       </p>
 
       {/* Carousel Navigation & Playback Controls */}
@@ -222,8 +248,20 @@ function Index() {
             data-slot="carousel-previous"
             aria-label="Previous example"
           >
-            <svg fill="none" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path fillRule="evenodd" clipRule="evenodd" d="M7.77 10L13.06 4.71L11.65 3.29L4.94 10L11.65 16.71L13.06 15.29L7.77 10Z" fill="currentColor" />
+            <svg
+              fill="none"
+              height="20"
+              viewBox="0 0 20 20"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M7.77 10L13.06 4.71L11.65 3.29L4.94 10L11.65 16.71L13.06 15.29L7.77 10Z"
+                fill="currentColor"
+              />
             </svg>
           </button>
 
@@ -240,12 +278,32 @@ function Index() {
             }}
           >
             {heroPlaying ? (
-              <svg fill="none" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M8 4C8 3.45 7.55 3 7 3H5C4.45 3 4 3.45 4 4V16C4 16.55 4.45 17 5 17H7C7.55 17 8 16.55 8 16V4Z" fill="currentColor" />
-                <path d="M16 4C16 3.45 15.55 3 15 3H13C12.45 3 12 3.45 12 4V16C12 16.55 12.45 17 13 17H15C15.55 17 16 16.55 16 16V4Z" fill="currentColor" />
+              <svg
+                fill="none"
+                height="16"
+                viewBox="0 0 20 20"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  d="M8 4C8 3.45 7.55 3 7 3H5C4.45 3 4 3.45 4 4V16C4 16.55 4.45 17 5 17H7C7.55 17 8 16.55 8 16V4Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M16 4C16 3.45 15.55 3 15 3H13C12.45 3 12 3.45 12 4V16C12 16.55 12.45 17 13 17H15C15.55 17 16 16.55 16 16V4Z"
+                  fill="currentColor"
+                />
               </svg>
             ) : (
-              <svg fill="none" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <svg
+                fill="none"
+                height="16"
+                viewBox="0 0 20 20"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
                 <path d="M6 3L18 10L6 17L6 3Z" fill="currentColor" />
               </svg>
             )}
@@ -263,8 +321,20 @@ function Index() {
             data-slot="carousel-next"
             aria-label="Next example"
           >
-            <svg fill="none" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path fillRule="evenodd" clipRule="evenodd" d="M8.35 3.29L15.06 10L8.35 16.71L6.94 15.29L12.23 10L6.94 4.71L8.35 3.29Z" fill="currentColor" />
+            <svg
+              fill="none"
+              height="20"
+              viewBox="0 0 20 20"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M8.35 3.29L15.06 10L8.35 16.71L6.94 15.29L12.23 10L6.94 4.71L8.35 3.29Z"
+                fill="currentColor"
+              />
             </svg>
           </button>
         </div>
@@ -274,31 +344,102 @@ function Index() {
   return (
     <>
       <style>{capturedCSS}</style>
-      <div data-ce="astro-island" data-site-import-carousel-root="3" {...({ uid: "Z23wQGh", prefix: "r1", "component-url": "/_astro/home-page.CClgCQBv.js", "component-export": "HomePageIsland", "renderer-url": "/_astro/client.CH1YUKG_.js", props: "{\"pathname\":[0,\"/\"],\"search\":[0,\"\"],\"chatOnly\":[0,false],\"heroCards\":[1,[[0,{\"id\":[0,\"socialSecurity\"],\"image\":[0,{\"backdropSrc\":[0,\"/_astro/social-security.Dp3mFOLc_Z23DCuB.webp\"],\"backdropSrcSet\":[0,\"/_astro/social-security.Dp3mFOLc_10nXhy.webp 64w, /_astro/social-security.Dp3mFOLc_Z23DCuB.webp 128w\"],\"src\":[0,\"/_astro/social-security.Dp3mFOLc_2wyN13.webp\"],\"srcSet\":[0,\"/_astro/social-security.Dp3mFOLc_1DREtn.webp 640w, /_astro/social-security.Dp3mFOLc_1FHtli.webp 832w, /_astro/social-security.Dp3mFOLc_ZlB16Y.webp 1080w, /_astro/social-security.Dp3mFOLc_Zwibtr.webp 1440w, /_astro/social-security.Dp3mFOLc_8lESm.webp 1920w, /_astro/social-security.Dp3mFOLc_2wyN13.webp 2000w\"],\"mobileSrcSet\":[0,\"/_astro/social-security.Dp3mFOLc_Z16sV0R.webp 360w, /_astro/social-security.Dp3mFOLc_Z1FBBT9.webp 480w, /_astro/social-security.Dp3mFOLc_Z1UB7tK.webp 640w, /_astro/social-security.Dp3mFOLc_Z1S89wM.webp 832w, /_astro/social-security.Dp3mFOLc_dsfjv.webp 1080w, /_astro/social-security.Dp3mFOLc_Z16MtUu.webp 1440w, /_astro/social-security.Dp3mFOLc_Z1enVOC.webp 1622w\"],\"width\":[0,2000],\"height\":[0,2000]}]}],[0,{\"id\":[0,\"nationalPark\"],\"image\":[0,{\"backdropSrc\":[0,\"/_astro/national-park.DCQqmN0z_Z7qnDN.webp\"],\"backdropSrcSet\":[0,\"/_astro/national-park.DCQqmN0z_KQSLX.webp 64w, /_astro/national-park.DCQqmN0z_Z7qnDN.webp 128w\"],\"src\":[0,\"/_astro/national-park.DCQqmN0z_1xqNv8.webp\"],\"srcSet\":[0,\"/_astro/national-park.DCQqmN0z_Z1ERj4o.webp 640w, /_astro/national-park.DCQqmN0z_2gtUnC.webp 832w, /_astro/national-park.DCQqmN0z_ZYMkoM.webp 1080w, /_astro/national-park.DCQqmN0z_Zd9nqn.webp 1440w, /_astro/national-park.DCQqmN0z_1v0oFG.webp 1920w, /_astro/national-park.DCQqmN0z_1xqNv8.webp 2000w\"],\"mobileSrcSet\":[0,\"/_astro/national-park.DCQqmN0z_PyIcP.webp 360w, /_astro/national-park.DCQqmN0z_1CFF9T.webp 480w, /_astro/national-park.DCQqmN0z_Z6N4ey.webp 640w, /_astro/national-park.DCQqmN0z_Z1hwQ72.webp 832w, /_astro/national-park.DCQqmN0z_OftMD.webp 1080w, /_astro/national-park.DCQqmN0z_2giRuk.webp 1081w\"],\"width\":[0,2000],\"height\":[0,1333]}]}],[0,{\"id\":[0,\"veteranCare\"],\"image\":[0,{\"backdropSrc\":[0,\"/_astro/veteran-care.G_BGYd8h_Z1iPeT7.webp\"],\"backdropSrcSet\":[0,\"/_astro/veteran-care.G_BGYd8h_ZGUd3g.webp 64w, /_astro/veteran-care.G_BGYd8h_Z1iPeT7.webp 128w\"],\"src\":[0,\"/_astro/veteran-care.G_BGYd8h_22X0kr.webp\"],\"srcSet\":[0,\"/_astro/veteran-care.G_BGYd8h_Z27t2c7.webp 640w, /_astro/veteran-care.G_BGYd8h_utJ19.webp 832w, /_astro/veteran-care.G_BGYd8h_ZWIn20.webp 1080w, /_astro/veteran-care.G_BGYd8h_1FRAKy.webp 1440w, /_astro/veteran-care.G_BGYd8h_p0Mq8.webp 1920w, /_astro/veteran-care.G_BGYd8h_22X0kr.webp 2000w\"],\"mobileSrcSet\":[0,\"/_astro/veteran-care.G_BGYd8h_Z1fsFwl.webp 360w, /_astro/veteran-care.G_BGYd8h_1ObI9Q.webp 480w, /_astro/veteran-care.G_BGYd8h_1cHR9V.webp 640w, /_astro/veteran-care.G_BGYd8h_Z2oBXIV.webp 832w, /_astro/veteran-care.G_BGYd8h_ZuMXcx.webp 1080w, /_astro/veteran-care.G_BGYd8h_2iQ3Iq.webp 1083w\"],\"width\":[0,2000],\"height\":[0,1335]}]}],[0,{\"id\":[0,\"nameChange\"],\"image\":[0,{\"backdropSrc\":[0,\"/_astro/name-change.CSCtyIHX_MI3vl.webp\"],\"backdropSrcSet\":[0,\"/_astro/name-change.CSCtyIHX_Z1xC0Nt.webp 64w, /_astro/name-change.CSCtyIHX_MI3vl.webp 128w\"],\"src\":[0,\"/_astro/name-change.CSCtyIHX_5SstQ.webp\"],\"srcSet\":[0,\"/_astro/name-change.CSCtyIHX_ZO3NJL.webp 640w, /_astro/name-change.CSCtyIHX_Z1PnVgK.webp 832w, /_astro/name-change.CSCtyIHX_ZvDS8P.webp 1080w, /_astro/name-change.CSCtyIHX_Z1sc3cO.webp 1440w, /_astro/name-change.CSCtyIHX_1D0AW5.webp 1920w, /_astro/name-change.CSCtyIHX_5SstQ.webp 2000w\"],\"mobileSrcSet\":[0,\"/_astro/name-change.CSCtyIHX_Z2nNakl.webp 360w, /_astro/name-change.CSCtyIHX_1ToyWc.webp 480w, /_astro/name-change.CSCtyIHX_108J8C.webp 640w, /_astro/name-change.CSCtyIHX_q7Tzt.webp 832w, /_astro/name-change.CSCtyIHX_Z1tGhoq.webp 1080w, /_astro/name-change.CSCtyIHX_24XkAP.webp 1435w\"],\"width\":[0,2000],\"height\":[0,1769]}]}],[0,{\"id\":[0,\"medicare\"],\"image\":[0,{\"backdropSrc\":[0,\"/_astro/medicare.DqRXMPkA_2eGROM.webp\"],\"backdropSrcSet\":[0,\"/_astro/medicare.DqRXMPkA_Z1qGndW.webp 64w, /_astro/medicare.DqRXMPkA_2eGROM.webp 128w\"],\"src\":[0,\"/_astro/medicare.DqRXMPkA_ZgvyOQ.webp\"],\"srcSet\":[0,\"/_astro/medicare.DqRXMPkA_ZL6US9.webp 640w, /_astro/medicare.DqRXMPkA_28OIKa.webp 832w, /_astro/medicare.DqRXMPkA_ZpRboO.webp 1080w, /_astro/medicare.DqRXMPkA_ZVHshH.webp 1440w, /_astro/medicare.DqRXMPkA_YeLuw.webp 1920w, /_astro/medicare.DqRXMPkA_ZgvyOQ.webp 2000w\"],\"mobileSrcSet\":[0,\"/_astro/medicare.DqRXMPkA_ZFkBsc.webp 360w, /_astro/medicare.DqRXMPkA_ZaVJ6v.webp 480w, /_astro/medicare.DqRXMPkA_Z1HbB5s.webp 640w, /_astro/medicare.DqRXMPkA_1N1m5v.webp 832w, /_astro/medicare.DqRXMPkA_2qfz3.webp 1080w, /_astro/medicare.DqRXMPkA_ZR2gQO.webp 1387w\"],\"width\":[0,2000],\"height\":[0,1710]}]}],[0,{\"id\":[0,\"newJob\"],\"image\":[0,{\"backdropSrc\":[0,\"/_astro/new-job.C_hegThO_Z1SgNSP.webp\"],\"backdropSrcSet\":[0,\"/_astro/new-job.C_hegThO_Z1uvN02.webp 64w, /_astro/new-job.C_hegThO_Z1SgNSP.webp 128w\"],\"src\":[0,\"/_astro/new-job.C_hegThO_Z2tG1Gu.webp\"],\"srcSet\":[0,\"/_astro/new-job.C_hegThO_LWeAv.webp 640w, /_astro/new-job.C_hegThO_Z22V3N4.webp 832w, /_astro/new-job.C_hegThO_1tcrJL.webp 1080w, /_astro/new-job.C_hegThO_Z1P69AS.webp 1440w, /_astro/new-job.C_hegThO_ZRjClE.webp 1920w, /_astro/new-job.C_hegThO_Z2tG1Gu.webp 2000w\"],\"mobileSrcSet\":[0,\"/_astro/new-job.C_hegThO_Zl8rwN.webp 360w, /_astro/new-job.C_hegThO_1eSxMO.webp 480w, /_astro/new-job.C_hegThO_MQ9nM.webp 640w, /_astro/new-job.C_hegThO_Z2aePXA.webp 832w, /_astro/new-job.C_hegThO_Z1Pwwe8.webp 1080w, /_astro/new-job.C_hegThO_Z1xDrdt.webp 1082w\"],\"width\":[0,2000],\"height\":[0,1334]}]}],[0,{\"id\":[0,\"newBusiness\"],\"image\":[0,{\"backdropSrc\":[0,\"/_astro/new-business.D8WzdOqW_2hdm2T.webp\"],\"backdropSrcSet\":[0,\"/_astro/new-business.D8WzdOqW_HGX5f.webp 64w, /_astro/new-business.D8WzdOqW_2hdm2T.webp 128w\"],\"src\":[0,\"/_astro/new-business.D8WzdOqW_ZXW9v7.webp\"],\"srcSet\":[0,\"/_astro/new-business.D8WzdOqW_1c8Ogr.webp 640w, /_astro/new-business.D8WzdOqW_2rD5CN.webp 832w, /_astro/new-business.D8WzdOqW_1AK0da.webp 1080w, /_astro/new-business.D8WzdOqW_Jj21I.webp 1440w, /_astro/new-business.D8WzdOqW_1DDljS.webp 1920w, /_astro/new-business.D8WzdOqW_ZXW9v7.webp 2000w\"],\"mobileSrcSet\":[0,\"/_astro/new-business.D8WzdOqW_FBp3Y.webp 360w, /_astro/new-business.D8WzdOqW_Z1jUk3K.webp 480w, /_astro/new-business.D8WzdOqW_Z1Vob3F.webp 640w, /_astro/new-business.D8WzdOqW_ZswS8B.webp 832w, /_astro/new-business.D8WzdOqW_ZNJ9t7.webp 1080w, /_astro/new-business.D8WzdOqW_2x2Rrw.webp 1440w, /_astro/new-business.D8WzdOqW_ZxuMrW.webp 1587w\"],\"width\":[0,2000],\"height\":[0,1957]}]}],[0,{\"id\":[0,\"addressChange\"],\"image\":[0,{\"backdropSrc\":[0,\"/_astro/address-change.CgPY5X1Q_Z1l3c5K.webp\"],\"backdropSrcSet\":[0,\"/_astro/address-change.CgPY5X1Q_1GMQXC.webp 64w, /_astro/address-change.CgPY5X1Q_Z1l3c5K.webp 128w\"],\"src\":[0,\"/_astro/address-change.CgPY5X1Q_Z1RqMCu.webp\"],\"srcSet\":[0,\"/_astro/address-change.CgPY5X1Q_ZeswgX.webp 640w, /_astro/address-change.CgPY5X1Q_Z1cseFY.webp 832w, /_astro/address-change.CgPY5X1Q_ZvyO5B.webp 1080w, /_astro/address-change.CgPY5X1Q_Z1HJcAu.webp 1440w, /_astro/address-change.CgPY5X1Q_1RuqDA.webp 1920w, /_astro/address-change.CgPY5X1Q_Z1RqMCu.webp 2000w\"],\"mobileSrcSet\":[0,\"/_astro/address-change.CgPY5X1Q_2sxcQ9.webp 360w, /_astro/address-change.CgPY5X1Q_Z1xK3tH.webp 480w, /_astro/address-change.CgPY5X1Q_2iSHbx.webp 640w, /_astro/address-change.CgPY5X1Q_n0MJf.webp 832w, /_astro/address-change.CgPY5X1Q_24VRr9.webp 1080w, /_astro/address-change.CgPY5X1Q_Z27osqq.webp 1083w\"],\"width\":[0,2000],\"height\":[0,1335]}]}],[0,{\"id\":[0,\"passport\"],\"image\":[0,{\"backdropSrc\":[0,\"/_astro/child-passport.HGvPBa9L_2dovfU.webp\"],\"backdropSrcSet\":[0,\"/_astro/child-passport.HGvPBa9L_kKeq9.webp 64w, /_astro/child-passport.HGvPBa9L_2dovfU.webp 128w\"],\"src\":[0,\"/_astro/child-passport.HGvPBa9L_Z18saoo.webp\"],\"srcSet\":[0,\"/_astro/child-passport.HGvPBa9L_Z1KcWJe.webp 640w, /_astro/child-passport.HGvPBa9L_2lYsEG.webp 832w, /_astro/child-passport.HGvPBa9L_ZOIzsU.webp 1080w, /_astro/child-passport.HGvPBa9L_Z21SWXN.webp 1440w, /_astro/child-passport.HGvPBa9L_Z2sI4Vf.webp 1920w, /_astro/child-passport.HGvPBa9L_Z18saoo.webp 2000w\"],\"mobileSrcSet\":[0,\"/_astro/child-passport.HGvPBa9L_VMLnS.webp 360w, /_astro/child-passport.HGvPBa9L_20GDQX.webp 480w, /_astro/child-passport.HGvPBa9L_M9gIh.webp 640w, /_astro/child-passport.HGvPBa9L_Z18ICI1.webp 832w, /_astro/child-passport.HGvPBa9L_ZktE9Y.webp 1080w, /_astro/child-passport.HGvPBa9L_Z1nxXzH.webp 1081w\"],\"width\":[0,2000],\"height\":[0,1333]}]}],[0,{\"id\":[0,\"militaryService\"],\"image\":[0,{\"backdropSrc\":[0,\"/_astro/military-service.CGQr56Od_Z2lHDwS.webp\"],\"backdropSrcSet\":[0,\"/_astro/military-service.CGQr56Od_OT2Fe.webp 64w, /_astro/military-service.CGQr56Od_Z2lHDwS.webp 128w\"],\"src\":[0,\"/_astro/military-service.CGQr56Od_1FdAyG.webp\"],\"srcSet\":[0,\"/_astro/military-service.CGQr56Od_Z1zlqwu.webp 640w, /_astro/military-service.CGQr56Od_1GXESY.webp 832w, /_astro/military-service.CGQr56Od_Z1DbGOQ.webp 1080w, /_astro/military-service.CGQr56Od_1WUyIg.webp 1440w, /_astro/military-service.CGQr56Od_Z2kewgw.webp 1920w, /_astro/military-service.CGQr56Od_1FdAyG.webp 2000w\"],\"mobileSrcSet\":[0,\"/_astro/military-service.CGQr56Od_Z2jX7Ak.webp 360w, /_astro/military-service.CGQr56Od_2bLj9u.webp 480w, /_astro/military-service.CGQr56Od_1GN9XO.webp 640w, /_astro/military-service.CGQr56Od_Z177th8.webp 832w, /_astro/military-service.CGQr56Od_Z146SBH.webp 1080w, /_astro/military-service.CGQr56Od_phPeY.webp 1217w\"],\"width\":[0,2000],\"height\":[0,1500]}]}]]]}", client: "load", opts: "{\"name\":\"HomePageIsland\",\"value\":true}", "await-children": "" } as any)}>
+      <div
+        data-ce="astro-island"
+        data-site-import-carousel-root="3"
+        {...({
+          uid: "Z23wQGh",
+          prefix: "r1",
+          "component-url": "/_astro/home-page.CClgCQBv.js",
+          "component-export": "HomePageIsland",
+          "renderer-url": "/_astro/client.CH1YUKG_.js",
+          props:
+            '{"pathname":[0,"/"],"search":[0,""],"chatOnly":[0,false],"heroCards":[1,[[0,{"id":[0,"socialSecurity"],"image":[0,{"backdropSrc":[0,"/_astro/social-security.Dp3mFOLc_Z23DCuB.webp"],"backdropSrcSet":[0,"/_astro/social-security.Dp3mFOLc_10nXhy.webp 64w, /_astro/social-security.Dp3mFOLc_Z23DCuB.webp 128w"],"src":[0,"/_astro/social-security.Dp3mFOLc_2wyN13.webp"],"srcSet":[0,"/_astro/social-security.Dp3mFOLc_1DREtn.webp 640w, /_astro/social-security.Dp3mFOLc_1FHtli.webp 832w, /_astro/social-security.Dp3mFOLc_ZlB16Y.webp 1080w, /_astro/social-security.Dp3mFOLc_Zwibtr.webp 1440w, /_astro/social-security.Dp3mFOLc_8lESm.webp 1920w, /_astro/social-security.Dp3mFOLc_2wyN13.webp 2000w"],"mobileSrcSet":[0,"/_astro/social-security.Dp3mFOLc_Z16sV0R.webp 360w, /_astro/social-security.Dp3mFOLc_Z1FBBT9.webp 480w, /_astro/social-security.Dp3mFOLc_Z1UB7tK.webp 640w, /_astro/social-security.Dp3mFOLc_Z1S89wM.webp 832w, /_astro/social-security.Dp3mFOLc_dsfjv.webp 1080w, /_astro/social-security.Dp3mFOLc_Z16MtUu.webp 1440w, /_astro/social-security.Dp3mFOLc_Z1enVOC.webp 1622w"],"width":[0,2000],"height":[0,2000]}]}],[0,{"id":[0,"nationalPark"],"image":[0,{"backdropSrc":[0,"/_astro/national-park.DCQqmN0z_Z7qnDN.webp"],"backdropSrcSet":[0,"/_astro/national-park.DCQqmN0z_KQSLX.webp 64w, /_astro/national-park.DCQqmN0z_Z7qnDN.webp 128w"],"src":[0,"/_astro/national-park.DCQqmN0z_1xqNv8.webp"],"srcSet":[0,"/_astro/national-park.DCQqmN0z_Z1ERj4o.webp 640w, /_astro/national-park.DCQqmN0z_2gtUnC.webp 832w, /_astro/national-park.DCQqmN0z_ZYMkoM.webp 1080w, /_astro/national-park.DCQqmN0z_Zd9nqn.webp 1440w, /_astro/national-park.DCQqmN0z_1v0oFG.webp 1920w, /_astro/national-park.DCQqmN0z_1xqNv8.webp 2000w"],"mobileSrcSet":[0,"/_astro/national-park.DCQqmN0z_PyIcP.webp 360w, /_astro/national-park.DCQqmN0z_1CFF9T.webp 480w, /_astro/national-park.DCQqmN0z_Z6N4ey.webp 640w, /_astro/national-park.DCQqmN0z_Z1hwQ72.webp 832w, /_astro/national-park.DCQqmN0z_OftMD.webp 1080w, /_astro/national-park.DCQqmN0z_2giRuk.webp 1081w"],"width":[0,2000],"height":[0,1333]}]}],[0,{"id":[0,"veteranCare"],"image":[0,{"backdropSrc":[0,"/_astro/veteran-care.G_BGYd8h_Z1iPeT7.webp"],"backdropSrcSet":[0,"/_astro/veteran-care.G_BGYd8h_ZGUd3g.webp 64w, /_astro/veteran-care.G_BGYd8h_Z1iPeT7.webp 128w"],"src":[0,"/_astro/veteran-care.G_BGYd8h_22X0kr.webp"],"srcSet":[0,"/_astro/veteran-care.G_BGYd8h_Z27t2c7.webp 640w, /_astro/veteran-care.G_BGYd8h_utJ19.webp 832w, /_astro/veteran-care.G_BGYd8h_ZWIn20.webp 1080w, /_astro/veteran-care.G_BGYd8h_1FRAKy.webp 1440w, /_astro/veteran-care.G_BGYd8h_p0Mq8.webp 1920w, /_astro/veteran-care.G_BGYd8h_22X0kr.webp 2000w"],"mobileSrcSet":[0,"/_astro/veteran-care.G_BGYd8h_Z1fsFwl.webp 360w, /_astro/veteran-care.G_BGYd8h_1ObI9Q.webp 480w, /_astro/veteran-care.G_BGYd8h_1cHR9V.webp 640w, /_astro/veteran-care.G_BGYd8h_Z2oBXIV.webp 832w, /_astro/veteran-care.G_BGYd8h_ZuMXcx.webp 1080w, /_astro/veteran-care.G_BGYd8h_2iQ3Iq.webp 1083w"],"width":[0,2000],"height":[0,1335]}]}],[0,{"id":[0,"nameChange"],"image":[0,{"backdropSrc":[0,"/_astro/name-change.CSCtyIHX_MI3vl.webp"],"backdropSrcSet":[0,"/_astro/name-change.CSCtyIHX_Z1xC0Nt.webp 64w, /_astro/name-change.CSCtyIHX_MI3vl.webp 128w"],"src":[0,"/_astro/name-change.CSCtyIHX_5SstQ.webp"],"srcSet":[0,"/_astro/name-change.CSCtyIHX_ZO3NJL.webp 640w, /_astro/name-change.CSCtyIHX_Z1PnVgK.webp 832w, /_astro/name-change.CSCtyIHX_ZvDS8P.webp 1080w, /_astro/name-change.CSCtyIHX_Z1sc3cO.webp 1440w, /_astro/name-change.CSCtyIHX_1D0AW5.webp 1920w, /_astro/name-change.CSCtyIHX_5SstQ.webp 2000w"],"mobileSrcSet":[0,"/_astro/name-change.CSCtyIHX_Z2nNakl.webp 360w, /_astro/name-change.CSCtyIHX_1ToyWc.webp 480w, /_astro/name-change.CSCtyIHX_108J8C.webp 640w, /_astro/name-change.CSCtyIHX_q7Tzt.webp 832w, /_astro/name-change.CSCtyIHX_Z1tGhoq.webp 1080w, /_astro/name-change.CSCtyIHX_24XkAP.webp 1435w"],"width":[0,2000],"height":[0,1769]}]}],[0,{"id":[0,"medicare"],"image":[0,{"backdropSrc":[0,"/_astro/medicare.DqRXMPkA_2eGROM.webp"],"backdropSrcSet":[0,"/_astro/medicare.DqRXMPkA_Z1qGndW.webp 64w, /_astro/medicare.DqRXMPkA_2eGROM.webp 128w"],"src":[0,"/_astro/medicare.DqRXMPkA_ZgvyOQ.webp"],"srcSet":[0,"/_astro/medicare.DqRXMPkA_ZL6US9.webp 640w, /_astro/medicare.DqRXMPkA_28OIKa.webp 832w, /_astro/medicare.DqRXMPkA_ZpRboO.webp 1080w, /_astro/medicare.DqRXMPkA_ZVHshH.webp 1440w, /_astro/medicare.DqRXMPkA_YeLuw.webp 1920w, /_astro/medicare.DqRXMPkA_ZgvyOQ.webp 2000w"],"mobileSrcSet":[0,"/_astro/medicare.DqRXMPkA_ZFkBsc.webp 360w, /_astro/medicare.DqRXMPkA_ZaVJ6v.webp 480w, /_astro/medicare.DqRXMPkA_Z1HbB5s.webp 640w, /_astro/medicare.DqRXMPkA_1N1m5v.webp 832w, /_astro/medicare.DqRXMPkA_2qfz3.webp 1080w, /_astro/medicare.DqRXMPkA_ZR2gQO.webp 1387w"],"width":[0,2000],"height":[0,1710]}]}],[0,{"id":[0,"newJob"],"image":[0,{"backdropSrc":[0,"/_astro/new-job.C_hegThO_Z1SgNSP.webp"],"backdropSrcSet":[0,"/_astro/new-job.C_hegThO_Z1uvN02.webp 64w, /_astro/new-job.C_hegThO_Z1SgNSP.webp 128w"],"src":[0,"/_astro/new-job.C_hegThO_Z2tG1Gu.webp"],"srcSet":[0,"/_astro/new-job.C_hegThO_LWeAv.webp 640w, /_astro/new-job.C_hegThO_Z22V3N4.webp 832w, /_astro/new-job.C_hegThO_1tcrJL.webp 1080w, /_astro/new-job.C_hegThO_Z1P69AS.webp 1440w, /_astro/new-job.C_hegThO_ZRjClE.webp 1920w, /_astro/new-job.C_hegThO_Z2tG1Gu.webp 2000w"],"mobileSrcSet":[0,"/_astro/new-job.C_hegThO_Zl8rwN.webp 360w, /_astro/new-job.C_hegThO_1eSxMO.webp 480w, /_astro/new-job.C_hegThO_MQ9nM.webp 640w, /_astro/new-job.C_hegThO_Z2aePXA.webp 832w, /_astro/new-job.C_hegThO_Z1Pwwe8.webp 1080w, /_astro/new-job.C_hegThO_Z1xDrdt.webp 1082w"],"width":[0,2000],"height":[0,1334]}]}],[0,{"id":[0,"newBusiness"],"image":[0,{"backdropSrc":[0,"/_astro/new-business.D8WzdOqW_2hdm2T.webp"],"backdropSrcSet":[0,"/_astro/new-business.D8WzdOqW_HGX5f.webp 64w, /_astro/new-business.D8WzdOqW_2hdm2T.webp 128w"],"src":[0,"/_astro/new-business.D8WzdOqW_ZXW9v7.webp"],"srcSet":[0,"/_astro/new-business.D8WzdOqW_1c8Ogr.webp 640w, /_astro/new-business.D8WzdOqW_2rD5CN.webp 832w, /_astro/new-business.D8WzdOqW_1AK0da.webp 1080w, /_astro/new-business.D8WzdOqW_Jj21I.webp 1440w, /_astro/new-business.D8WzdOqW_1DDljS.webp 1920w, /_astro/new-business.D8WzdOqW_ZXW9v7.webp 2000w"],"mobileSrcSet":[0,"/_astro/new-business.D8WzdOqW_FBp3Y.webp 360w, /_astro/new-business.D8WzdOqW_Z1jUk3K.webp 480w, /_astro/new-business.D8WzdOqW_Z1Vob3F.webp 640w, /_astro/new-business.D8WzdOqW_ZswS8B.webp 832w, /_astro/new-business.D8WzdOqW_ZNJ9t7.webp 1080w, /_astro/new-business.D8WzdOqW_2x2Rrw.webp 1440w, /_astro/new-business.D8WzdOqW_ZxuMrW.webp 1587w"],"width":[0,2000],"height":[0,1957]}]}],[0,{"id":[0,"addressChange"],"image":[0,{"backdropSrc":[0,"/_astro/address-change.CgPY5X1Q_Z1l3c5K.webp"],"backdropSrcSet":[0,"/_astro/address-change.CgPY5X1Q_1GMQXC.webp 64w, /_astro/address-change.CgPY5X1Q_Z1l3c5K.webp 128w"],"src":[0,"/_astro/address-change.CgPY5X1Q_Z1RqMCu.webp"],"srcSet":[0,"/_astro/address-change.CgPY5X1Q_ZeswgX.webp 640w, /_astro/address-change.CgPY5X1Q_Z1cseFY.webp 832w, /_astro/address-change.CgPY5X1Q_ZvyO5B.webp 1080w, /_astro/address-change.CgPY5X1Q_Z1HJcAu.webp 1440w, /_astro/address-change.CgPY5X1Q_1RuqDA.webp 1920w, /_astro/address-change.CgPY5X1Q_Z1RqMCu.webp 2000w"],"mobileSrcSet":[0,"/_astro/address-change.CgPY5X1Q_2sxcQ9.webp 360w, /_astro/address-change.CgPY5X1Q_Z1xK3tH.webp 480w, /_astro/address-change.CgPY5X1Q_2iSHbx.webp 640w, /_astro/address-change.CgPY5X1Q_n0MJf.webp 832w, /_astro/address-change.CgPY5X1Q_24VRr9.webp 1080w, /_astro/address-change.CgPY5X1Q_Z27osqq.webp 1083w"],"width":[0,2000],"height":[0,1335]}]}],[0,{"id":[0,"passport"],"image":[0,{"backdropSrc":[0,"/_astro/child-passport.HGvPBa9L_2dovfU.webp"],"backdropSrcSet":[0,"/_astro/child-passport.HGvPBa9L_kKeq9.webp 64w, /_astro/child-passport.HGvPBa9L_2dovfU.webp 128w"],"src":[0,"/_astro/child-passport.HGvPBa9L_Z18saoo.webp"],"srcSet":[0,"/_astro/child-passport.HGvPBa9L_Z1KcWJe.webp 640w, /_astro/child-passport.HGvPBa9L_2lYsEG.webp 832w, /_astro/child-passport.HGvPBa9L_ZOIzsU.webp 1080w, /_astro/child-passport.HGvPBa9L_Z21SWXN.webp 1440w, /_astro/child-passport.HGvPBa9L_Z2sI4Vf.webp 1920w, /_astro/child-passport.HGvPBa9L_Z18saoo.webp 2000w"],"mobileSrcSet":[0,"/_astro/child-passport.HGvPBa9L_VMLnS.webp 360w, /_astro/child-passport.HGvPBa9L_20GDQX.webp 480w, /_astro/child-passport.HGvPBa9L_M9gIh.webp 640w, /_astro/child-passport.HGvPBa9L_Z18ICI1.webp 832w, /_astro/child-passport.HGvPBa9L_ZktE9Y.webp 1080w, /_astro/child-passport.HGvPBa9L_Z1nxXzH.webp 1081w"],"width":[0,2000],"height":[0,1333]}]}],[0,{"id":[0,"militaryService"],"image":[0,{"backdropSrc":[0,"/_astro/military-service.CGQr56Od_Z2lHDwS.webp"],"backdropSrcSet":[0,"/_astro/military-service.CGQr56Od_OT2Fe.webp 64w, /_astro/military-service.CGQr56Od_Z2lHDwS.webp 128w"],"src":[0,"/_astro/military-service.CGQr56Od_1FdAyG.webp"],"srcSet":[0,"/_astro/military-service.CGQr56Od_Z1zlqwu.webp 640w, /_astro/military-service.CGQr56Od_1GXESY.webp 832w, /_astro/military-service.CGQr56Od_Z1DbGOQ.webp 1080w, /_astro/military-service.CGQr56Od_1WUyIg.webp 1440w, /_astro/military-service.CGQr56Od_Z2kewgw.webp 1920w, /_astro/military-service.CGQr56Od_1FdAyG.webp 2000w"],"mobileSrcSet":[0,"/_astro/military-service.CGQr56Od_Z2jX7Ak.webp 360w, /_astro/military-service.CGQr56Od_2bLj9u.webp 480w, /_astro/military-service.CGQr56Od_1GN9XO.webp 640w, /_astro/military-service.CGQr56Od_Z177th8.webp 832w, /_astro/military-service.CGQr56Od_Z146SBH.webp 1080w, /_astro/military-service.CGQr56Od_phPeY.webp 1217w"],"width":[0,2000],"height":[0,1500]}]}]]]}',
+          client: "load",
+          opts: '{"name":"HomePageIsland","value":true}',
+          "await-children": "",
+        } as unknown as Record<string, unknown>)}
+      >
         <div className="contents" data-slot="chat-page-frame">
-          <div className="flex flex-col min-h-dvh bg-background-primary text-primary" data-chrome-canvas="light" data-site-import-carousel-root="1">
-            <a className={"fixed top-3 left-3 z-floating rounded-40 bg-background-primary px-4 py-2.5 type-body-m font-medium text-primary \x2dtranslate-y-[\x3300%] pointer-events-none \x66ocus:\x70ointer-events-auto \x66ocus:\x74ranslate-y-0 transition-[translate] duration-200 ease-out \x6dotion-reduce:\x74ransition-none \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none"} href="#landing-main">Skip to main content</a>
-            <div style={{ minHeight: "calc(40px + env(safe-area-inset-top))" }} data-slot="nav-header-flow">
-              <div className={"pt-[env(safe-area-inset-top)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] z-30 relative visible \x74ranslate-y-0 bg-background-primary"}>
+          <div
+            className="flex flex-col min-h-dvh bg-background-primary text-primary"
+            data-chrome-canvas="light"
+            data-site-import-carousel-root="1"
+          >
+            <a
+              className={
+                "fixed top-3 left-3 z-floating rounded-40 bg-background-primary px-4 py-2.5 type-body-m font-medium text-primary \x2dtranslate-y-[\x3300%] pointer-events-none \x66ocus:\x70ointer-events-auto \x66ocus:\x74ranslate-y-0 transition-[translate] duration-200 ease-out \x6dotion-reduce:\x74ransition-none \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none"
+              }
+              href="#landing-main"
+            >
+              Skip to main content
+            </a>
+            <div
+              style={{ minHeight: "calc(40px + env(safe-area-inset-top))" }}
+              data-slot="nav-header-flow"
+            >
+              <div
+                className={
+                  "pt-[env(safe-area-inset-top)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] z-30 relative visible \x74ranslate-y-0 bg-background-primary"
+                }
+              >
                 <div className={"grid grid-rows-[1fr] \x62g-inherit"} data-slot="gov-banner-row">
                   <div className="min-h-0 overflow-hidden">
                     <div className="">
-                      <ImportedSectionUSGovernmentWebsites openGovDialog={openGovDialog} onOpenGov={() => setOpenGovDialog(true)} />
+                      <ImportedSectionUSGovernmentWebsites
+                        openGovDialog={openGovDialog}
+                        onOpenGov={() => setOpenGovDialog(true)}
+                      />
                     </div>
                   </div>
                 </div>
                 <div className={"absolute \x69nset-x-0 top-full"}>
-                  <header className={"relative items-center p-6 grid grid-cols-[minmax(0,1fr)_auto] gap-3 \x6dax-[\x3320px]:\x67rid-cols-1 site-header \x6dx-(\x2d-site-header-inset) w-[calc(100%-2*var(--site-header-inset))] mt-4 sm:px-6 \x6dax-mobile:\x70-3 [--site-header-inset:0.75rem] mobile:[--site-header-inset:calc((100%-var(--site-frame-width))/2+1.5rem)]"} ref={node => { menuRoot0.current = node; }} data-site-import-scroll-header={"{\"desktop\":{\"added\":[\"sm:px-12\",\"[--site-header-inset:0px]\"],\"removed\":[\"mt-4\",\"sm:px-6\",\"max-mobile:p-3\",\"[--site-header-inset:0.75rem]\",\"mobile:[--site-header-inset:calc((100%-var(--site-frame-width))/2+1.5rem)]\"],\"threshold\":648},\"mobile\":{\"added\":[\"sm:px-12\",\"[--site-header-inset:0px]\"],\"removed\":[\"mt-4\",\"sm:px-6\",\"max-mobile:p-3\",\"[--site-header-inset:0.75rem]\",\"mobile:[--site-header-inset:calc((100%-var(--site-frame-width))/2+1.5rem)]\"],\"threshold\":633}}"}>
+                  <header
+                    className={
+                      "relative items-center p-6 grid grid-cols-[minmax(0,1fr)_auto] gap-3 \x6dax-[\x3320px]:\x67rid-cols-1 site-header \x6dx-(\x2d-site-header-inset) w-[calc(100%-2*var(--site-header-inset))] mt-4 sm:px-6 \x6dax-mobile:\x70-3 [--site-header-inset:0.75rem] mobile:[--site-header-inset:calc((100%-var(--site-frame-width))/2+1.5rem)]"
+                    }
+                    ref={(node) => {
+                      menuRoot0.current = node;
+                    }}
+                    data-site-import-scroll-header={
+                      '{"desktop":{"added":["sm:px-12","[--site-header-inset:0px]"],"removed":["mt-4","sm:px-6","max-mobile:p-3","[--site-header-inset:0.75rem]","mobile:[--site-header-inset:calc((100%-var(--site-frame-width))/2+1.5rem)]"],"threshold":648},"mobile":{"added":["sm:px-12","[--site-header-inset:0px]"],"removed":["mt-4","sm:px-6","max-mobile:p-3","[--site-header-inset:0.75rem]","mobile:[--site-header-inset:calc((100%-var(--site-frame-width))/2+1.5rem)]"],"threshold":633}}'
+                    }
+                  >
                     <div className="relative flex min-w-0 flex-1 items-center gap-2">
-                      <a className="flex min-w-0 max-w-full items-center gap-2.5 site-home-link" aria-label="America.gov home" href="/">
-                        <svg className="text-primary h-auto w-[156px] max-w-full overflow-visible" aria-hidden="true" width="159" height="23" viewBox="0 0 159 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <a
+                        className="flex min-w-0 max-w-full items-center gap-2.5 site-home-link"
+                        aria-label="America.gov home"
+                        href="/"
+                      >
+                        <svg
+                          className="text-primary h-auto w-[156px] max-w-full overflow-visible"
+                          aria-hidden="true"
+                          width="159"
+                          height="23"
+                          viewBox="0 0 159 23"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
                           <g data-slot="header-flag">
                             <g className="pointer-events-none">
-                              <image x="0" y="1" width="30" height="17" href="/site-assets/us-flag.svg" />
+                              <image
+                                x="0"
+                                y="1"
+                                width="30"
+                                height="17"
+                                href="/site-assets/us-flag.svg"
+                              />
                             </g>
                             <rect width="31" height="17" y="1" fill="transparent" />
                           </g>
-                          <svg x="37" y="0" width="121.058" height="22.25" viewBox="0 0 121.058 22.25" fill="currentColor">
+                          <svg
+                            x="37"
+                            y="0"
+                            width="121.058"
+                            height="22.25"
+                            viewBox="0 0 121.058 22.25"
+                            fill="currentColor"
+                          >
                             <path d="M41.5724 16.102C40.3881 16.102 39.5069 15.657 38.8131 14.6689C38.1397 13.7101 37.7664 12.3853 37.7664 10.8381V10.6859H45.3783L45.5247 10.5395C45.5613 9.14299 45.1163 7.7026 44.2716 6.83602C43.4724 6.01628 42.398 5.5625 41.1332 5.5625C38.0885 5.5625 35.8635 8.21933 35.8635 11.8525C35.8635 13.7086 36.3114 15.2983 37.159 16.4518C38.0416 17.6522 39.3488 18.2977 40.8405 18.2977C42.9747 18.2977 44.6215 16.8441 45.6711 14.199L45.0811 13.9062C44.2599 15.373 42.9586 16.102 41.5724 16.102ZM40.6941 6.73355C42.1213 6.73355 43.0391 7.74651 43.1826 9.66118H37.7664C38.2129 6.98679 40.0032 6.73355 40.6941 6.73355Z" />
                             <path d="M66.1645 16.102C63.7711 16.102 62.3703 14.1522 62.3703 11.0035C62.3703 8.86194 63.433 6.73355 65.7253 6.73355C66.7661 6.73355 67.3355 7.06291 67.3355 7.9046V8.63651C67.3355 9.46357 67.8698 10.1003 68.653 10.1003C69.2736 10.1003 69.9704 9.62605 69.9704 8.75655C69.9704 6.87115 68.2153 5.5625 65.8717 5.5625C64.4342 5.5625 63.0539 6.10265 62.0409 7.1727C60.9079 8.37156 60.3092 10.0476 60.3092 12.0033C60.3092 15.7111 62.2839 18.2977 65.2862 18.2977C68.5066 18.2977 69.6776 15.3701 70.1168 13.7599L69.5312 13.4671C68.2958 15.7375 67.1525 16.102 66.1645 16.102Z" />
                             <path d="M80.6562 16.8163C80.2815 16.8163 80.2171 16.5162 80.2171 15.8092V9.95395C80.2171 7.03803 78.7899 5.5625 75.8257 5.5625C73.0444 5.5625 71.5806 7.02632 71.5806 8.78289C71.5806 9.68168 72.3315 10.1003 72.898 10.1003C73.6241 10.1003 74.2155 9.5148 74.2155 8.63651V8.05099C74.2155 7.02632 75.1523 6.73355 75.8257 6.73355C77.2412 6.73355 77.875 7.51084 77.875 9.66118V10.3931C73.7163 11.7047 71.1414 12.5229 71.1414 15.2237C71.1414 16.9803 72.3842 18.2977 74.1027 18.2977C75.8213 18.2977 76.9499 17.2233 77.875 16.2484C78.0214 17.8586 78.6655 18.2977 79.778 18.2977C80.7382 18.2977 81.5799 17.5482 82.1201 16.3947L81.5345 16.102C81.2315 16.525 80.9212 16.8163 80.6562 16.8163ZM77.875 15.0773C76.9967 15.9556 76.0306 16.4635 75.2123 16.4635C74.173 16.4635 73.6299 15.6643 73.6299 14.4918C73.6299 12.7484 75.1333 12.2346 77.875 11.2714V15.0773Z" />
@@ -315,11 +456,45 @@ function Index() {
                     </div>
                     <div className="relative flex min-w-0 flex-1 items-center justify-end gap-2">
                       <div className={"site-menu-trigger relative \x6austify-self-end"}>
-                        <div className="pointer-events-none absolute inset-0" style={{ backgroundColor: "rgb(0, 38, 100)", borderRadius: "22px", transform: "none", transformOrigin: "50% 50% 0px" } as CSSProperties} aria-hidden="true">
-                          <div className={"absolute inset-0 rounded-[inherit] \x73hadow-[\x30_0_0_1px_var(\x2d-color-border-quaternary),\x32px_11px_24px_#\x30000001a,\x38px_42px_43px_#\x300000017,\x318px_95px_58px_#\x30000000d]"} style={{ opacity: "0" }} />
+                        <div
+                          className="pointer-events-none absolute inset-0"
+                          style={
+                            {
+                              backgroundColor: "rgb(0, 38, 100)",
+                              borderRadius: "22px",
+                              transform: "none",
+                              transformOrigin: "50% 50% 0px",
+                            } as CSSProperties
+                          }
+                          aria-hidden="true"
+                        >
+                          <div
+                            className={
+                              "absolute inset-0 rounded-[inherit] \x73hadow-[\x30_0_0_1px_var(\x2d-color-border-quaternary),\x32px_11px_24px_#\x30000001a,\x38px_42px_43px_#\x300000017,\x318px_95px_58px_#\x30000000d]"
+                            }
+                            style={{ opacity: "0" }}
+                          />
                         </div>
                         <div className="relative" style={{ opacity: "1" }}>
-                          <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 rounded-40 pb-0.5 leading-none disabled:bg-background-tertiary disabled:text-text-disabled type-label-m-emphasis relative h-11 bg-blue-700 px-5 tracking-[-0.03em] text-white \x62ackdrop-blur-frost \x61fter:\x61bsolute \x61fter:\x69nset-x-0 \x61fter:\x74op-1/\x32 \x61fter:\x68-11 \x61fter:\x2dtranslate-y-1/\x32 hover:bg-blue-800 active:bg-blue-700 active:text-white \x6dotion-reduce:\x74ransition-none"} aria-expanded={openMenu0 === "observed-1"} onClick={event => { event.preventDefault(); event.stopPropagation(); setOpenMenu0(open => open === "observed-1" ? null : "observed-1"); }} type="button" tabIndex={0} id="base-ui-_r1r_4_" aria-haspopup="dialog" data-slot="sheet-trigger" aria-controls="_r1r_3_">Menu</button>
+                          <button
+                            className={
+                              "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 rounded-40 pb-0.5 leading-none disabled:bg-background-tertiary disabled:text-text-disabled type-label-m-emphasis relative h-11 bg-blue-700 px-5 tracking-[-0.03em] text-white \x62ackdrop-blur-frost \x61fter:\x61bsolute \x61fter:\x69nset-x-0 \x61fter:\x74op-1/\x32 \x61fter:\x68-11 \x61fter:\x2dtranslate-y-1/\x32 hover:bg-blue-800 active:bg-blue-700 active:text-white \x6dotion-reduce:\x74ransition-none"
+                            }
+                            aria-expanded={openMenu0 === "observed-1"}
+                            onClick={(event) => {
+                              event.preventDefault();
+                              event.stopPropagation();
+                              setOpenMenu0((open) => (open === "observed-1" ? null : "observed-1"));
+                            }}
+                            type="button"
+                            tabIndex={0}
+                            id="base-ui-_r1r_4_"
+                            aria-haspopup="dialog"
+                            data-slot="sheet-trigger"
+                            aria-controls="_r1r_3_"
+                          >
+                            Menu
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -329,153 +504,2004 @@ function Index() {
             </div>
             <p className={"\x73r-only"} aria-live="polite" />
             <div className="flex min-h-0 flex-1 flex-col" data-slot="home-landing">
-              <main className={"flex flex-col \x67ap-site-section \x6dobile:\x67ap-site-section-lg text-pretty \x6futline-none"} id="landing-main" tabIndex={-1}>
-                <div className={"relative flex flex-col overflow-x-clip mobile:mx-auto \x6dobile:\x77-(\x2d-site-frame-width)"} data-slot="carousel" data-has-own-composer="">
-                  <section className={"relative isolate flex flex-col items-center rounded-40 pt-40 pb-10 mobile:min-h-[calc(100svh-92px)] \x6dobile:\x6austify-center mobile:rounded-48 \x6dobile:\x70x-site-gutter mobile:pt-36 mobile:pb-36"}>
-                    <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-40 bg-grey-50 squircle [clip-path:inset(0_round_var(--radius-40))] mobile:rounded-48 mobile:[clip-path:inset(0_round_var(--radius-48))]" aria-hidden="true">
+              <main
+                className={
+                  "flex flex-col \x67ap-site-section \x6dobile:\x67ap-site-section-lg text-pretty \x6futline-none"
+                }
+                id="landing-main"
+                tabIndex={-1}
+              >
+                <div
+                  className={
+                    "relative flex flex-col overflow-x-clip mobile:mx-auto \x6dobile:\x77-(\x2d-site-frame-width)"
+                  }
+                  data-slot="carousel"
+                  data-has-own-composer=""
+                >
+                  <section
+                    className={
+                      "relative isolate flex flex-col items-center rounded-40 pt-40 pb-10 mobile:min-h-[calc(100svh-92px)] \x6dobile:\x6austify-center mobile:rounded-48 \x6dobile:\x70x-site-gutter mobile:pt-36 mobile:pb-36"
+                    }
+                  >
+                    <div
+                      className="pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-40 bg-grey-50 squircle [clip-path:inset(0_round_var(--radius-40))] mobile:rounded-48 mobile:[clip-path:inset(0_round_var(--radius-48))]"
+                      aria-hidden="true"
+                    >
                       <div className="absolute inset-0 [mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.5),black)]">
-                        <div className={"absolute top-[-16%] left-[-12%] h-[132%] w-[124%] opacity-10 \x64ark:\x6fpacity-5"}>
-                          <div className="absolute inset-0" style={{ opacity: "0" }} aria-hidden="true">
+                        <div
+                          className={
+                            "absolute top-[-16%] left-[-12%] h-[132%] w-[124%] opacity-10 \x64ark:\x6fpacity-5"
+                          }
+                        >
+                          <div
+                            className="absolute inset-0"
+                            style={{ opacity: "0" }}
+                            aria-hidden="true"
+                          >
                             <picture>
-                              <img className={"absolute inset-0 size-full object-cover [&]:max-w-none"} alt="" decoding="async" draggable="false" height="1333" loading="eager" fetchPriority="low" sizes="64px" width="2000" srcSet="/site-assets/0a7aabcd52dc33a3.webp 64w, /site-assets/3f87f5eeb3397696.webp 128w" src="/site-assets/3f87f5eeb3397696.webp" />
+                              <img
+                                className={"absolute inset-0 size-full object-cover [&]:max-w-none"}
+                                alt=""
+                                decoding="async"
+                                draggable="false"
+                                height="1333"
+                                loading="eager"
+                                fetchPriority="low"
+                                sizes="64px"
+                                width="2000"
+                                srcSet="/site-assets/0a7aabcd52dc33a3.webp 64w, /site-assets/3f87f5eeb3397696.webp 128w"
+                                src="/site-assets/3f87f5eeb3397696.webp"
+                              />
                             </picture>
                           </div>
-                          <div className="absolute inset-0" style={{ opacity: "1" }} aria-hidden="false">
+                          <div
+                            className="absolute inset-0"
+                            style={{ opacity: "1" }}
+                            aria-hidden="false"
+                          >
                             <picture>
-                              <img className={"absolute inset-0 size-full object-cover [&]:max-w-none"} alt="" decoding="async" draggable="false" height="1335" loading="eager" fetchPriority="low" sizes="64px" width="2000" srcSet="/site-assets/07283de05f67c3ed.webp 64w, /site-assets/d6a5f274d016c06e.webp 128w" src="/site-assets/d6a5f274d016c06e.webp" />
+                              <img
+                                className={"absolute inset-0 size-full object-cover [&]:max-w-none"}
+                                alt=""
+                                decoding="async"
+                                draggable="false"
+                                height="1335"
+                                loading="eager"
+                                fetchPriority="low"
+                                sizes="64px"
+                                width="2000"
+                                srcSet="/site-assets/07283de05f67c3ed.webp 64w, /site-assets/d6a5f274d016c06e.webp 128w"
+                                src="/site-assets/d6a5f274d016c06e.webp"
+                              />
                             </picture>
                           </div>
-                          <div className="absolute inset-0" style={{ opacity: "0" }} aria-hidden="true">
+                          <div
+                            className="absolute inset-0"
+                            style={{ opacity: "0" }}
+                            aria-hidden="true"
+                          >
                             <picture>
-                              <img className={"absolute inset-0 size-full object-cover [&]:max-w-none"} alt="" decoding="async" draggable="false" height="1769" loading="eager" fetchPriority="low" sizes="64px" width="2000" srcSet="/site-assets/6df0b9cefa8b7cfc.webp 64w, /site-assets/26eec92a0f108fff.webp 128w" src="/site-assets/26eec92a0f108fff.webp" />
+                              <img
+                                className={"absolute inset-0 size-full object-cover [&]:max-w-none"}
+                                alt=""
+                                decoding="async"
+                                draggable="false"
+                                height="1769"
+                                loading="eager"
+                                fetchPriority="low"
+                                sizes="64px"
+                                width="2000"
+                                srcSet="/site-assets/6df0b9cefa8b7cfc.webp 64w, /site-assets/26eec92a0f108fff.webp 128w"
+                                src="/site-assets/26eec92a0f108fff.webp"
+                              />
                             </picture>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div className={"flex w-full justify-center mobile:mx-auto \x6dobile:\x67rid \x6dobile:\x6dax-w-(\x2d-container-site) mobile:grid-cols-[repeat(var(--site-grid-columns),minmax(0,1fr))] \x6dobile:\x67ap-x-site-gutter"}>
-                      <div className={"flex w-[round(down,min(100%,687.5px),1px)] flex-col items-center gap-[62px] mobile:col-span-full mobile:w-[round(down,100%,1px)] mobile:gap-12 \x73ite-desktop:\x63ol-span-8 \x73ite-desktop:\x63ol-start-3"}>
+                    <div
+                      className={
+                        "flex w-full justify-center mobile:mx-auto \x6dobile:\x67rid \x6dobile:\x6dax-w-(\x2d-container-site) mobile:grid-cols-[repeat(var(--site-grid-columns),minmax(0,1fr))] \x6dobile:\x67ap-x-site-gutter"
+                      }
+                    >
+                      <div
+                        className={
+                          "flex w-[round(down,min(100%,687.5px),1px)] flex-col items-center gap-[62px] mobile:col-span-full mobile:w-[round(down,100%,1px)] mobile:gap-12 \x73ite-desktop:\x63ol-span-8 \x73ite-desktop:\x63ol-start-3"
+                        }
+                      >
                         <div className="landing-heading flex w-full flex-col items-center gap-4 text-center px-8 mobile:gap-5 mobile:px-0">
                           <div data-site-hero-enter="0">
-                            <h1 className={"text-text-primary type-site-hero \x6dax-mobile:\x74ext-[\x63lamp(\x336px,\x312vw,\x348px)]"}>Hello,
-      America</h1>
+                            <h1
+                              className={
+                                "text-text-primary type-site-hero \x6dax-mobile:\x74ext-[\x63lamp(\x336px,\x312vw,\x348px)]"
+                              }
+                            >
+                              Hello, America
+                            </h1>
                           </div>
                           <div data-site-hero-enter="1">
-                            <p className={"text-text-secondary type-home-supporting text-pretty \x6dax-mobile:\x74ext-balance"}>Whatever you need from government, start here.</p>
+                            <p
+                              className={
+                                "text-text-secondary type-home-supporting text-pretty \x6dax-mobile:\x74ext-balance"
+                              }
+                            >
+                              Whatever you need from government, start here.
+                            </p>
                           </div>
                         </div>
-                        <div className="relative w-full">
-                          <div className={"absolute \x69nset-x-4 top-4 z-20"} data-site-hero-enter="2">
+                        <div className="relative w-full max-w-[540px] mx-auto">
+                          <div
+                            className={"absolute inset-x-3 sm:inset-x-4 top-3 sm:top-4 z-20"}
+                            data-site-hero-enter="2"
+                          >
                             <div>
                               <div className="relative flex w-full flex-col items-center">
                                 <div className="contents">
                                   <div className="contents">
                                     <div className="w-full" data-slot="hero-ask-pill">
                                       <div className="relative flex w-full flex-col items-stretch">
-                                        <div className="relative [--corner-scale:1] [corner-shape:round] rounded-32 mobile:rounded-[48px]" data-slot="chat-input-surface">
+                                        <div
+                                          className="relative [--corner-scale:1] [corner-shape:round] rounded-32 mobile:rounded-[48px]"
+                                          data-slot="chat-input-surface"
+                                        >
                                           <div className="relative">
                                             <div className="w-full relative">
-                                              <form onSubmit={handleDemoSubmit} className={"group flex w-full cursor-text \x62order \x62order-solid \x62order-transparent \x6futline-1 \x68as-[\x74extarea:\x64isabled]:\x63ursor-not-allowed px-5 ease-out-quint \x73hadow-composer-sm \x6dobile:\x73hadow-none min-h-14 py-2.5 pr-3 pl-6 mobile:min-h-0 bg-background-primary mobile:py-[23px] mobile:pl-10 mobile:pr-[23px] rounded-32 mobile:rounded-[48px] transition-[outline-color,box-shadow] duration-700 ease-out-quint relative z-10 flex-col items-stretch overflow-clip \x68as-[[\x64ata-slot=\x63hat-input-drop-zone]]:\x6fverflow-visible \x68as-[[\x64ata-slot=\x63hat-input-drop-zone]]:\x6futline-none \x6dax-md:\x6din-h-16 \x6dax-md:\x74ransition-[\x70adding] \x6dax-md:\x64uration-250 \x6dax-md:\x65ase-drawer \x6dotion-reduce:\x74ransition-none \x6dax-md:\x70-3 \x72ing-border-secondary \x72ing-2 \x6futline-transparent"} style={{ opacity: "1" }} data-slot="chat-input-shell" aria-label="Describe what you need">
+                                              <form
+                                                onSubmit={handleDemoSubmit}
+                                                className={
+                                                  "group flex w-full cursor-text \x62order \x62order-solid \x62order-transparent \x6futline-1 \x68as-[\x74extarea:\x64isabled]:\x63ursor-not-allowed px-5 ease-out-quint \x73hadow-composer-sm \x6dobile:\x73hadow-none min-h-14 py-2.5 pr-3 pl-6 mobile:min-h-0 bg-background-primary mobile:py-[23px] mobile:pl-10 mobile:pr-[23px] rounded-32 mobile:rounded-[48px] transition-[outline-color,box-shadow] duration-700 ease-out-quint relative z-10 flex-col items-stretch overflow-clip \x68as-[[\x64ata-slot=\x63hat-input-drop-zone]]:\x6fverflow-visible \x68as-[[\x64ata-slot=\x63hat-input-drop-zone]]:\x6futline-none \x6dax-md:\x6din-h-16 \x6dax-md:\x74ransition-[\x70adding] \x6dax-md:\x64uration-250 \x6dax-md:\x65ase-drawer \x6dotion-reduce:\x74ransition-none \x6dax-md:\x70-3 \x72ing-border-secondary \x72ing-2 \x6futline-transparent"
+                                                }
+                                                style={{ opacity: "1" }}
+                                                data-slot="chat-input-shell"
+                                                aria-label="Describe what you need"
+                                              >
                                                 <div className="contents">
-                                                  <label className={"\x73r-only"} id="_r1r_6_" htmlFor="_r1r_6_-field">Describe what you need</label>
-                                                  <div className={"w-full shrink-0 overflow-visible \x64rop-shadow-[\x30_10px_20px_rgba(\x31,\x314,\x336,\x30.\x308)]"} style={{ height: "0px" }}>
-                                                    <div className={"flex items-start gap-2 overflow-x-auto \x6fverscroll-x-contain [scrollbar-width:none] -ml-4"} />
+                                                  <label
+                                                    className={"\x73r-only"}
+                                                    id="_r1r_6_"
+                                                    htmlFor="_r1r_6_-field"
+                                                  >
+                                                    Describe what you need
+                                                  </label>
+                                                  <div
+                                                    className={
+                                                      "w-full shrink-0 overflow-visible \x64rop-shadow-[\x30_10px_20px_rgba(\x31,\x314,\x336,\x30.\x308)]"
+                                                    }
+                                                    style={{ height: "0px" }}
+                                                  >
+                                                    <div
+                                                      className={
+                                                        "flex items-start gap-2 overflow-x-auto \x6fverscroll-x-contain [scrollbar-width:none] -ml-4"
+                                                      }
+                                                    />
                                                   </div>
-                                                  <div style={{ opacity: "1", filter: "blur(0px)" } as CSSProperties} data-slot="chat-input-row">
-                                                    <div className={"relative z-10 flex min-h-9 w-full items-end gap-1 \x6dax-md:\x66lex-col \x6dax-md:\x67ap-1"}>
-                                                      <div className={"relative flex min-w-0 flex-1 self-center text-[length:var(--text-body-m)] \x6dax-md:\x69tems-center mobile:font-sans-display \x6dobile:\x74ext-[\x31.\x33125rem] \x6dax-md:\x73elf-start \x6dax-md:\x74ransition-[\x77idth] \x6dax-md:\x64uration-250 \x6dax-md:\x65ase-drawer \x6dotion-reduce:\x74ransition-none \x6dax-md:\x6din-h-0 \x6dax-md:\x77-full \x6dax-md:\x70x-2 \x6dax-md:\x70t-[\x33px]"}>
+                                                  <div
+                                                    style={
+                                                      {
+                                                        opacity: "1",
+                                                        filter: "blur(0px)",
+                                                      } as CSSProperties
+                                                    }
+                                                    data-slot="chat-input-row"
+                                                  >
+                                                    <div
+                                                      className={
+                                                        "relative z-10 flex min-h-9 w-full items-end gap-1 \x6dax-md:\x66lex-col \x6dax-md:\x67ap-1"
+                                                      }
+                                                    >
+                                                      <div
+                                                        className={
+                                                          "relative flex min-w-0 flex-1 self-center text-[length:var(--text-body-m)] \x6dax-md:\x69tems-center mobile:font-sans-display \x6dobile:\x74ext-[\x31.\x33125rem] \x6dax-md:\x73elf-start \x6dax-md:\x74ransition-[\x77idth] \x6dax-md:\x64uration-250 \x6dax-md:\x65ase-drawer \x6dotion-reduce:\x74ransition-none \x6dax-md:\x6din-h-0 \x6dax-md:\x77-full \x6dax-md:\x70x-2 \x6dax-md:\x70t-[\x33px]"
+                                                        }
+                                                      >
                                                         <div className="peer relative flex min-w-0 flex-1">
-                                                          <textarea className={"type-body-m -my-2 min-w-0 flex-1 resize-none \x6fverscroll-contain bg-transparent py-2 leading-normal \x6futline-none \x70laceholder:\x6fverflow-hidden \x70laceholder:\x74ext-ellipsis \x70laceholder:\x77hitespace-nowrap \x64isabled:\x63ursor-not-allowed \x70laceholder:\x74ransition-colors \x70laceholder:\x64uration-200 \x70laceholder:\x65ase-out-quint \x6dotion-reduce:\x70laceholder:\x74ransition-none [scrollbar-width:none] \x70laceholder:\x74ext-secondary mobile:tracking-sans-display text-primary \x6candscape-phone:\x6din-h-[\x63alc(\x32lh+\x31rem)]"} style={{ fontSize: "inherit", maskImage: "none", height: "48px", overflowY: "hidden" } as CSSProperties} rows={1} id="_r1r_6_-field" name="message" aria-describedby="_r1r_6_-example" placeholder=" " role="combobox" aria-expanded="false" aria-autocomplete="list" />
+                                                          <textarea
+                                                            className={
+                                                              "type-body-m -my-2 min-w-0 flex-1 resize-none \x6fverscroll-contain bg-transparent py-2 leading-normal \x6futline-none \x70laceholder:\x6fverflow-hidden \x70laceholder:\x74ext-ellipsis \x70laceholder:\x77hitespace-nowrap \x64isabled:\x63ursor-not-allowed \x70laceholder:\x74ransition-colors \x70laceholder:\x64uration-200 \x70laceholder:\x65ase-out-quint \x6dotion-reduce:\x70laceholder:\x74ransition-none [scrollbar-width:none] \x70laceholder:\x74ext-secondary mobile:tracking-sans-display text-primary \x6candscape-phone:\x6din-h-[\x63alc(\x32lh+\x31rem)]"
+                                                            }
+                                                            style={
+                                                              {
+                                                                fontSize: "inherit",
+                                                                maskImage: "none",
+                                                                height: "48px",
+                                                                overflowY: "hidden",
+                                                              } as CSSProperties
+                                                            }
+                                                            rows={1}
+                                                            id="_r1r_6_-field"
+                                                            name="message"
+                                                            aria-describedby="_r1r_6_-example"
+                                                            placeholder=" "
+                                                            role="combobox"
+                                                            aria-expanded="false"
+                                                            aria-autocomplete="list"
+                                                          />
                                                         </div>
-                                                        <span className={"\x73r-only"} id="_r1r_6_-example">Example question: I’m a veteran. How do I get care?</span>
-                                                        <span className={"\x70eer-has-[\x74extarea:\x6eot(:\x70laceholder-shown)]:\x68idden type-body-m pointer-events-none absolute \x69nset-x-0 \x2dinset-y-2 flex items-center whitespace-nowrap leading-normal [font-size:inherit] overflow-hidden \x73upports-[\x2dwebkit-touch-callout:\x6eone]:\x77ill-change-transform transition-colors duration-200 ease-out-quint \x6dotion-reduce:\x74ransition-none text-secondary \x6dax-md:\x69nset-x-2 \x6dax-md:\x2dtop-[\x35px] mobile:tracking-sans-display"} data-slot="chat-input-placeholder" aria-hidden="true">
-                                                          <span className={"relative -top-px block h-lh w-full \x6candscape-phone:\x68-[\x32lh] [--marquee-play-state:paused]"}>
-                                                            <span className={"absolute \x69nset-x-0 -my-2 overflow-x-clip overflow-y-visible py-2 whitespace-nowrap \x6candscape-phone:\x6cine-clamp-2 \x6candscape-phone:\x77hitespace-normal"} style={{ opacity: "0", "--marquee-duration": "10s" } as CSSProperties}>
+                                                        <span
+                                                          className={"\x73r-only"}
+                                                          id="_r1r_6_-example"
+                                                        >
+                                                          Example question: I’m a veteran. How do I
+                                                          get care?
+                                                        </span>
+                                                        <span
+                                                          className={
+                                                            "\x70eer-has-[\x74extarea:\x6eot(:\x70laceholder-shown)]:\x68idden type-body-m pointer-events-none absolute \x69nset-x-0 \x2dinset-y-2 flex items-center whitespace-nowrap leading-normal [font-size:inherit] overflow-hidden \x73upports-[\x2dwebkit-touch-callout:\x6eone]:\x77ill-change-transform transition-colors duration-200 ease-out-quint \x6dotion-reduce:\x74ransition-none text-secondary \x6dax-md:\x69nset-x-2 \x6dax-md:\x2dtop-[\x35px] mobile:tracking-sans-display"
+                                                          }
+                                                          data-slot="chat-input-placeholder"
+                                                          aria-hidden="true"
+                                                        >
+                                                          <span
+                                                            className={
+                                                              "relative -top-px block h-lh w-full \x6candscape-phone:\x68-[\x32lh] [--marquee-play-state:paused]"
+                                                            }
+                                                          >
+                                                            <span
+                                                              className={
+                                                                "absolute \x69nset-x-0 -my-2 overflow-x-clip overflow-y-visible py-2 whitespace-nowrap \x6candscape-phone:\x6cine-clamp-2 \x6candscape-phone:\x77hitespace-normal"
+                                                              }
+                                                              style={
+                                                                {
+                                                                  opacity: "0",
+                                                                  "--marquee-duration": "10s",
+                                                                } as CSSProperties
+                                                              }
+                                                            >
                                                               <span className="home-prompt-track">
-                                                                <span><span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>Try</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>‘</span><span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>How</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>do</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>I</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>replace</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>my</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>social</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>security</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>card</span><span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>?</span><span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "1.03535e-13", filter: "blur(6px)" } as CSSProperties}>’</span></span>
-                                                                <span><span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>Try</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>‘</span><span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>How</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>do</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>I</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>replace</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>my</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>social</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>security</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>card</span><span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>?</span><span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "1.03535e-13", filter: "blur(6px)" } as CSSProperties}>’</span></span>
+                                                                <span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    Try
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    ‘
+                                                                  </span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    How
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    do
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    I
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    replace
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    my
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    social
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    security
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    card
+                                                                  </span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    ?
+                                                                  </span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "1.03535e-13",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    ’
+                                                                  </span>
+                                                                </span>
+                                                                <span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    Try
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    ‘
+                                                                  </span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    How
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    do
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    I
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    replace
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    my
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    social
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    security
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    card
+                                                                  </span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    ?
+                                                                  </span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "1.03535e-13",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    ’
+                                                                  </span>
+                                                                </span>
                                                               </span>
                                                             </span>
-                                                            <span className={"absolute \x69nset-x-0 -my-2 overflow-x-clip overflow-y-visible py-2 whitespace-nowrap \x6candscape-phone:\x6cine-clamp-2 \x6candscape-phone:\x77hitespace-normal"} style={{ opacity: "0", "--marquee-duration": "10.675s" } as CSSProperties}>
+                                                            <span
+                                                              className={
+                                                                "absolute \x69nset-x-0 -my-2 overflow-x-clip overflow-y-visible py-2 whitespace-nowrap \x6candscape-phone:\x6cine-clamp-2 \x6candscape-phone:\x77hitespace-normal"
+                                                              }
+                                                              style={
+                                                                {
+                                                                  opacity: "0",
+                                                                  "--marquee-duration": "10.675s",
+                                                                } as CSSProperties
+                                                              }
+                                                            >
                                                               <span className="home-prompt-track">
-                                                                <span><span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>Try</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>‘</span><span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>How</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>do</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>I</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>book</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>a</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>campsite</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>in</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>a</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>national</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>park</span><span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>?</span><span className="inline-block" style={{ transform: "translateY(-99.9999%)", opacity: "2.18658e-12", filter: "blur(5.99999px)" } as CSSProperties}>’</span></span>
-                                                                <span><span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>Try</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>‘</span><span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>How</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>do</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>I</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>book</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>a</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>campsite</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>in</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>a</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>national</span>{" "}<span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>park</span><span className="inline-block" style={{ transform: "translateY(-100%)", opacity: "0", filter: "blur(6px)" } as CSSProperties}>?</span><span className="inline-block" style={{ transform: "translateY(-99.9999%)", opacity: "2.18658e-12", filter: "blur(5.99999px)" } as CSSProperties}>’</span></span>
+                                                                <span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    Try
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    ‘
+                                                                  </span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    How
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    do
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    I
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    book
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    a
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    campsite
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    in
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    a
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    national
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    park
+                                                                  </span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    ?
+                                                                  </span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-99.9999%)",
+                                                                        opacity: "2.18658e-12",
+                                                                        filter: "blur(5.99999px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    ’
+                                                                  </span>
+                                                                </span>
+                                                                <span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    Try
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    ‘
+                                                                  </span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    How
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    do
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    I
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    book
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    a
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    campsite
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    in
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    a
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    national
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    park
+                                                                  </span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-100%)",
+                                                                        opacity: "0",
+                                                                        filter: "blur(6px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    ?
+                                                                  </span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform:
+                                                                          "translateY(-99.9999%)",
+                                                                        opacity: "2.18658e-12",
+                                                                        filter: "blur(5.99999px)",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    ’
+                                                                  </span>
+                                                                </span>
                                                               </span>
                                                             </span>
-                                                            <span className={"absolute \x69nset-x-0 -my-2 overflow-x-clip overflow-y-visible py-2 whitespace-nowrap \x6candscape-phone:\x6cine-clamp-2 \x6candscape-phone:\x77hitespace-normal"} style={{ opacity: "1", "--marquee-duration": "7.975s" } as CSSProperties} data-selected="true">
+                                                            <span
+                                                              className={
+                                                                "absolute \x69nset-x-0 -my-2 overflow-x-clip overflow-y-visible py-2 whitespace-nowrap \x6candscape-phone:\x6cine-clamp-2 \x6candscape-phone:\x77hitespace-normal"
+                                                              }
+                                                              style={
+                                                                {
+                                                                  opacity: "1",
+                                                                  "--marquee-duration": "7.975s",
+                                                                } as CSSProperties
+                                                              }
+                                                              data-selected="true"
+                                                            >
                                                               <span className="home-prompt-track">
-                                                                <span><span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>Try</span>{" "}<span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>‘</span><span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>I’m</span>{" "}<span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>a</span>{" "}<span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>veteran</span><span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>.</span>{" "}<span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>How</span>{" "}<span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>do</span>{" "}<span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>I</span>{" "}<span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>get</span>{" "}<span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>care</span><span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>?</span><span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>’</span></span>
-                                                                <span><span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>Try</span>{" "}<span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>‘</span><span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>I’m</span>{" "}<span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>a</span>{" "}<span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>veteran</span><span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>.</span>{" "}<span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>How</span>{" "}<span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>do</span>{" "}<span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>I</span>{" "}<span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>get</span>{" "}<span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>care</span><span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>?</span><span className="inline-block" style={{ transform: "none", opacity: "1", filter: "none" } as CSSProperties}>’</span></span>
+                                                                <span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    Try
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    ‘
+                                                                  </span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    I’m
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    a
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    veteran
+                                                                  </span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    .
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    How
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    do
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    I
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    get
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    care
+                                                                  </span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    ?
+                                                                  </span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    ’
+                                                                  </span>
+                                                                </span>
+                                                                <span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    Try
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    ‘
+                                                                  </span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    I’m
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    a
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    veteran
+                                                                  </span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    .
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    How
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    do
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    I
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    get
+                                                                  </span>{" "}
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    care
+                                                                  </span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    ?
+                                                                  </span>
+                                                                  <span
+                                                                    className="inline-block"
+                                                                    style={
+                                                                      {
+                                                                        transform: "none",
+                                                                        opacity: "1",
+                                                                        filter: "none",
+                                                                      } as CSSProperties
+                                                                    }
+                                                                  >
+                                                                    ’
+                                                                  </span>
+                                                                </span>
                                                               </span>
                                                             </span>
-                                                            <span className={"absolute \x69nset-x-0 -my-2 overflow-x-clip overflow-y-visible py-2 whitespace-nowrap \x6candscape-phone:\x6cine-clamp-2 \x6candscape-phone:\x77hitespace-normal"} style={{ opacity: "0", "--marquee-duration": "11.75s" } as CSSProperties}>
+                                                            <span
+                                                              className={
+                                                                "absolute \x69nset-x-0 -my-2 overflow-x-clip overflow-y-visible py-2 whitespace-nowrap \x6candscape-phone:\x6cine-clamp-2 \x6candscape-phone:\x77hitespace-normal"
+                                                              }
+                                                              style={
+                                                                {
+                                                                  opacity: "0",
+                                                                  "--marquee-duration": "11.75s",
+                                                                } as CSSProperties
+                                                              }
+                                                            >
                                                               <span className="home-prompt-track">
-                                                                <span><span className="inline-block">Try</span>{" "}<span className="inline-block">‘</span><span className="inline-block">I</span>{" "}<span className="inline-block">just</span>{" "}<span className="inline-block">got</span>{" "}<span className="inline-block">married</span><span className="inline-block">.</span>{" "}<span className="inline-block">How</span>{" "}<span className="inline-block">do</span>{" "}<span className="inline-block">I</span>{" "}<span className="inline-block">change</span>{" "}<span className="inline-block">my</span>{" "}<span className="inline-block">last</span>{" "}<span className="inline-block">name</span><span className="inline-block">?</span><span className="inline-block">’</span></span>
-                                                                <span><span className="inline-block">Try</span>{" "}<span className="inline-block">‘</span><span className="inline-block">I</span>{" "}<span className="inline-block">just</span>{" "}<span className="inline-block">got</span>{" "}<span className="inline-block">married</span><span className="inline-block">.</span>{" "}<span className="inline-block">How</span>{" "}<span className="inline-block">do</span>{" "}<span className="inline-block">I</span>{" "}<span className="inline-block">change</span>{" "}<span className="inline-block">my</span>{" "}<span className="inline-block">last</span>{" "}<span className="inline-block">name</span><span className="inline-block">?</span><span className="inline-block">’</span></span>
+                                                                <span>
+                                                                  <span className="inline-block">
+                                                                    Try
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    ‘
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    I
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    just
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    got
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    married
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    .
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    How
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    do
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    I
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    change
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    my
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    last
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    name
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ?
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ’
+                                                                  </span>
+                                                                </span>
+                                                                <span>
+                                                                  <span className="inline-block">
+                                                                    Try
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    ‘
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    I
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    just
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    got
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    married
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    .
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    How
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    do
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    I
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    change
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    my
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    last
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    name
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ?
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ’
+                                                                  </span>
+                                                                </span>
                                                               </span>
                                                             </span>
-                                                            <span className={"absolute \x69nset-x-0 -my-2 overflow-x-clip overflow-y-visible py-2 whitespace-nowrap \x6candscape-phone:\x6cine-clamp-2 \x6candscape-phone:\x77hitespace-normal"} style={{ opacity: "0", "--marquee-duration": "7.9s" } as CSSProperties}>
+                                                            <span
+                                                              className={
+                                                                "absolute \x69nset-x-0 -my-2 overflow-x-clip overflow-y-visible py-2 whitespace-nowrap \x6candscape-phone:\x6cine-clamp-2 \x6candscape-phone:\x77hitespace-normal"
+                                                              }
+                                                              style={
+                                                                {
+                                                                  opacity: "0",
+                                                                  "--marquee-duration": "7.9s",
+                                                                } as CSSProperties
+                                                              }
+                                                            >
                                                               <span className="home-prompt-track">
-                                                                <span><span className="inline-block">Try</span>{" "}<span className="inline-block">‘</span><span className="inline-block">When</span>{" "}<span className="inline-block">do</span>{" "}<span className="inline-block">I</span>{" "}<span className="inline-block">qualify</span>{" "}<span className="inline-block">for</span>{" "}<span className="inline-block">Medicare</span><span className="inline-block">?</span><span className="inline-block">’</span></span>
-                                                                <span><span className="inline-block">Try</span>{" "}<span className="inline-block">‘</span><span className="inline-block">When</span>{" "}<span className="inline-block">do</span>{" "}<span className="inline-block">I</span>{" "}<span className="inline-block">qualify</span>{" "}<span className="inline-block">for</span>{" "}<span className="inline-block">Medicare</span><span className="inline-block">?</span><span className="inline-block">’</span></span>
+                                                                <span>
+                                                                  <span className="inline-block">
+                                                                    Try
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    ‘
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    When
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    do
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    I
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    qualify
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    for
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    Medicare
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ?
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ’
+                                                                  </span>
+                                                                </span>
+                                                                <span>
+                                                                  <span className="inline-block">
+                                                                    Try
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    ‘
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    When
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    do
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    I
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    qualify
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    for
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    Medicare
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ?
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ’
+                                                                  </span>
+                                                                </span>
                                                               </span>
                                                             </span>
-                                                            <span className={"absolute \x69nset-x-0 -my-2 overflow-x-clip overflow-y-visible py-2 whitespace-nowrap \x6candscape-phone:\x6cine-clamp-2 \x6candscape-phone:\x77hitespace-normal"} style={{ opacity: "0", "--marquee-duration": "5.975s" } as CSSProperties}>
+                                                            <span
+                                                              className={
+                                                                "absolute \x69nset-x-0 -my-2 overflow-x-clip overflow-y-visible py-2 whitespace-nowrap \x6candscape-phone:\x6cine-clamp-2 \x6candscape-phone:\x77hitespace-normal"
+                                                              }
+                                                              style={
+                                                                {
+                                                                  opacity: "0",
+                                                                  "--marquee-duration": "5.975s",
+                                                                } as CSSProperties
+                                                              }
+                                                            >
                                                               <span className="home-prompt-track">
-                                                                <span><span className="inline-block">Try</span>{" "}<span className="inline-block">‘</span><span className="inline-block">Help</span>{" "}<span className="inline-block">me</span>{" "}<span className="inline-block">find</span>{" "}<span className="inline-block">a</span>{" "}<span className="inline-block">new</span>{" "}<span className="inline-block">job</span><span className="inline-block">’</span></span>
-                                                                <span><span className="inline-block">Try</span>{" "}<span className="inline-block">‘</span><span className="inline-block">Help</span>{" "}<span className="inline-block">me</span>{" "}<span className="inline-block">find</span>{" "}<span className="inline-block">a</span>{" "}<span className="inline-block">new</span>{" "}<span className="inline-block">job</span><span className="inline-block">’</span></span>
+                                                                <span>
+                                                                  <span className="inline-block">
+                                                                    Try
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    ‘
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    Help
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    me
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    find
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    a
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    new
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    job
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ’
+                                                                  </span>
+                                                                </span>
+                                                                <span>
+                                                                  <span className="inline-block">
+                                                                    Try
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    ‘
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    Help
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    me
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    find
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    a
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    new
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    job
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ’
+                                                                  </span>
+                                                                </span>
                                                               </span>
                                                             </span>
-                                                            <span className={"absolute \x69nset-x-0 -my-2 overflow-x-clip overflow-y-visible py-2 whitespace-nowrap \x6candscape-phone:\x6cine-clamp-2 \x6candscape-phone:\x77hitespace-normal"} style={{ opacity: "0", "--marquee-duration": "8.825s" } as CSSProperties}>
+                                                            <span
+                                                              className={
+                                                                "absolute \x69nset-x-0 -my-2 overflow-x-clip overflow-y-visible py-2 whitespace-nowrap \x6candscape-phone:\x6cine-clamp-2 \x6candscape-phone:\x77hitespace-normal"
+                                                              }
+                                                              style={
+                                                                {
+                                                                  opacity: "0",
+                                                                  "--marquee-duration": "8.825s",
+                                                                } as CSSProperties
+                                                              }
+                                                            >
                                                               <span className="home-prompt-track">
-                                                                <span><span className="inline-block">Try</span>{" "}<span className="inline-block">‘</span><span className="inline-block">How</span>{" "}<span className="inline-block">do</span>{" "}<span className="inline-block">I</span>{" "}<span className="inline-block">register</span>{" "}<span className="inline-block">my</span>{" "}<span className="inline-block">new</span>{" "}<span className="inline-block">business</span><span className="inline-block">?</span><span className="inline-block">’</span></span>
-                                                                <span><span className="inline-block">Try</span>{" "}<span className="inline-block">‘</span><span className="inline-block">How</span>{" "}<span className="inline-block">do</span>{" "}<span className="inline-block">I</span>{" "}<span className="inline-block">register</span>{" "}<span className="inline-block">my</span>{" "}<span className="inline-block">new</span>{" "}<span className="inline-block">business</span><span className="inline-block">?</span><span className="inline-block">’</span></span>
+                                                                <span>
+                                                                  <span className="inline-block">
+                                                                    Try
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    ‘
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    How
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    do
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    I
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    register
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    my
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    new
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    business
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ?
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ’
+                                                                  </span>
+                                                                </span>
+                                                                <span>
+                                                                  <span className="inline-block">
+                                                                    Try
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    ‘
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    How
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    do
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    I
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    register
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    my
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    new
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    business
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ?
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ’
+                                                                  </span>
+                                                                </span>
                                                               </span>
                                                             </span>
-                                                            <span className={"absolute \x69nset-x-0 -my-2 overflow-x-clip overflow-y-visible py-2 whitespace-nowrap \x6candscape-phone:\x6cine-clamp-2 \x6candscape-phone:\x77hitespace-normal"} style={{ opacity: "0", "--marquee-duration": "9.925s" } as CSSProperties}>
+                                                            <span
+                                                              className={
+                                                                "absolute \x69nset-x-0 -my-2 overflow-x-clip overflow-y-visible py-2 whitespace-nowrap \x6candscape-phone:\x6cine-clamp-2 \x6candscape-phone:\x77hitespace-normal"
+                                                              }
+                                                              style={
+                                                                {
+                                                                  opacity: "0",
+                                                                  "--marquee-duration": "9.925s",
+                                                                } as CSSProperties
+                                                              }
+                                                            >
                                                               <span className="home-prompt-track">
-                                                                <span><span className="inline-block">Try</span>{" "}<span className="inline-block">‘</span><span className="inline-block">How</span>{" "}<span className="inline-block">do</span>{" "}<span className="inline-block">I</span>{" "}<span className="inline-block">update</span>{" "}<span className="inline-block">my</span>{" "}<span className="inline-block">address</span>{" "}<span className="inline-block">with</span>{" "}<span className="inline-block">USPS</span><span className="inline-block">?</span><span className="inline-block">’</span></span>
-                                                                <span><span className="inline-block">Try</span>{" "}<span className="inline-block">‘</span><span className="inline-block">How</span>{" "}<span className="inline-block">do</span>{" "}<span className="inline-block">I</span>{" "}<span className="inline-block">update</span>{" "}<span className="inline-block">my</span>{" "}<span className="inline-block">address</span>{" "}<span className="inline-block">with</span>{" "}<span className="inline-block">USPS</span><span className="inline-block">?</span><span className="inline-block">’</span></span>
+                                                                <span>
+                                                                  <span className="inline-block">
+                                                                    Try
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    ‘
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    How
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    do
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    I
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    update
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    my
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    address
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    with
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    USPS
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ?
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ’
+                                                                  </span>
+                                                                </span>
+                                                                <span>
+                                                                  <span className="inline-block">
+                                                                    Try
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    ‘
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    How
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    do
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    I
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    update
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    my
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    address
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    with
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    USPS
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ?
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ’
+                                                                  </span>
+                                                                </span>
                                                               </span>
                                                             </span>
-                                                            <span className={"absolute \x69nset-x-0 -my-2 overflow-x-clip overflow-y-visible py-2 whitespace-nowrap \x6candscape-phone:\x6cine-clamp-2 \x6candscape-phone:\x77hitespace-normal"} style={{ opacity: "0", "--marquee-duration": "9.05s" } as CSSProperties}>
+                                                            <span
+                                                              className={
+                                                                "absolute \x69nset-x-0 -my-2 overflow-x-clip overflow-y-visible py-2 whitespace-nowrap \x6candscape-phone:\x6cine-clamp-2 \x6candscape-phone:\x77hitespace-normal"
+                                                              }
+                                                              style={
+                                                                {
+                                                                  opacity: "0",
+                                                                  "--marquee-duration": "9.05s",
+                                                                } as CSSProperties
+                                                              }
+                                                            >
                                                               <span className="home-prompt-track">
-                                                                <span><span className="inline-block">Try</span>{" "}<span className="inline-block">‘</span><span className="inline-block">How</span>{" "}<span className="inline-block">do</span>{" "}<span className="inline-block">I</span>{" "}<span className="inline-block">get</span>{" "}<span className="inline-block">a</span>{" "}<span className="inline-block">passport</span>{" "}<span className="inline-block">for</span>{" "}<span className="inline-block">my</span>{" "}<span className="inline-block">child</span><span className="inline-block">?</span><span className="inline-block">’</span></span>
-                                                                <span><span className="inline-block">Try</span>{" "}<span className="inline-block">‘</span><span className="inline-block">How</span>{" "}<span className="inline-block">do</span>{" "}<span className="inline-block">I</span>{" "}<span className="inline-block">get</span>{" "}<span className="inline-block">a</span>{" "}<span className="inline-block">passport</span>{" "}<span className="inline-block">for</span>{" "}<span className="inline-block">my</span>{" "}<span className="inline-block">child</span><span className="inline-block">?</span><span className="inline-block">’</span></span>
+                                                                <span>
+                                                                  <span className="inline-block">
+                                                                    Try
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    ‘
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    How
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    do
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    I
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    get
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    a
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    passport
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    for
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    my
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    child
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ?
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ’
+                                                                  </span>
+                                                                </span>
+                                                                <span>
+                                                                  <span className="inline-block">
+                                                                    Try
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    ‘
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    How
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    do
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    I
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    get
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    a
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    passport
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    for
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    my
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    child
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ?
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ’
+                                                                  </span>
+                                                                </span>
                                                               </span>
                                                             </span>
-                                                            <span className={"absolute \x69nset-x-0 -my-2 overflow-x-clip overflow-y-visible py-2 whitespace-nowrap \x6candscape-phone:\x6cine-clamp-2 \x6candscape-phone:\x77hitespace-normal"} style={{ opacity: "0", "--marquee-duration": "9.85s" } as CSSProperties}>
+                                                            <span
+                                                              className={
+                                                                "absolute \x69nset-x-0 -my-2 overflow-x-clip overflow-y-visible py-2 whitespace-nowrap \x6candscape-phone:\x6cine-clamp-2 \x6candscape-phone:\x77hitespace-normal"
+                                                              }
+                                                              style={
+                                                                {
+                                                                  opacity: "0",
+                                                                  "--marquee-duration": "9.85s",
+                                                                } as CSSProperties
+                                                              }
+                                                            >
                                                               <span className="home-prompt-track">
-                                                                <span><span className="inline-block">Try</span>{" "}<span className="inline-block">‘</span><span className="inline-block">Where</span>{" "}<span className="inline-block">can</span>{" "}<span className="inline-block">I</span>{" "}<span className="inline-block">enlist</span>{" "}<span className="inline-block">in</span>{" "}<span className="inline-block">the</span>{" "}<span className="inline-block">armed</span>{" "}<span className="inline-block">services</span><span className="inline-block">?</span><span className="inline-block">’</span></span>
-                                                                <span><span className="inline-block">Try</span>{" "}<span className="inline-block">‘</span><span className="inline-block">Where</span>{" "}<span className="inline-block">can</span>{" "}<span className="inline-block">I</span>{" "}<span className="inline-block">enlist</span>{" "}<span className="inline-block">in</span>{" "}<span className="inline-block">the</span>{" "}<span className="inline-block">armed</span>{" "}<span className="inline-block">services</span><span className="inline-block">?</span><span className="inline-block">’</span></span>
+                                                                <span>
+                                                                  <span className="inline-block">
+                                                                    Try
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    ‘
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    Where
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    can
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    I
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    enlist
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    in
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    the
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    armed
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    services
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ?
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ’
+                                                                  </span>
+                                                                </span>
+                                                                <span>
+                                                                  <span className="inline-block">
+                                                                    Try
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    ‘
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    Where
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    can
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    I
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    enlist
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    in
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    the
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    armed
+                                                                  </span>{" "}
+                                                                  <span className="inline-block">
+                                                                    services
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ?
+                                                                  </span>
+                                                                  <span className="inline-block">
+                                                                    ’
+                                                                  </span>
+                                                                </span>
                                                               </span>
                                                             </span>
                                                           </span>
                                                         </span>
                                                       </div>
-                                                      <div className={"flex min-h-9 shrink-0 items-center gap-1 \x6dax-md:\x72elative \x6dax-md:\x73elf-end \x6dax-md:\x74ransition-[\x6dargin-top,\x6dargin-right] \x6dax-md:\x64uration-250 \x6dax-md:\x65ase-drawer \x6dotion-reduce:\x74ransition-none \x6dax-md:\x6dt-0 \x6dax-md:\x6dr-0"}>
+                                                      <div
+                                                        className={
+                                                          "flex min-h-9 shrink-0 items-center gap-1 \x6dax-md:\x72elative \x6dax-md:\x73elf-end \x6dax-md:\x74ransition-[\x6dargin-top,\x6dargin-right] \x6dax-md:\x64uration-250 \x6dax-md:\x65ase-drawer \x6dotion-reduce:\x74ransition-none \x6dax-md:\x6dt-0 \x6dax-md:\x6dr-0"
+                                                        }
+                                                      >
                                                         <div className="flex shrink-0 items-center">
-                                                          <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 bg-transparent text-text-primary hover:bg-background-tertiary focus-visible:bg-background-tertiary active:text-text-disabled \x64isabled:\x62g-transparent disabled:text-text-disabled rounded-full p-0 \x64isabled:\x63ursor-not-allowed \x64isabled:\x68over:\x62g-transparent \x6dotion-reduce:\x74ransition-none size-10 min-w-10 mobile:size-12 mobile:min-w-12 gap-0"} type="button" tabIndex={0} aria-label="Upload PDF" id="base-ui-_r1r_c_">
+                                                          <button
+                                                            className={
+                                                              "inline-flex shrink-0 cursor-pointer items-center justify-center font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 bg-transparent text-text-primary hover:bg-background-tertiary focus-visible:bg-background-tertiary active:text-text-disabled \x64isabled:\x62g-transparent disabled:text-text-disabled rounded-full p-0 \x64isabled:\x63ursor-not-allowed \x64isabled:\x68over:\x62g-transparent \x6dotion-reduce:\x74ransition-none size-10 min-w-10 mobile:size-12 mobile:min-w-12 gap-0"
+                                                            }
+                                                            type="button"
+                                                            tabIndex={0}
+                                                            aria-label="Upload PDF"
+                                                            id="base-ui-_r1r_c_"
+                                                          >
                                                             <span className="flex size-5 shrink-0 items-center justify-center">
-                                                              <svg fill="none" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                                                <path d="M13 4V14C13 15.66 11.66 17 10 17C8.34 17 7 15.66 7 14V4C7 3.45 7.45 3 8 3C8.55 3 9 3.45 9 4V15H11V4C11 2.34 9.66 1 8 1C6.34 1 5 2.34 5 4V14C5 16.76 7.24 19 10 19C12.76 19 15 16.76 15 14V4" fill="currentColor" />
+                                                              <svg
+                                                                fill="none"
+                                                                height="20"
+                                                                viewBox="0 0 20 20"
+                                                                width="20"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                aria-hidden="true"
+                                                              >
+                                                                <path
+                                                                  d="M13 4V14C13 15.66 11.66 17 10 17C8.34 17 7 15.66 7 14V4C7 3.45 7.45 3 8 3C8.55 3 9 3.45 9 4V15H11V4C11 2.34 9.66 1 8 1C6.34 1 5 2.34 5 4V14C5 16.76 7.24 19 10 19C12.76 19 15 16.76 15 14V4"
+                                                                  fill="currentColor"
+                                                                />
                                                               </svg>
                                                             </span>
                                                           </button>
                                                         </div>
                                                         <div className="flex shrink-0 items-center">
-                                                          <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 bg-transparent text-text-primary hover:bg-background-tertiary focus-visible:bg-background-tertiary active:text-text-disabled \x64isabled:\x62g-transparent rounded-full p-0 \x64isabled:\x68over:\x62g-transparent \x6dotion-reduce:\x74ransition-none size-10 min-w-10 mobile:size-12 mobile:min-w-12 disabled:cursor-pointer disabled:text-primary"} type="button" tabIndex={0} aria-label="Voice input" id="base-ui-_r1r_f_">
-                                                            <svg fill="none" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                                              <path d="M10 11C11.66 11 13 9.66 13 8V4C13 2.34 11.66 1 10 1C8.34 1 7 2.34 7 4V8C7 9.66 8.34 11 10 11ZM9 4C9 3.45 9.45 3 10 3C10.55 3 11 3.45 11 4V8C11 8.55 10.55 9 10 9C9.45 9 9 8.55 9 8V4Z" fill="currentColor" />
-                                                              <path d="M11 14.92C14.39 14.43 17 11.52 17 8H15C15 10.76 12.76 13 10 13C7.24 13 5 10.76 5 8H3C3 11.53 5.61 14.43 9 14.92V17H6V19H14V17H11V14.92Z" fill="currentColor" />
+                                                          <button
+                                                            className={
+                                                              "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 bg-transparent text-text-primary hover:bg-background-tertiary focus-visible:bg-background-tertiary active:text-text-disabled \x64isabled:\x62g-transparent rounded-full p-0 \x64isabled:\x68over:\x62g-transparent \x6dotion-reduce:\x74ransition-none size-10 min-w-10 mobile:size-12 mobile:min-w-12 disabled:cursor-pointer disabled:text-primary"
+                                                            }
+                                                            type="button"
+                                                            tabIndex={0}
+                                                            aria-label="Voice input"
+                                                            id="base-ui-_r1r_f_"
+                                                          >
+                                                            <svg
+                                                              fill="none"
+                                                              height="20"
+                                                              viewBox="0 0 20 20"
+                                                              width="20"
+                                                              xmlns="http://www.w3.org/2000/svg"
+                                                              aria-hidden="true"
+                                                            >
+                                                              <path
+                                                                d="M10 11C11.66 11 13 9.66 13 8V4C13 2.34 11.66 1 10 1C8.34 1 7 2.34 7 4V8C7 9.66 8.34 11 10 11ZM9 4C9 3.45 9.45 3 10 3C10.55 3 11 3.45 11 4V8C11 8.55 10.55 9 10 9C9.45 9 9 8.55 9 8V4Z"
+                                                                fill="currentColor"
+                                                              />
+                                                              <path
+                                                                d="M11 14.92C14.39 14.43 17 11.52 17 8H15C15 10.76 12.76 13 10 13C7.24 13 5 10.76 5 8H3C3 11.53 5.61 14.43 9 14.92V17H6V19H14V17H11V14.92Z"
+                                                                fill="currentColor"
+                                                              />
                                                             </svg>
                                                           </button>
                                                         </div>
-                                                        <div className="shrink-0" style={{ opacity: "1", transform: "none" }}>
-                                                          <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 bg-blue-700 text-white \x73hadow-elevation-1 hover:bg-blue-800 focus-visible:bg-blue-700 active:bg-blue-700 \x61ctive:\x73hadow-none rounded-full p-0 \x61ctive:\x73cale-100 transition-[background-color,color,box-shadow] duration-200 ease-standard \x6dotion-reduce:\x74ransition-none \x73hadow-[\x30px_10px_40px_0px_rgba(\x30,\x30,\x30,\x30.\x308)] \x64isabled:\x63ursor-not-allowed disabled:bg-background-tertiary disabled:text-text-disabled \x64isabled:\x73hadow-none size-10 mobile:size-12"} type="submit" tabIndex={0} aria-label="Send message" aria-describedby="_r1r_6_-example">
-                                                            <span className="flex items-center justify-center" style={{ opacity: "1", transform: "none" }}>
-                                                              <svg fill="none" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                                                <path d="M10 3L8.59 4.41L13.17 9H3V11H13.17L8.59 15.59L10 17L17 10L10 3Z" fill="currentColor" />
+                                                        <div
+                                                          className="shrink-0"
+                                                          style={{
+                                                            opacity: "1",
+                                                            transform: "none",
+                                                          }}
+                                                        >
+                                                          <button
+                                                            className={
+                                                              "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 bg-blue-700 text-white \x73hadow-elevation-1 hover:bg-blue-800 focus-visible:bg-blue-700 active:bg-blue-700 \x61ctive:\x73hadow-none rounded-full p-0 \x61ctive:\x73cale-100 transition-[background-color,color,box-shadow] duration-200 ease-standard \x6dotion-reduce:\x74ransition-none \x73hadow-[\x30px_10px_40px_0px_rgba(\x30,\x30,\x30,\x30.\x308)] \x64isabled:\x63ursor-not-allowed disabled:bg-background-tertiary disabled:text-text-disabled \x64isabled:\x73hadow-none size-10 mobile:size-12"
+                                                            }
+                                                            type="submit"
+                                                            tabIndex={0}
+                                                            aria-label="Send message"
+                                                            aria-describedby="_r1r_6_-example"
+                                                          >
+                                                            <span
+                                                              className="flex items-center justify-center"
+                                                              style={{
+                                                                opacity: "1",
+                                                                transform: "none",
+                                                              }}
+                                                            >
+                                                              <svg
+                                                                fill="none"
+                                                                height="20"
+                                                                viewBox="0 0 20 20"
+                                                                width="20"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                aria-hidden="true"
+                                                              >
+                                                                <path
+                                                                  d="M10 3L8.59 4.41L13.17 9H3V11H13.17L8.59 15.59L10 17L17 10L10 3Z"
+                                                                  fill="currentColor"
+                                                                />
                                                               </svg>
                                                             </span>
                                                           </button>
@@ -483,9 +2509,21 @@ function Index() {
                                                       </div>
                                                     </div>
                                                   </div>
-                                                  <div className="grid transition-[grid-template-rows,margin-bottom] duration-300 ease-out-quint mobile:-ml-[var(--rail-start)] mobile:-mr-[var(--rail-end)] grid-rows-[0fr]" style={{ "--rail-start": "28px", "--rail-end": "11px" } as CSSProperties}>
+                                                  <div
+                                                    className="grid transition-[grid-template-rows,margin-bottom] duration-300 ease-out-quint mobile:-ml-[var(--rail-start)] mobile:-mr-[var(--rail-end)] grid-rows-[0fr]"
+                                                    style={
+                                                      {
+                                                        "--rail-start": "28px",
+                                                        "--rail-end": "11px",
+                                                      } as CSSProperties
+                                                    }
+                                                  >
                                                     <div className="-mx-2 overflow-hidden px-2 mobile:mx-0 mobile:px-0">
-                                                      <div className={"\x62order-border-tertiary transition-opacity duration-200 mt-3 \x62order-t pt-3 mobile:mx-1 opacity-0"} />
+                                                      <div
+                                                        className={
+                                                          "\x62order-border-tertiary transition-opacity duration-200 mt-3 \x62order-t pt-3 mobile:mx-1 opacity-0"
+                                                        }
+                                                      />
                                                     </div>
                                                   </div>
                                                 </div>
@@ -500,12 +2538,52 @@ function Index() {
                               </div>
                             </div>
                           </div>
-                          <div role="region" aria-roledescription="carousel" aria-label="Example questions" data-site-import-carousel-root="0">{carouselContent0}</div>
+                          <div
+                            role="region"
+                            aria-roledescription="carousel"
+                            aria-label="Example questions"
+                            data-site-import-carousel-root="0"
+                          >
+                            {carouselContent0}
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <div className={"relative z-20 mt-8 \x6dobile:\x61bsolute mobile:bottom-10 mobile:left-12 mobile:mt-0"} data-site-hero-enter="4">
-                      <a className={"group/fraud-launch inline-flex h-11 items-center gap-2 rounded-full bg-background-primary pr-3.5 pl-2.25 \x6futline-1 \x6futline-border-tertiary transition-[scale,outline-color] \x68over:\x6futline-border-secondary \x61ctive:\x6futline-border-tertiary type-body-m font-medium text-text-primary \x73hadow-elevation-1 duration-200 ease-[cubic-bezier(.22,1,.36,1)] \x61ctive:\x73cale-[\x30.\x397] \x6dotion-reduce:\x74ransition-none \x6dotion-reduce:\x61ctive:\x73cale-100 \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none"} href="/fraud"><span className="mr-1 rounded-full bg-text-primary px-2 py-1 type-body-s text-text-primary-invert">New</span>Report government fraud<svg className={"text-text-secondary transition-colors duration-200 \x67roup-hover/\x66raud-launch:\x74ext-text-primary \x6dotion-reduce:\x74ransition-none"} fill="none" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fillRule="evenodd" clipRule="evenodd" d="M8.35 3.29L15.06 10L8.35 16.71L6.94 15.29L12.23 10L6.94 4.71L8.35 3.29Z" fill="currentColor" /></svg></a>
+                    <div
+                      className={
+                        "relative z-20 mt-8 \x6dobile:\x61bsolute mobile:bottom-10 mobile:left-12 mobile:mt-0"
+                      }
+                      data-site-hero-enter="4"
+                    >
+                      <a
+                        className={
+                          "group/fraud-launch inline-flex h-11 items-center gap-2 rounded-full bg-background-primary pr-3.5 pl-2.25 \x6futline-1 \x6futline-border-tertiary transition-[scale,outline-color] \x68over:\x6futline-border-secondary \x61ctive:\x6futline-border-tertiary type-body-m font-medium text-text-primary \x73hadow-elevation-1 duration-200 ease-[cubic-bezier(.22,1,.36,1)] \x61ctive:\x73cale-[\x30.\x397] \x6dotion-reduce:\x74ransition-none \x6dotion-reduce:\x61ctive:\x73cale-100 \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none"
+                        }
+                        href="/fraud"
+                      >
+                        <span className="mr-1 rounded-full bg-text-primary px-2 py-1 type-body-s text-text-primary-invert">
+                          New
+                        </span>
+                        Report government fraud
+                        <svg
+                          className={
+                            "text-text-secondary transition-colors duration-200 \x67roup-hover/\x66raud-launch:\x74ext-text-primary \x6dotion-reduce:\x74ransition-none"
+                          }
+                          fill="none"
+                          height="16"
+                          viewBox="0 0 20 20"
+                          width="16"
+                          xmlns="http://www.w3.org/2000/svg"
+                          aria-hidden="true"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M8.35 3.29L15.06 10L8.35 16.71L6.94 15.29L12.23 10L6.94 4.71L8.35 3.29Z"
+                            fill="currentColor"
+                          />
+                        </svg>
+                      </a>
                     </div>
                   </section>
                 </div>
@@ -513,7 +2591,10 @@ function Index() {
                 <ImportedSection29000WebsitesInto />
                 <ImportedSectionMoreComingIn2027 />
               </main>
-              <ImportedFooter openFeedback={openFeedback} onOpenFeedback={() => setOpenFeedback(true)} />
+              <ImportedFooter
+                openFeedback={openFeedback}
+                onOpenFeedback={() => setOpenFeedback(true)}
+              />
             </div>
           </div>
           {/* Floating Bottom Chat Dock on Scroll */}
@@ -522,38 +2603,16 @@ function Index() {
               isScrolledDown
                 ? "bottom-4 sm:bottom-6 opacity-100 translate-y-0 pointer-events-auto"
                 : "bottom-0 opacity-0 translate-y-8 pointer-events-none"
-            } w-[calc(100vw-32px)] max-w-[676px]`}
+            } w-[calc(100vw-32px)] max-w-[540px]`}
             data-slot="ask-floating-dock"
           >
             <div className="relative flex w-full flex-col items-center">
-              {/* Privacy and How SI works badge */}
-              <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 mb-2 transition-opacity duration-200">
-                <a
-                  href="/privacy-policy"
-                  className="flex items-center gap-1 hover:text-black dark:hover:text-white transition-colors underline decoration-dotted underline-offset-2"
+              {/* Chat Input Capsule - Height increased, width decreased */}
+              <div className="relative w-full rounded-full shadow-2xl bg-white dark:bg-[#121622] border border-black/10 dark:border-white/10 ring-1 ring-black/5 dark:ring-white/5 p-1.5 sm:p-2 min-h-[56px] transition-colors">
+                <form
+                  onSubmit={handleDemoSubmit}
+                  className="flex items-center w-full gap-2 pl-4 pr-1 sm:pl-6 sm:pr-1.5 min-h-[44px]"
                 >
-                  <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                  Your privacy
-                </a>
-                <span>·</span>
-                <a
-                  href="/#about"
-                  className="flex items-center gap-1 hover:text-black dark:hover:text-white transition-colors underline decoration-dotted underline-offset-2"
-                >
-                  <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="9" />
-                    <line x1="12" y1="8" x2="12" y2="12" />
-                    <line x1="12" y1="16" x2="12.01" y2="16" />
-                  </svg>
-                  How SI works
-                </a>
-              </div>
-
-              {/* Chat Input Capsule */}
-              <div className="relative w-full rounded-full shadow-2xl bg-white dark:bg-[#121622] border border-black/10 dark:border-white/10 ring-1 ring-black/5 dark:ring-white/5 p-1.5 sm:p-2 transition-colors">
-                <form onSubmit={handleDemoSubmit} className="flex items-center w-full gap-2 pl-4 pr-1 sm:pl-6 sm:pr-1.5">
                   <input
                     type="text"
                     name="message"
@@ -564,15 +2623,26 @@ function Index() {
                     <button
                       type="button"
                       onClick={() => {
-                        const input = document.getElementById("hero-pdf-file-input") as HTMLInputElement | null;
+                        const input = document.getElementById(
+                          "hero-pdf-file-input",
+                        ) as HTMLInputElement | null;
                         input?.click();
                       }}
                       className="inline-flex size-8 sm:size-9 items-center justify-center rounded-full text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
                       aria-label="Upload PDF"
                       title="Upload PDF"
                     >
-                      <svg fill="none" height="18" viewBox="0 0 20 20" width="18" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M13 4V14C13 15.66 11.66 17 10 17C8.34 17 7 15.66 7 14V4C7 3.45 7.45 3 8 3C8.55 3 9 3.45 9 4V15H11V4C11 2.34 9.66 1 8 1C6.34 1 5 2.34 5 4V14C5 16.76 7.24 19 10 19C12.76 19 15 16.76 15 14V4" fill="currentColor" />
+                      <svg
+                        fill="none"
+                        height="18"
+                        viewBox="0 0 20 20"
+                        width="18"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M13 4V14C13 15.66 11.66 17 10 17C8.34 17 7 15.66 7 14V4C7 3.45 7.45 3 8 3C8.55 3 9 3.45 9 4V15H11V4C11 2.34 9.66 1 8 1C6.34 1 5 2.34 5 4V14C5 16.76 7.24 19 10 19C12.76 19 15 16.76 15 14V4"
+                          fill="currentColor"
+                        />
                       </svg>
                     </button>
                     <button
@@ -581,9 +2651,21 @@ function Index() {
                       aria-label="Voice input"
                       title="Voice input"
                     >
-                      <svg fill="none" height="18" viewBox="0 0 20 20" width="18" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M10 11C11.66 11 13 9.66 13 8V4C13 2.34 11.66 1 10 1C8.34 1 7 2.34 7 4V8C7 9.66 8.34 11 10 11ZM9 4C9 3.45 9.45 3 10 3C10.55 3 11 3.45 11 4V8C11 8.55 10.55 9 10 9C9.45 9 9 8.55 9 8V4Z" fill="currentColor" />
-                        <path d="M11 14.92C14.39 14.43 17 11.52 17 8H15C15 10.76 12.76 13 10 13C7.24 13 5 10.76 5 8H3C3 11.53 5.61 14.43 9 14.92V17H6V19H14V17H11V14.92Z" fill="currentColor" />
+                      <svg
+                        fill="none"
+                        height="18"
+                        viewBox="0 0 20 20"
+                        width="18"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M10 11C11.66 11 13 9.66 13 8V4C13 2.34 11.66 1 10 1C8.34 1 7 2.34 7 4V8C7 9.66 8.34 11 10 11ZM9 4C9 3.45 9.45 3 10 3C10.55 3 11 3.45 11 4V8C11 8.55 10.55 9 10 9C9.45 9 9 8.55 9 8V4Z"
+                          fill="currentColor"
+                        />
+                        <path
+                          d="M11 14.92C14.39 14.43 17 11.52 17 8H15C15 10.76 12.76 13 10 13C7.24 13 5 10.76 5 8H3C3 11.53 5.61 14.43 9 14.92V17H6V19H14V17H11V14.92Z"
+                          fill="currentColor"
+                        />
                       </svg>
                     </button>
                     <button
@@ -591,47 +2673,198 @@ function Index() {
                       className="inline-flex size-8 sm:size-9 items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700 active:scale-95 text-white shadow-md transition-all ml-1 cursor-pointer"
                       aria-label="Send message"
                     >
-                      <svg fill="none" height="18" viewBox="0 0 20 20" width="18" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M10 3L8.59 4.41L13.17 9H3V11H13.17L8.59 15.59L10 17L17 10L10 3Z" fill="currentColor" />
+                      <svg
+                        fill="none"
+                        height="18"
+                        viewBox="0 0 20 20"
+                        width="18"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M10 3L8.59 4.41L13.17 9H3V11H13.17L8.59 15.59L10 17L17 10L10 3Z"
+                          fill="currentColor"
+                        />
                       </svg>
                     </button>
                   </div>
                 </form>
               </div>
+
+              {/* Privacy and How SI works badge - Placed BELOW the chat input */}
+              <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mt-2.5 transition-opacity duration-200">
+                <a
+                  href="/privacy-policy"
+                  className="flex items-center gap-1 hover:text-black dark:hover:text-white transition-colors underline decoration-dotted underline-offset-2"
+                >
+                  <svg
+                    className="size-3.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                  Your privacy
+                </a>
+                <span>·</span>
+                <a
+                  href="/#about"
+                  className="flex items-center gap-1 hover:text-black dark:hover:text-white transition-colors underline decoration-dotted underline-offset-2"
+                >
+                  <svg
+                    className="size-3.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <circle cx="12" cy="12" r="9" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  How SI works
+                </a>
+              </div>
             </div>
           </div>
-          <input id="hero-pdf-file-input" aria-label="Upload PDF" accept="application/pdf,.pdf" hidden type="file" />
+          <input
+            id="hero-pdf-file-input"
+            aria-label="Upload PDF"
+            accept="application/pdf,.pdf"
+            hidden
+            type="file"
+          />
         </div>
-        <section aria-label="Notifications alt+T" tabIndex={-1} aria-live="polite" aria-relevant="additions text" aria-atomic="false" />
+        <section
+          aria-label="Notifications alt+T"
+          tabIndex={-1}
+          aria-live="polite"
+          aria-relevant="additions text"
+          aria-atomic="false"
+        />
       </div>
-      <div className={"fixed \x6futline-none top-[var(--dialog-viewport-center,50%)] left-1/2 z-modal flex max-h-[min(calc(100vh-112px),calc(var(--dialog-viewport-height,100vh)-32px))] max-w-[calc(100vw-32px)] \x2dtranslate-x-1/\x32 \x2dtranslate-y-1/\x32 flex-col overflow-hidden rounded-40 \x73hadow-widget bg-background-primary \x62ackdrop-blur-[\x30px] transition-[opacity,scale] duration-200 ease-out \x64ata-starting-style:\x73cale-[\x30.\x397] \x64ata-starting-style:\x6fpacity-0 \x64ata-ending-style:\x73cale-[\x30.\x396] \x64ata-ending-style:\x6fpacity-0 \x64ata-ending-style:\x64uration-280 \x64ata-ending-style:\x65ase-in w-[432px]"} style={{ "--nested-dialogs": "0", "--sheet-close-size": "36px", "--dialog-viewport-center": "432px", "--dialog-viewport-height": "864px", display: openGovDialog ? undefined : ("none") } as CSSProperties} data-open="" id="_r1r_0_" role="dialog" tabIndex={-1} data-sheet-surface="true" aria-labelledby="base-ui-_r1r_22_" hidden={openGovDialog ? undefined : (true)} data-site-import-observed-popup="">
-        <h2 className={"type-body-m font-medium text-foreground \x73r-only"} id="base-ui-_r1r_22_" data-slot="sheet-title">U.S. Government Websites</h2>
+      <div
+        className={
+          "fixed \x6futline-none top-[var(--dialog-viewport-center,50%)] left-1/2 z-modal flex max-h-[min(calc(100vh-112px),calc(var(--dialog-viewport-height,100vh)-32px))] max-w-[calc(100vw-32px)] \x2dtranslate-x-1/\x32 \x2dtranslate-y-1/\x32 flex-col overflow-hidden rounded-40 \x73hadow-widget bg-background-primary \x62ackdrop-blur-[\x30px] transition-[opacity,scale] duration-200 ease-out \x64ata-starting-style:\x73cale-[\x30.\x397] \x64ata-starting-style:\x6fpacity-0 \x64ata-ending-style:\x73cale-[\x30.\x396] \x64ata-ending-style:\x6fpacity-0 \x64ata-ending-style:\x64uration-280 \x64ata-ending-style:\x65ase-in w-[432px]"
+        }
+        style={
+          {
+            "--nested-dialogs": "0",
+            "--sheet-close-size": "36px",
+            "--dialog-viewport-center": "432px",
+            "--dialog-viewport-height": "864px",
+            display: openGovDialog ? undefined : "none",
+          } as CSSProperties
+        }
+        data-open=""
+        id="_r1r_0_"
+        role="dialog"
+        tabIndex={-1}
+        data-sheet-surface="true"
+        aria-labelledby="base-ui-_r1r_22_"
+        hidden={openGovDialog ? undefined : true}
+        data-site-import-observed-popup=""
+      >
+        <h2
+          className={"type-body-m font-medium text-foreground \x73r-only"}
+          id="base-ui-_r1r_22_"
+          data-slot="sheet-title"
+        >
+          U.S. Government Websites
+        </h2>
         <div className="flex w-full shrink-0 items-center gap-3 p-4">
           <div className="invisible flex items-center gap-1" aria-hidden="true" inert>
             <div className="flex items-center gap-1">
-              <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 p-0 bg-background-tertiary hover:bg-background-secondary active:bg-background-tertiary disabled:bg-background-tertiary disabled:text-text-disabled size-[var(--sheet-close-size,36px)] rounded-full text-foreground \x62ackdrop-blur-frost"} type="button" tabIndex={0} data-slot="sheet-close" lang="en" aria-label="Close" onClick={event => { event.preventDefault(); event.stopPropagation(); setOpenGovDialog(false); }}>
-                <svg fill="none" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M16 5.4L14.6 4L10 8.6L5.4 4L4 5.4L8.6 10L4 14.6L5.4 16L10 11.4L14.6 16L16 14.6L11.4 10L16 5.4Z" fill="currentColor" />
+              <button
+                className={
+                  "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 p-0 bg-background-tertiary hover:bg-background-secondary active:bg-background-tertiary disabled:bg-background-tertiary disabled:text-text-disabled size-[var(--sheet-close-size,36px)] rounded-full text-foreground \x62ackdrop-blur-frost"
+                }
+                type="button"
+                tabIndex={0}
+                data-slot="sheet-close"
+                lang="en"
+                aria-label="Close"
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  setOpenGovDialog(false);
+                }}
+              >
+                <svg
+                  fill="none"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  width="20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M16 5.4L14.6 4L10 8.6L5.4 4L4 5.4L8.6 10L4 14.6L5.4 16L10 11.4L14.6 16L16 14.6L11.4 10L16 5.4Z"
+                    fill="currentColor"
+                  />
                 </svg>
               </button>
             </div>
           </div>
-          <span className="flex-1 type-label-m-emphasis text-primary text-center">U.S. Government Websites</span>
+          <span className="flex-1 type-label-m-emphasis text-primary text-center">
+            U.S. Government Websites
+          </span>
           <div className="flex items-center gap-1">
-            <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 p-0 bg-background-tertiary hover:bg-background-secondary active:bg-background-tertiary disabled:bg-background-tertiary disabled:text-text-disabled size-[var(--sheet-close-size,36px)] rounded-full text-foreground \x62ackdrop-blur-frost"} type="button" tabIndex={0} data-slot="sheet-close" lang="en" aria-label="Close" onClick={event => { event.preventDefault(); event.stopPropagation(); setOpenGovDialog(false); }}>
-              <svg fill="none" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
-                <path d="M16 5.4L14.6 4L10 8.6L5.4 4L4 5.4L8.6 10L4 14.6L5.4 16L10 11.4L14.6 16L16 14.6L11.4 10L16 5.4Z" fill="currentColor" />
+            <button
+              className={
+                "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 p-0 bg-background-tertiary hover:bg-background-secondary active:bg-background-tertiary disabled:bg-background-tertiary disabled:text-text-disabled size-[var(--sheet-close-size,36px)] rounded-full text-foreground \x62ackdrop-blur-frost"
+              }
+              type="button"
+              tabIndex={0}
+              data-slot="sheet-close"
+              lang="en"
+              aria-label="Close"
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                setOpenGovDialog(false);
+              }}
+            >
+              <svg
+                fill="none"
+                height="20"
+                viewBox="0 0 20 20"
+                width="20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M16 5.4L14.6 4L10 8.6L5.4 4L4 5.4L8.6 10L4 14.6L5.4 16L10 11.4L14.6 16L16 14.6L11.4 10L16 5.4Z"
+                  fill="currentColor"
+                />
               </svg>
             </button>
           </div>
         </div>
         <div className="relative flex min-h-0 flex-col flex-1">
-          <div className={"min-h-0 flex-1 overflow-y-auto \x6fverscroll-contain \x66ocus-visible:\x73hadow-[\x69nset_0_0_0_2px_#\x66ff,\x69nset_0_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none flex flex-col gap-6 [scrollbar-width:none] px-6 pt-4 pb-[calc(2.5rem+var(--sheet-bottom-overlap,0px))] mobile:px-10 md:pt-2"}>
+          <div
+            className={
+              "min-h-0 flex-1 overflow-y-auto \x6fverscroll-contain \x66ocus-visible:\x73hadow-[\x69nset_0_0_0_2px_#\x66ff,\x69nset_0_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none flex flex-col gap-6 [scrollbar-width:none] px-6 pt-4 pb-[calc(2.5rem+var(--sheet-bottom-overlap,0px))] mobile:px-10 md:pt-2"
+            }
+          >
             <div className="flex flex-col">
               <div className="flex flex-col items-start gap-2">
                 <span className="flex shrink-0 items-center text-primary">
-                  <svg fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path d="M12 5.028L16.896 7.2H7.104L12 5.028ZM12 2.4L1.2 7.2V9.6H22.8V7.2L12 2.4Z" fill="currentColor" />
+                  <svg
+                    fill="none"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M12 5.028L16.896 7.2H7.104L12 5.028ZM12 2.4L1.2 7.2V9.6H22.8V7.2L12 2.4Z"
+                      fill="currentColor"
+                    />
                     <path d="M7.2 10.8H4.8V18H7.2V10.8Z" fill="currentColor" />
                     <path d="M13.2 10.8H10.8V18H13.2V10.8Z" fill="currentColor" />
                     <path d="M19.2 10.8H16.8V18H19.2V10.8Z" fill="currentColor" />
@@ -640,7 +2873,9 @@ function Index() {
                 </span>
                 <h3 className="type-body-m text-primary">Official websites use .gov</h3>
               </div>
-              <p className="type-body-m text-secondary pr-4">A .gov website belongs to an official government organization in the United States.</p>
+              <p className="type-body-m text-secondary pr-4">
+                A .gov website belongs to an official government organization in the United States.
+              </p>
             </div>
             <div className="relative h-0 w-full" aria-hidden="true">
               <div className={"absolute \x69nset-x-0 bottom-0 h-px bg-border-tertiary"} />
@@ -648,18 +2883,50 @@ function Index() {
             <div className="flex flex-col">
               <div className="flex flex-col items-start gap-2">
                 <span className="flex shrink-0 items-center text-primary">
-                  <svg fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path d="M18.0001 8.40007H16.8001V6.00007C16.8001 3.34807 14.6521 1.20007 12.0001 1.20007C9.3481 1.20007 7.2001 3.34807 7.2001 6.00007V8.40007H6.0001C4.6801 8.40007 3.6001 9.48007 3.6001 10.8001V20.4001C3.6001 21.7201 4.6801 22.8001 6.0001 22.8001H18.0001C19.3201 22.8001 20.4001 21.7201 20.4001 20.4001V10.8001C20.4001 9.48007 19.3201 8.40007 18.0001 8.40007ZM9.6001 6.00007C9.6001 4.68007 10.6801 3.60007 12.0001 3.60007C13.3201 3.60007 14.4001 4.68007 14.4001 6.00007V8.40007H9.6001V6.00007ZM18.0001 20.4001H6.0001V10.8001H18.0001V20.4001Z" fill="currentColor" />
-                    <path d="M13.2001 13.2001H10.8001V18.0001H13.2001V13.2001Z" fill="currentColor" />
+                  <svg
+                    fill="none"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M18.0001 8.40007H16.8001V6.00007C16.8001 3.34807 14.6521 1.20007 12.0001 1.20007C9.3481 1.20007 7.2001 3.34807 7.2001 6.00007V8.40007H6.0001C4.6801 8.40007 3.6001 9.48007 3.6001 10.8001V20.4001C3.6001 21.7201 4.6801 22.8001 6.0001 22.8001H18.0001C19.3201 22.8001 20.4001 21.7201 20.4001 20.4001V10.8001C20.4001 9.48007 19.3201 8.40007 18.0001 8.40007ZM9.6001 6.00007C9.6001 4.68007 10.6801 3.60007 12.0001 3.60007C13.3201 3.60007 14.4001 4.68007 14.4001 6.00007V8.40007H9.6001V6.00007ZM18.0001 20.4001H6.0001V10.8001H18.0001V20.4001Z"
+                      fill="currentColor"
+                    />
+                    <path
+                      d="M13.2001 13.2001H10.8001V18.0001H13.2001V13.2001Z"
+                      fill="currentColor"
+                    />
                   </svg>
                 </span>
                 <h3 className="type-body-m text-primary">Secure .gov websites use HTTPS</h3>
               </div>
-              <p className="type-body-m text-secondary pr-4">A lock or https:// means you’ve safely connected to the .gov website. Share sensitive information only on official, secure websites.</p>
+              <p className="type-body-m text-secondary pr-4">
+                A lock or https:// means you’ve safely connected to the .gov website. Share
+                sensitive information only on official, secure websites.
+              </p>
             </div>
           </div>
-          <div className={"pointer-events-none absolute \x69nset-x-0 top-0 \x62g-linear-to-b \x66rom-background-primary \x74o-background-primary/\x30 transition-[opacity,visibility] duration-200 ease-out \x6dotion-reduce:\x74ransition-none invisible opacity-0 h-8 \x62ackdrop-blur-none"} style={{ maskImage: "linear-gradient(black, transparent)" } as CSSProperties} aria-hidden="true" data-slot="scroll-fade-mask" data-side="top" />
-          <div className={"pointer-events-none absolute \x69nset-x-0 bottom-0 \x62g-linear-to-t \x66rom-background-primary \x74o-background-primary/\x30 transition-[opacity,visibility] duration-200 ease-out \x6dotion-reduce:\x74ransition-none invisible opacity-0 h-8 \x62ackdrop-blur-none"} style={{ maskImage: "linear-gradient(to top, black, transparent)" } as CSSProperties} aria-hidden="true" data-slot="scroll-fade-mask" data-side="bottom" />
+          <div
+            className={
+              "pointer-events-none absolute \x69nset-x-0 top-0 \x62g-linear-to-b \x66rom-background-primary \x74o-background-primary/\x30 transition-[opacity,visibility] duration-200 ease-out \x6dotion-reduce:\x74ransition-none invisible opacity-0 h-8 \x62ackdrop-blur-none"
+            }
+            style={{ maskImage: "linear-gradient(black, transparent)" } as CSSProperties}
+            aria-hidden="true"
+            data-slot="scroll-fade-mask"
+            data-side="top"
+          />
+          <div
+            className={
+              "pointer-events-none absolute \x69nset-x-0 bottom-0 \x62g-linear-to-t \x66rom-background-primary \x74o-background-primary/\x30 transition-[opacity,visibility] duration-200 ease-out \x6dotion-reduce:\x74ransition-none invisible opacity-0 h-8 \x62ackdrop-blur-none"
+            }
+            style={{ maskImage: "linear-gradient(to top, black, transparent)" } as CSSProperties}
+            aria-hidden="true"
+            data-slot="scroll-fade-mask"
+            data-side="bottom"
+          />
         </div>
       </div>
       <SiteMenuSheet
@@ -668,51 +2935,190 @@ function Index() {
         onOpenFeedback={() => setOpenFeedback(true)}
       />
 
-      <div className={"fixed top-[var(--dialog-viewport-center,50%)] left-1/2 z-modal flex max-h-[min(calc(100vh-112px),calc(var(--dialog-viewport-height,100vh)-32px))] max-w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 w-[min(432px,calc(100vw-32px))] flex-col overflow-hidden rounded-24 bg-background-primary shadow-widget p-6"} style={{ display: openFeedback ? undefined : ("none") } as CSSProperties} role="dialog" aria-modal="true" tabIndex={-1} aria-labelledby="imported-feedback-title" hidden={openFeedback ? undefined : (true)} data-site-import-reconstructed-popup="">
+      <div
+        className={
+          "fixed top-[var(--dialog-viewport-center,50%)] left-1/2 z-modal flex max-h-[min(calc(100vh-112px),calc(var(--dialog-viewport-height,100vh)-32px))] max-w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 w-[min(432px,calc(100vw-32px))] flex-col overflow-hidden rounded-24 bg-background-primary shadow-widget p-6"
+        }
+        style={{ display: openFeedback ? undefined : "none" } as CSSProperties}
+        role="dialog"
+        aria-modal="true"
+        tabIndex={-1}
+        aria-labelledby="imported-feedback-title"
+        hidden={openFeedback ? undefined : true}
+        data-site-import-reconstructed-popup=""
+      >
         <div className="relative mb-5 flex items-center justify-center">
-          <h2 className={"type-label-m-emphasis text-primary"} id="imported-feedback-title">Submit feedback</h2>
-          <button className={"absolute right-[-8px] inline-flex size-9 cursor-pointer items-center justify-center rounded-full bg-background-tertiary text-foreground hover:bg-background-secondary"} type="button" aria-label="Close" onClick={event => { event.preventDefault(); event.stopPropagation(); setOpenFeedback(false); }}>
-            <svg fill="none" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M16 5.4L14.6 4L10 8.6L5.4 4L4 5.4L8.6 10L4 14.6L5.4 16L10 11.4L14.6 16L16 14.6L11.4 10L16 5.4Z" fill="currentColor" /></svg>
+          <h2 className={"type-label-m-emphasis text-primary"} id="imported-feedback-title">
+            Submit feedback
+          </h2>
+          <button
+            className={
+              "absolute right-[-8px] inline-flex size-9 cursor-pointer items-center justify-center rounded-full bg-background-tertiary text-foreground hover:bg-background-secondary"
+            }
+            type="button"
+            aria-label="Close"
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              setOpenFeedback(false);
+            }}
+          >
+            <svg
+              fill="none"
+              height="20"
+              viewBox="0 0 20 20"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                d="M16 5.4L14.6 4L10 8.6L5.4 4L4 5.4L8.6 10L4 14.6L5.4 16L10 11.4L14.6 16L16 14.6L11.4 10L16 5.4Z"
+                fill="currentColor"
+              />
+            </svg>
           </button>
         </div>
-        <textarea className={"mb-4 min-h-[136px] w-full resize-none rounded-12 bg-background-primary px-4 py-3 type-body-m text-primary outline-1 outline-border-tertiary placeholder:text-text-disabled"} placeholder="Add details" aria-label="Feedback details" />
-        <button disabled className={"mb-3 h-11 w-full cursor-not-allowed rounded-40 bg-background-tertiary type-body-m font-medium text-text-disabled"} type="button">Submit</button>
-        <p className={"text-center text-[0.875rem] text-secondary"}>This form is for website feedback only. We can&apos;t respond to personal questions or requests for customer support.</p>
+        <textarea
+          className={
+            "mb-4 min-h-[136px] w-full resize-none rounded-12 bg-background-primary px-4 py-3 type-body-m text-primary outline-1 outline-border-tertiary placeholder:text-text-disabled"
+          }
+          placeholder="Add details"
+          aria-label="Feedback details"
+        />
+        <button
+          disabled
+          className={
+            "mb-3 h-11 w-full cursor-not-allowed rounded-40 bg-background-tertiary type-body-m font-medium text-text-disabled"
+          }
+          type="button"
+        >
+          Submit
+        </button>
+        <p className={"text-center text-[0.875rem] text-secondary"}>
+          This form is for website feedback only. We can&apos;t respond to personal questions or
+          requests for customer support.
+        </p>
       </div>
     </>
   );
 }
 
-function ImportedSectionUSGovernmentWebsites({ openGovDialog, onOpenGov }: { openGovDialog: boolean; onOpenGov: () => void }) {
+function ImportedSectionUSGovernmentWebsites({
+  openGovDialog,
+  onOpenGov,
+}: {
+  openGovDialog: boolean;
+  onOpenGov: () => void;
+}) {
   return (
     <section className="w-full" aria-label="U.S. Government Websites" data-slot="gov-banner">
-      <div className="mx-auto flex min-h-10 py-3 max-w-site items-center justify-center gap-2 page-gutter" data-site-import-desktop-variant="">
-        <button className={"group flex cursor-pointer items-center gap-1.5 rounded-full \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none"} type="button" tabIndex={0} id="base-ui-_r1r_5g_" aria-haspopup="dialog" aria-expanded={openGovDialog} data-slot="sheet-trigger" onClick={event => { event.preventDefault(); event.stopPropagation(); onOpenGov(); }}>
+      <div
+        className="mx-auto flex min-h-10 py-3 max-w-site items-center justify-center gap-2 page-gutter"
+        data-site-import-desktop-variant=""
+      >
+        <button
+          className={
+            "group flex cursor-pointer items-center gap-1.5 rounded-full \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none"
+          }
+          type="button"
+          tabIndex={0}
+          id="base-ui-_r1r_5g_"
+          aria-haspopup="dialog"
+          aria-expanded={openGovDialog}
+          data-slot="sheet-trigger"
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            onOpenGov();
+          }}
+        >
           <span className="flex items-center gap-1">
             <span className="flex items-center pt-px">
-              <span className={"type-label-s flex h-2.5 items-end text-secondary transition-colors duration-200 \x67roup-hover:\x74ext-primary"}>An official website of the United States government</span>
+              <span
+                className={
+                  "type-label-s flex h-2.5 items-end text-secondary transition-colors duration-200 \x67roup-hover:\x74ext-primary"
+                }
+              >
+                An official website of the United States government
+              </span>
             </span>
-            <span className={"flex size-4 shrink-0 items-center justify-center text-tertiary transition-colors duration-200 \x67roup-hover:\x74ext-primary"}>
-              <svg fill="none" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <span
+              className={
+                "flex size-4 shrink-0 items-center justify-center text-tertiary transition-colors duration-200 \x67roup-hover:\x74ext-primary"
+              }
+            >
+              <svg
+                fill="none"
+                height="16"
+                viewBox="0 0 20 20"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
                 <path d="M11 15H9V9H11V15Z" fill="currentColor" />
-                <path d="M11.2 6.2C11.2 6.86 10.9 7.4 10 7.4C9.1 7.4 8.8 6.86 8.8 6.2C8.8 5.54 9.1 5 10 5C10.9 5 11.2 5.54 11.2 6.2Z" fill="currentColor" />
-                <path fillRule="evenodd" clipRule="evenodd" d="M10 1C5 1 1 5 1 10C1 15 5 19 10 19C15 19 19 15 19 10C19 5 15 1 10 1ZM10 3C13.9 3 17 6.1 17 10C17 13.9 13.9 17 10 17C6.1 17 3 13.9 3 10C3 6.1 6.1 3 10 3Z" fill="currentColor" />
+                <path
+                  d="M11.2 6.2C11.2 6.86 10.9 7.4 10 7.4C9.1 7.4 8.8 6.86 8.8 6.2C8.8 5.54 9.1 5 10 5C10.9 5 11.2 5.54 11.2 6.2Z"
+                  fill="currentColor"
+                />
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M10 1C5 1 1 5 1 10C1 15 5 19 10 19C15 19 19 15 19 10C19 5 15 1 10 1ZM10 3C13.9 3 17 6.1 17 10C17 13.9 13.9 17 10 17C6.1 17 3 13.9 3 10C3 6.1 6.1 3 10 3Z"
+                  fill="currentColor"
+                />
               </svg>
             </span>
           </span>
         </button>
       </div>
-      <div className="mx-auto flex min-h-10 py-3 max-w-site items-center justify-center gap-2 page-gutter" style={{ "--site-import-responsive-display": "flex" } as CSSProperties} data-site-import-mobile-variant="">
-        <button className={"group flex cursor-pointer items-center gap-1.5 rounded-full \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none"} type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed">
+      <div
+        className="mx-auto flex min-h-10 py-3 max-w-site items-center justify-center gap-2 page-gutter"
+        style={{ "--site-import-responsive-display": "flex" } as CSSProperties}
+        data-site-import-mobile-variant=""
+      >
+        <button
+          className={
+            "group flex cursor-pointer items-center gap-1.5 rounded-full \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none"
+          }
+          type="button"
+          aria-haspopup="dialog"
+          aria-expanded="false"
+          data-state="closed"
+        >
           <span className="flex items-center gap-1">
             <span className="flex items-center pt-px">
-              <span className={"type-label-s flex h-2.5 items-end text-secondary transition-colors duration-200 \x67roup-hover:\x74ext-primary"}>An official website of the United States government</span>
+              <span
+                className={
+                  "type-label-s flex h-2.5 items-end text-secondary transition-colors duration-200 \x67roup-hover:\x74ext-primary"
+                }
+              >
+                An official website of the United States government
+              </span>
             </span>
-            <span className={"flex size-4 shrink-0 items-center justify-center text-tertiary transition-colors duration-200 \x67roup-hover:\x74ext-primary"}>
-              <svg fill="none" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <span
+              className={
+                "flex size-4 shrink-0 items-center justify-center text-tertiary transition-colors duration-200 \x67roup-hover:\x74ext-primary"
+              }
+            >
+              <svg
+                fill="none"
+                height="16"
+                viewBox="0 0 20 20"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
                 <path d="M11 15H9V9H11V15Z" fill="currentColor" />
-                <path d="M11.2 6.2C11.2 6.86 10.9 7.4 10 7.4C9.1 7.4 8.8 6.86 8.8 6.2C8.8 5.54 9.1 5 10 5C10.9 5 11.2 5.54 11.2 6.2Z" fill="currentColor" />
-                <path fillRule="evenodd" clipRule="evenodd" d="M10 1C5 1 1 5 1 10C1 15 5 19 10 19C15 19 19 15 19 10C19 5 15 1 10 1ZM10 3C13.9 3 17 6.1 17 10C17 13.9 13.9 17 10 17C6.1 17 3 13.9 3 10C3 6.1 6.1 3 10 3Z" fill="currentColor" />
+                <path
+                  d="M11.2 6.2C11.2 6.86 10.9 7.4 10 7.4C9.1 7.4 8.8 6.86 8.8 6.2C8.8 5.54 9.1 5 10 5C10.9 5 11.2 5.54 11.2 6.2Z"
+                  fill="currentColor"
+                />
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M10 1C5 1 1 5 1 10C1 15 5 19 10 19C15 19 19 15 19 10C19 5 15 1 10 1ZM10 3C13.9 3 17 6.1 17 10C17 13.9 13.9 17 10 17C6.1 17 3 13.9 3 10C3 6.1 6.1 3 10 3Z"
+                  fill="currentColor"
+                />
               </svg>
             </span>
           </span>
@@ -731,107 +3137,266 @@ function ImportedSection() {
   };
 
   return (
-    <section className="site-container site-grid @container max-mobile:[--site-grid-margin:48px] py-16 md:py-28" id="about">
-      <div className="home-manifesto col-span-full justify-self-center text-center text-[#000c1f] dark:text-white font-serif tracking-tight text-[1.4rem] leading-[1.3] sm:text-[2rem] sm:leading-[1.2] md:text-[3.25rem] md:leading-[1.12] lg:text-[4.25rem] lg:leading-[1.08] max-w-[340px] sm:max-w-2xl md:max-w-4xl lg:max-w-5xl mx-auto" lang="en">
+    <section
+      className="site-container site-grid @container max-mobile:[--site-grid-margin:48px] py-16 md:py-24"
+      id="about"
+    >
+      <div
+        className="home-manifesto col-span-full justify-self-center text-center text-[#000c1f] dark:text-white font-serif tracking-tight text-[1.6rem] leading-[1.3] sm:text-[2.25rem] sm:leading-[1.25] md:text-[3rem] md:leading-[1.2] lg:text-[3.5rem] lg:leading-[1.18] max-w-[960px] mx-auto px-4"
+        lang="en"
+      >
         <p className="sr-only">
-          America.gov uses SI to get simple answers only from official government sources. It’s free to use, never includes ads, and keeps your privacy protected.
+          America.gov uses SI to get simple answers only from official government sources. It’s free
+          to use, never includes ads, and keeps your privacy protected.
         </p>
 
         {/* Line 1: America.gov [→] uses SI */}
-        <div className="mb-2 sm:mb-4">
-          <span className="inline-block transition-opacity duration-300">America.gov</span>{" "}
-          <span className="inline-flex align-middle mx-1.5 md:mx-3" data-slot="manifesto-chip">
-            <a
-              href="/chat"
-              className="inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700 active:scale-95 text-white size-7 sm:size-8 md:size-14 lg:size-16 shadow-md transition-transform duration-200"
-              aria-label="Open chat"
-              title="Open chat"
+        <div className="flex flex-wrap items-center justify-center gap-x-2 sm:gap-x-3 mb-2 sm:mb-4">
+          <span className="inline-block">America.gov</span>
+          <a
+            href="/chat"
+            className="inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#1853d4] hover:bg-[#1242b0] active:scale-95 text-white size-8 sm:size-11 md:size-14 shadow-md transition-transform duration-200"
+            aria-label="Open chat"
+            title="Open chat"
+          >
+            <svg
+              className="size-4 sm:size-5 md:size-7"
+              fill="none"
+              height="20"
+              viewBox="0 0 20 20"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
             >
-              <svg className="size-3.5 sm:size-4 md:size-7 lg:size-8" fill="none" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M10 3L8.59 4.41L13.17 9H3V11H13.17L8.59 15.59L10 17L17 10L10 3Z" fill="currentColor" />
-              </svg>
-            </a>
-          </span>{" "}
-          <span className="inline-block transition-opacity duration-300">uses SI</span>
+              <path
+                d="M10 3L8.59 4.41L13.17 9H3V11H13.17L8.59 15.59L10 17L17 10L10 3Z"
+                fill="currentColor"
+              />
+            </svg>
+          </a>
+          <span className="inline-block">uses SI</span>
         </div>
 
         {/* Line 2: to get simple answers only */}
         <div className="mb-2 sm:mb-4">
-          <span className="inline-block transition-opacity duration-300">to get simple answers only</span>
+          <span className="inline-block">to get simple answers only</span>
         </div>
 
         {/* Line 3: from [agency seals] official */}
-        <div className="mb-2 sm:mb-4">
-          <span className="inline-block transition-opacity duration-300">from</span>{" "}
-          <span className="inline-flex align-middle mx-1.5 sm:mx-2 md:mx-4" data-slot="manifesto-chip">
-            <span
-              className="relative inline-flex items-center h-7 sm:h-8 md:h-16 lg:h-20 w-14 sm:w-16 md:w-36 lg:w-44 shrink-0"
-              title="Official Agency Sources: DOI, State Department, Commerce"
-            >
-              <img
-                className="absolute top-0 left-0 size-7 sm:size-8 md:size-16 lg:size-20 rounded-full object-contain shadow-md border border-white/20 bg-white"
-                sizes="96px"
-                alt="DOI seal"
-                loading="eager"
-                src="/site-assets/6b0e58ea2470c358-c45111fe79f447f74baa0a959314adb0.png"
-              />
-              <img
-                className="absolute top-0 left-4 sm:left-5 md:left-10 lg:left-12 size-7 sm:size-8 md:size-16 lg:size-20 rounded-full object-contain shadow-md border border-white/20 bg-white z-10"
-                sizes="96px"
-                alt="State Department seal"
-                loading="eager"
-                src="/site-assets/ac9ec418e5b87762-f595254bb5ee2630436109fee6101659.png"
-              />
-              <img
-                className="absolute top-0 left-8 sm:left-9 md:left-20 lg:left-24 size-7 sm:size-8 md:size-16 lg:size-20 rounded-full object-contain shadow-md border border-white/20 bg-white z-20"
-                sizes="96px"
-                alt="Commerce seal"
-                loading="eager"
-                src="/site-assets/f8771bab4355a2c8-bbad8e97f6ed9607bb4b97ed05f21110.png"
-              />
-            </span>
-          </span>{" "}
-          <span className="inline-block transition-opacity duration-300">official</span>
+        <div className="flex flex-wrap items-center justify-center gap-x-2 sm:gap-x-3 mb-2 sm:mb-4">
+          <span className="inline-block">from</span>
+          <span
+            className="relative inline-flex items-center h-8 sm:h-11 md:h-14 w-16 sm:w-22 md:w-28 shrink-0"
+            title="Official Agency Sources: Department of the Interior, State Department, Department of Commerce"
+          >
+            <img
+              className="absolute top-0 left-0 size-8 sm:size-11 md:size-14 rounded-full object-contain shadow-sm border-2 border-white dark:border-[#080a0f] bg-white"
+              sizes="64px"
+              alt="DOI seal"
+              loading="eager"
+              src="/site-assets/6b0e58ea2470c358-c45111fe79f447f74baa0a959314adb0.png"
+            />
+            <img
+              className="absolute top-0 left-4 sm:left-6 md:left-7 size-8 sm:size-11 md:size-14 rounded-full object-contain shadow-sm border-2 border-white dark:border-[#080a0f] bg-white z-10"
+              sizes="64px"
+              alt="State Department seal"
+              loading="eager"
+              src="/site-assets/ac9ec418e5b87762-f595254bb5ee2630436109fee6101659.png"
+            />
+            <img
+              className="absolute top-0 left-8 sm:left-11 md:left-14 size-8 sm:size-11 md:size-14 rounded-full object-contain shadow-sm border-2 border-white dark:border-[#080a0f] bg-white z-20"
+              sizes="64px"
+              alt="Commerce seal"
+              loading="eager"
+              src="/site-assets/f8771bab4355a2c8-bbad8e97f6ed9607bb4b97ed05f21110.png"
+            />
+          </span>
+          <span className="inline-block">official</span>
         </div>
 
         {/* Line 4: government sources. It’s */}
         <div className="mb-2 sm:mb-4">
-          <span className="inline-block transition-opacity duration-300">government sources. It’s</span>
+          <span className="inline-block">government sources. It’s</span>
         </div>
 
         {/* Line 5: free to use, never includes */}
         <div className="mb-2 sm:mb-4">
-          <span className="inline-block transition-opacity duration-300">free to use, never includes</span>
+          <span className="inline-block">free to use, never includes</span>
         </div>
 
         {/* Line 6: ads, and keeps [fingerprint] your */}
-        <div className="mb-2 sm:mb-4">
-          <span className="inline-block transition-opacity duration-300">ads, and keeps</span>{" "}
-          <span className="inline-flex align-middle mx-1.5 md:mx-3" data-slot="manifesto-chip">
-            <button
-              type="button"
-              onClick={handleFingerprintClick}
-              className="inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#161a24] text-[#ff3388] border border-white/10 size-7 sm:size-8 md:size-14 lg:size-16 p-1 sm:p-1.5 shadow-md hover:scale-105 active:scale-95 transition-all"
-              aria-label="Privacy protected with SI"
-              title={copiedFingerprint ? "Privacy Guaranteed" : "Privacy Protected"}
-            >
-              {copiedFingerprint ? (
-                <svg className="size-3.5 sm:size-4 md:size-8 lg:size-9 text-green-400" fill="none" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M2.7 9.7 7.95 14.6 17.3 4.7" stroke="currentColor" strokeLinecap="square" strokeLinejoin="miter" strokeWidth="2.5" />
-                </svg>
-              ) : (
-                <svg className="size-4 sm:size-5 md:size-8 lg:size-9" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.75">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 004 11m0 0a8.003 8.003 0 0015.357 2m-1.357 5H18" />
-                </svg>
-              )}
-            </button>
-          </span>{" "}
-          <span className="inline-block transition-opacity duration-300">your</span>
+        <div className="flex flex-wrap items-center justify-center gap-x-2 sm:gap-x-3 mb-2 sm:mb-4">
+          <span className="inline-block">ads, and keeps</span>
+          <button
+            type="button"
+            onClick={handleFingerprintClick}
+            className="inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#fdf2f8] dark:bg-[#341223] text-[#db2777] border border-[#f472b6]/30 size-8 sm:size-11 md:size-14 p-1.5 sm:p-2 shadow-sm hover:scale-105 active:scale-95 transition-all"
+            aria-label="Privacy protected with SI"
+            title={copiedFingerprint ? "Privacy Guaranteed" : "Privacy Protected"}
+          >
+            {copiedFingerprint ? (
+              <svg
+                className="size-4 sm:size-6 md:size-7 text-green-500"
+                fill="none"
+                height="20"
+                viewBox="0 0 20 20"
+                width="20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M2.7 9.7 7.95 14.6 17.3 4.7"
+                  stroke="currentColor"
+                  strokeLinecap="square"
+                  strokeLinejoin="miter"
+                  strokeWidth="2.5"
+                />
+              </svg>
+            ) : (
+              <svg
+                className="size-4 sm:size-6 md:size-7"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="1.75"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 004 11m0 0a8.003 8.003 0 0015.357 2m-1.357 5H18"
+                />
+              </svg>
+            )}
+          </button>
+          <span className="inline-block">your</span>
         </div>
 
         {/* Line 7: privacy protected. */}
-        <div>
-          <span className="inline-block transition-opacity duration-300">privacy protected.</span>
+        <div className="mb-6 sm:mb-8">
+          <span className="inline-block">privacy protected.</span>
+        </div>
+
+        {/* Centered Chat input directly beneath Manifesto text matching Image (1) */}
+        <div className="w-full max-w-[540px] mx-auto mt-6 sm:mt-10 not-italic font-sans">
+          <div className="relative w-full rounded-full shadow-lg bg-white dark:bg-[#121622] border border-black/10 dark:border-white/10 ring-1 ring-black/5 dark:ring-white/5 p-1.5 sm:p-2 min-h-[56px] transition-colors">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const form = e.currentTarget;
+                const val = (new FormData(form).get("message") as string)?.trim();
+                window.location.href = val ? `/chat?q=${encodeURIComponent(val)}` : "/chat";
+              }}
+              className="flex items-center w-full gap-2 pl-4 pr-1 sm:pl-6 sm:pr-1.5 min-h-[44px]"
+            >
+              <input
+                type="text"
+                name="message"
+                placeholder="Ask anything…"
+                className="flex-1 min-w-0 bg-transparent text-[15px] sm:text-base text-[#000c1f] dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 outline-none"
+              />
+              <div className="flex items-center gap-1 shrink-0">
+                <button
+                  type="button"
+                  className="inline-flex size-8 sm:size-9 items-center justify-center rounded-full text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
+                  aria-label="Upload PDF"
+                  title="Upload PDF"
+                >
+                  <svg
+                    fill="none"
+                    height="18"
+                    viewBox="0 0 20 20"
+                    width="18"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M13 4V14C13 15.66 11.66 17 10 17C8.34 17 7 15.66 7 14V4C7 3.45 7.45 3 8 3C8.55 3 9 3.45 9 4V15H11V4C11 2.34 9.66 1 8 1C6.34 1 5 2.34 5 4V14C5 16.76 7.24 19 10 19C12.76 19 15 16.76 15 14V4"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  className="inline-flex size-8 sm:size-9 items-center justify-center rounded-full text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
+                  aria-label="Voice input"
+                  title="Voice input"
+                >
+                  <svg
+                    fill="none"
+                    height="18"
+                    viewBox="0 0 20 20"
+                    width="18"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10 11C11.66 11 13 9.66 13 8V4C13 2.34 11.66 1 10 1C8.34 1 7 2.34 7 4V8C7 9.66 8.34 11 10 11ZM9 4C9 3.45 9.45 3 10 3C10.55 3 11 3.45 11 4V8C11 8.55 10.55 9 10 9C9.45 9 9 8.55 9 8V4Z"
+                      fill="currentColor"
+                    />
+                    <path
+                      d="M11 14.92C14.39 14.43 17 11.52 17 8H15C15 10.76 12.76 13 10 13C7.24 13 5 10.76 5 8H3C3 11.53 5.61 14.43 9 14.92V17H6V19H14V17H11V14.92Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="submit"
+                  className="inline-flex size-8 sm:size-9 items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700 active:scale-95 text-white shadow-md transition-all ml-1 cursor-pointer"
+                  aria-label="Send message"
+                >
+                  <svg
+                    fill="none"
+                    height="18"
+                    viewBox="0 0 20 20"
+                    width="18"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10 3L8.59 4.41L13.17 9H3V11H13.17L8.59 15.59L10 17L17 10L10 3Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </form>
+          </div>
+          {/* Your privacy · How SI works BELOW the chat input */}
+          <div className="flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400 mt-2.5">
+            <a
+              href="/privacy-policy"
+              className="flex items-center gap-1 hover:text-black dark:hover:text-white transition-colors underline decoration-dotted underline-offset-2"
+            >
+              <svg
+                className="size-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                />
+              </svg>
+              Your privacy
+            </a>
+            <span>·</span>
+            <a
+              href="/#about"
+              className="flex items-center gap-1 hover:text-black dark:hover:text-white transition-colors underline decoration-dotted underline-offset-2"
+            >
+              <svg
+                className="size-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <circle cx="12" cy="12" r="9" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              How SI works
+            </a>
+          </div>
         </div>
       </div>
     </section>
@@ -840,30 +3405,102 @@ function ImportedSection() {
 
 function ImportedSection29000WebsitesInto() {
   return (
-    <section className="site-container flex flex-col items-center gap-20 mobile:gap-30" id="how-it-works">
+    <section
+      className="site-container flex flex-col items-center gap-20 mobile:gap-30"
+      id="how-it-works"
+    >
       <div className="site-grid w-full items-center gap-y-10">
-        <div className={"col-span-full flex min-w-0 justify-center \x73ite-desktop:\x63ol-span-4 \x73ite-desktop:\x63ol-start-3"}>
-          <div className={"squircle relative aspect-square w-full max-w-md shrink-0 overflow-hidden \x72ounded-site-bento isolate bg-background-primary-invert \x64ark:\x62g-black"} data-slot="federal-orbit">
+        <div
+          className={
+            "col-span-full flex min-w-0 justify-center \x73ite-desktop:\x63ol-span-4 \x73ite-desktop:\x63ol-start-3"
+          }
+        >
+          <div
+            className={
+              "squircle relative aspect-square w-full max-w-md shrink-0 overflow-hidden \x72ounded-site-bento isolate bg-background-primary-invert \x64ark:\x62g-black"
+            }
+            data-slot="federal-orbit"
+          >
             <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
               <div className="absolute inset-0">
-                <div style={{ position: "relative", width: "100%", height: "100%", overflow: "hidden" }}>
-                  <img style={{ display: "block", width: "448px", height: "448px" }} width="448" height="448" src="data:image/webp;base64,UklGRtABAABXRUJQVlA4WAoAAAAQAAAAvwEAvwEAQUxQSBsAAAABBxAREVDQtg1T/vC744j+Z/jPf/7zn//8LwEAVlA4II4BAABQLQCdASrAAcABPjEYjESiIaEQBAAgAwS0t3C7sI2gBPYB77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+1YAAD+//gtkAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==" data-site-import-static-fallback="canvas" alt="" />
+                <div
+                  style={{
+                    position: "relative",
+                    width: "100%",
+                    height: "100%",
+                    overflow: "hidden",
+                  }}
+                >
+                  <img
+                    style={{ display: "block", width: "448px", height: "448px" }}
+                    width="448"
+                    height="448"
+                    src="data:image/webp;base64,UklGRtABAABXRUJQVlA4WAoAAAAQAAAAvwEAvwEAQUxQSBsAAAABBxAREVDQtg1T/vC744j+Z/jPf/7zn//8LwEAVlA4II4BAABQLQCdASrAAcABPjEYjESiIaEQBAAgAwS0t3C7sI2gBPYB77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+1YAAD+//gtkAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+                    data-site-import-static-fallback="canvas"
+                    alt=""
+                  />
                 </div>
               </div>
             </div>
-            <p className={"\x73r-only text-primary-invert"} id="_r1r_v_">An animated sphere of government website previews rotates, illustrating 29,000 websites brought together in one place.</p>
+            <p className={"\x73r-only text-primary-invert"} id="_r1r_v_">
+              An animated sphere of government website previews rotates, illustrating 29,000
+              websites brought together in one place.
+            </p>
             <div className="absolute right-6 bottom-6 z-10">
-              <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 focus-visible:bg-background-tertiary \x64isabled:\x62g-transparent disabled:text-text-disabled group/playback-control \x73croll-m-2 rounded-full p-0 \x61ctive:\x73cale-95 \x6dotion-reduce:\x74ransition-none \x6dotion-reduce:\x61ctive:\x73cale-100 size-9 \x73ite-desktop:\x73ize-11 \x62order \x62order-blue-900/\x32 \x62g-background-primary-invert/\x350 text-text-primary-invert \x62ackdrop-blur-frost \x68over:\x62g-background-primary-invert/\x360 \x61ctive:\x62g-background-primary-invert/\x360 active:text-text-primary-invert \x64ark:\x62g-black/\x350 \x64ark:\x74ext-text-primary \x64ark:\x68over:\x62g-black/\x360 \x64ark:\x61ctive:\x62g-black/\x360 \x64ark:\x61ctive:\x74ext-text-primary [&\x5fsvg]:\x73ize-5"} type="button" tabIndex={0} data-slot="carousel-playback" aria-label="Pause animation" aria-describedby="_r1r_v_">
-                <div className={"relative \x67roup-focus-visible/\x70layback-control:[&>\x64iv]:\x74ransition-none"}>
-                  <div className={"absolute inset-0 flex items-center justify-center transition-[opacity,transform] duration-150 ease-out-quint \x6dotion-reduce:\x74ransition-opacity [transform:scale(0.97)] opacity-0 \x6dotion-reduce:\x74ransform-none"} aria-hidden="true">
-                    <svg fill="none" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <button
+                className={
+                  "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 focus-visible:bg-background-tertiary \x64isabled:\x62g-transparent disabled:text-text-disabled group/playback-control \x73croll-m-2 rounded-full p-0 \x61ctive:\x73cale-95 \x6dotion-reduce:\x74ransition-none \x6dotion-reduce:\x61ctive:\x73cale-100 size-9 \x73ite-desktop:\x73ize-11 \x62order \x62order-blue-900/\x32 \x62g-background-primary-invert/\x350 text-text-primary-invert \x62ackdrop-blur-frost \x68over:\x62g-background-primary-invert/\x360 \x61ctive:\x62g-background-primary-invert/\x360 active:text-text-primary-invert \x64ark:\x62g-black/\x350 \x64ark:\x74ext-text-primary \x64ark:\x68over:\x62g-black/\x360 \x64ark:\x61ctive:\x62g-black/\x360 \x64ark:\x61ctive:\x74ext-text-primary [&\x5fsvg]:\x73ize-5"
+                }
+                type="button"
+                tabIndex={0}
+                data-slot="carousel-playback"
+                aria-label="Pause animation"
+                aria-describedby="_r1r_v_"
+              >
+                <div
+                  className={
+                    "relative \x67roup-focus-visible/\x70layback-control:[&>\x64iv]:\x74ransition-none"
+                  }
+                >
+                  <div
+                    className={
+                      "absolute inset-0 flex items-center justify-center transition-[opacity,transform] duration-150 ease-out-quint \x6dotion-reduce:\x74ransition-opacity [transform:scale(0.97)] opacity-0 \x6dotion-reduce:\x74ransform-none"
+                    }
+                    aria-hidden="true"
+                  >
+                    <svg
+                      fill="none"
+                      height="16"
+                      viewBox="0 0 20 20"
+                      width="16"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
                       <path d="M6 3L18 10L6 17L6 3Z" fill="currentColor" />
                     </svg>
                   </div>
-                  <div className={"transition-[opacity,transform] duration-150 ease-out-quint \x6dotion-reduce:\x74ransition-opacity transform-none opacity-100"} aria-hidden="false">
-                    <svg fill="none" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                      <path d="M8 4C8 3.45 7.55 3 7 3H5C4.45 3 4 3.45 4 4V16C4 16.55 4.45 17 5 17H7C7.55 17 8 16.55 8 16V4Z" fill="currentColor" />
-                      <path d="M16 4C16 3.45 15.55 3 15 3H13C12.45 3 12 3.45 12 4V16C12 16.55 12.45 17 13 17H15C15.55 17 16 16.55 16 16V4Z" fill="currentColor" />
+                  <div
+                    className={
+                      "transition-[opacity,transform] duration-150 ease-out-quint \x6dotion-reduce:\x74ransition-opacity transform-none opacity-100"
+                    }
+                    aria-hidden="false"
+                  >
+                    <svg
+                      fill="none"
+                      height="16"
+                      viewBox="0 0 20 20"
+                      width="16"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M8 4C8 3.45 7.55 3 7 3H5C4.45 3 4 3.45 4 4V16C4 16.55 4.45 17 5 17H7C7.55 17 8 16.55 8 16V4Z"
+                        fill="currentColor"
+                      />
+                      <path
+                        d="M16 4C16 3.45 15.55 3 15 3H13C12.45 3 12 3.45 12 4V16C12 16.55 12.45 17 13 17H15C15.55 17 16 16.55 16 16V4Z"
+                        fill="currentColor"
+                      />
                     </svg>
                   </div>
                 </div>
@@ -871,18 +3508,50 @@ function ImportedSection29000WebsitesInto() {
             </div>
           </div>
         </div>
-        <div className={"col-span-full flex w-full max-w-md flex-col justify-center gap-8 justify-self-center \x6dax-site-desktop:\x69nset-site-media-copy \x73ite-desktop:\x63ol-span-4 \x73ite-desktop:\x63ol-start-8 \x73ite-desktop:\x6dax-w-none"}>
+        <div
+          className={
+            "col-span-full flex w-full max-w-md flex-col justify-center gap-8 justify-self-center \x6dax-site-desktop:\x69nset-site-media-copy \x73ite-desktop:\x63ol-span-4 \x73ite-desktop:\x63ol-start-8 \x73ite-desktop:\x6dax-w-none"
+          }
+        >
           <div className="flex max-w-xs flex-col gap-6 mobile:max-w-77">
-            <h2 className={"type-feature-heading text-text-primary \x6dobile:\x77hitespace-pre-line"}>29,000 websites into one.</h2>
-            <p className="type-site-body text-text-secondary">No more wandering from site to site. America.gov brings the government together in one place.</p>
+            <h2
+              className={"type-feature-heading text-text-primary \x6dobile:\x77hitespace-pre-line"}
+            >
+              29,000 websites into one.
+            </h2>
+            <p className="type-site-body text-text-secondary">
+              No more wandering from site to site. America.gov brings the government together in one
+              place.
+            </p>
           </div>
-          <a className={"site-underline-link relative inline-block \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none w-fit rounded-4 type-site-cta text-text-primary \x66ocus-visible:\x6futline-2 \x66ocus-visible:\x6futline-offset-4"} href="/how-it-works">See how it works</a>
+          <a
+            className={
+              "site-underline-link relative inline-block \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none w-fit rounded-4 type-site-cta text-text-primary \x66ocus-visible:\x6futline-2 \x66ocus-visible:\x6futline-offset-4"
+            }
+            href="/how-it-works"
+          >
+            See how it works
+          </a>
         </div>
       </div>
       <div className="site-grid w-full items-center gap-y-10">
-        <div className={"col-span-full flex min-w-0 justify-center \x73ite-desktop:\x63ol-span-4 \x73ite-desktop:\x63ol-start-3"}>
-          <div className={"squircle relative aspect-square w-full max-w-md shrink-0 overflow-hidden \x72ounded-site-bento home-privacy-sky grid place-items-center p-4"}>
-            <svg className="home-privacy-stars pointer-events-none absolute inset-0 size-full [fill:rgb(179,217,255)]" data-slot="privacy-sky" aria-hidden="true" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice">
+        <div
+          className={
+            "col-span-full flex min-w-0 justify-center \x73ite-desktop:\x63ol-span-4 \x73ite-desktop:\x63ol-start-3"
+          }
+        >
+          <div
+            className={
+              "squircle relative aspect-square w-full max-w-md shrink-0 overflow-hidden \x72ounded-site-bento home-privacy-sky grid place-items-center p-4"
+            }
+          >
+            <svg
+              className="home-privacy-stars pointer-events-none absolute inset-0 size-full [fill:rgb(179,217,255)]"
+              data-slot="privacy-sky"
+              aria-hidden="true"
+              viewBox="0 0 400 400"
+              preserveAspectRatio="xMidYMid slice"
+            >
               <g style={{ animationDelay: "0s", animationDuration: "10s" } as CSSProperties}>
                 <circle cx="130.24457082210574" cy="327.7246920581092" r="0.8" />
                 <circle cx="323.61587850318756" cy="34.45911297749262" r="0.4" />
@@ -1019,119 +3688,355 @@ function ImportedSection29000WebsitesInto() {
                 <circle cx="310" cy="82" r="1.1" />
               </g>
             </svg>
-            <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 bg-transparent focus-visible:bg-background-tertiary active:text-text-disabled \x64isabled:\x62g-transparent disabled:text-text-disabled absolute top-[13%] left-[18%] z-10 size-11 \x2dtranslate-1/\x32 rounded-full p-0 text-text-primary-invert \x68over:\x62g-transparent \x64ark:\x74ext-text-primary \x61ctive:\x73cale-100"} type="button" tabIndex={0} aria-label="Make a shooting star">
-              <svg className="privacy-star-beacon size-2" style={{ animationPlayState: "paused" } as CSSProperties} aria-hidden="true" viewBox="0 0 8 8">
+            <button
+              className={
+                "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 bg-transparent focus-visible:bg-background-tertiary active:text-text-disabled \x64isabled:\x62g-transparent disabled:text-text-disabled absolute top-[13%] left-[18%] z-10 size-11 \x2dtranslate-1/\x32 rounded-full p-0 text-text-primary-invert \x68over:\x62g-transparent \x64ark:\x74ext-text-primary \x61ctive:\x73cale-100"
+              }
+              type="button"
+              tabIndex={0}
+              aria-label="Make a shooting star"
+            >
+              <svg
+                className="privacy-star-beacon size-2"
+                style={{ animationPlayState: "paused" } as CSSProperties}
+                aria-hidden="true"
+                viewBox="0 0 8 8"
+              >
                 <circle cx="4" cy="4" r="1.1" fill="currentColor" />
                 <path d="M4 1v6M1 4h6" stroke="currentColor" strokeWidth="0.5" opacity="0.25" />
               </svg>
             </button>
             <span className={"\x73r-only"} role="status" />
-            <div className={"home-privacy-lock relative grid size-[130px] shrink-0 place-items-center rounded-full \x62g-[#\x656e8ea] text-black \x73hadow-glass-toast"} data-visible="false" aria-hidden="true">
+            <div
+              className={
+                "home-privacy-lock relative grid size-[130px] shrink-0 place-items-center rounded-full \x62g-[#\x656e8ea] text-black \x73hadow-glass-toast"
+              }
+              data-visible="false"
+              aria-hidden="true"
+            >
               <span className="pointer-events-none absolute top-1/2 left-1/2 size-px" />
-              <svg fill="none" height="44" viewBox="0 0 20 20" width="44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path data-slot="lock-shackle" d="M14 7V5C14 2.79 12.21 1 10 1C7.79 1 6 2.79 6 5V11H8V5C8 3.9 8.9 3 10 3C11.1 3 12 3.9 12 5V7H14Z" fill="currentColor" />
-                <path d="M15 7H5C3.9 7 3 7.9 3 9V17C3 18.1 3.9 19 5 19H15C16.1 19 17 18.1 17 17V9C17 7.9 16.1 7 15 7ZM11 15H9V11H11V15Z" fill="currentColor" />
+              <svg
+                fill="none"
+                height="44"
+                viewBox="0 0 20 20"
+                width="44"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  data-slot="lock-shackle"
+                  d="M14 7V5C14 2.79 12.21 1 10 1C7.79 1 6 2.79 6 5V11H8V5C8 3.9 8.9 3 10 3C11.1 3 12 3.9 12 5V7H14Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M15 7H5C3.9 7 3 7.9 3 9V17C3 18.1 3.9 19 5 19H15C16.1 19 17 18.1 17 17V9C17 7.9 16.1 7 15 7ZM11 15H9V11H11V15Z"
+                  fill="currentColor"
+                />
               </svg>
             </div>
           </div>
         </div>
-        <div className={"col-span-full flex w-full max-w-md flex-col justify-center gap-8 justify-self-center \x6dax-site-desktop:\x69nset-site-media-copy \x73ite-desktop:\x63ol-span-4 \x73ite-desktop:\x63ol-start-8 \x73ite-desktop:\x6dax-w-none"}>
+        <div
+          className={
+            "col-span-full flex w-full max-w-md flex-col justify-center gap-8 justify-self-center \x6dax-site-desktop:\x69nset-site-media-copy \x73ite-desktop:\x63ol-span-4 \x73ite-desktop:\x63ol-start-8 \x73ite-desktop:\x6dax-w-none"
+          }
+        >
           <div className="flex max-w-xs flex-col gap-6 mobile:max-w-77">
-            <h2 className={"type-feature-heading text-text-primary \x6dobile:\x77hitespace-pre-line"}>America.gov keeps your data private.</h2>
-            <p className="type-site-body text-text-secondary">Your personal information isn’t collected or stored, and your conversation disappears when you leave.</p>
+            <h2
+              className={"type-feature-heading text-text-primary \x6dobile:\x77hitespace-pre-line"}
+            >
+              America.gov keeps your data private.
+            </h2>
+            <p className="type-site-body text-text-secondary">
+              Your personal information isn’t collected or stored, and your conversation disappears
+              when you leave.
+            </p>
           </div>
-          <a className={"site-underline-link relative inline-block \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none w-fit rounded-4 type-site-cta text-text-primary \x66ocus-visible:\x6futline-2 \x66ocus-visible:\x6futline-offset-4"} href="/privacy">Learn about privacy</a>
+          <a
+            className={
+              "site-underline-link relative inline-block \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none w-fit rounded-4 type-site-cta text-text-primary \x66ocus-visible:\x6futline-2 \x66ocus-visible:\x6futline-offset-4"
+            }
+            href="/privacy"
+          >
+            Learn about privacy
+          </a>
         </div>
       </div>
       <div className="site-grid w-full items-center gap-y-10">
-        <div className={"col-span-full flex min-w-0 justify-center \x73ite-desktop:\x63ol-span-4 \x73ite-desktop:\x63ol-start-3"}>
-          <div className={"squircle relative aspect-square w-full max-w-md shrink-0 overflow-hidden \x72ounded-site-bento bg-surface-muted"}>
-            <div className="absolute -inset-[18%] grid grid-cols-3 grid-rows-3 gap-8" aria-hidden="true">
-              <div className={"relative min-h-0 min-w-0 rounded-full bg-white \x73hadow-[\x30_8px_24px_rgb(\x31_14_36/\x312%)]"}>
+        <div
+          className={
+            "col-span-full flex min-w-0 justify-center \x73ite-desktop:\x63ol-span-4 \x73ite-desktop:\x63ol-start-3"
+          }
+        >
+          <div
+            className={
+              "squircle relative aspect-square w-full max-w-md shrink-0 overflow-hidden \x72ounded-site-bento bg-surface-muted"
+            }
+          >
+            <div
+              className="absolute -inset-[18%] grid grid-cols-3 grid-rows-3 gap-8"
+              aria-hidden="true"
+            >
+              <div
+                className={
+                  "relative min-h-0 min-w-0 rounded-full bg-white \x73hadow-[\x30_8px_24px_rgb(\x31_14_36/\x312%)]"
+                }
+              >
                 <div className="absolute inset-4">
-                  <img className={"size-full object-contain [&]:max-w-none"} alt="" decoding="async" loading="lazy" src="/site-assets/dd3bb5792687c34a-98a684da2d8cb6721da1dfe1f55bfb03.png" />
+                  <img
+                    className={"size-full object-contain [&]:max-w-none"}
+                    alt=""
+                    decoding="async"
+                    loading="lazy"
+                    src="/site-assets/dd3bb5792687c34a-98a684da2d8cb6721da1dfe1f55bfb03.png"
+                  />
                 </div>
               </div>
-              <div className={"relative min-h-0 min-w-0 rounded-full bg-white \x73hadow-[\x30_8px_24px_rgb(\x31_14_36/\x312%)]"}>
+              <div
+                className={
+                  "relative min-h-0 min-w-0 rounded-full bg-white \x73hadow-[\x30_8px_24px_rgb(\x31_14_36/\x312%)]"
+                }
+              >
                 <div className="absolute inset-4">
-                  <img className={"size-full object-contain [&]:max-w-none"} alt="" decoding="async" loading="lazy" src="/site-assets/ce1636f0f4b9b1a8-e017296a51a37365d3a1174f02be4f8c.png" />
+                  <img
+                    className={"size-full object-contain [&]:max-w-none"}
+                    alt=""
+                    decoding="async"
+                    loading="lazy"
+                    src="/site-assets/ce1636f0f4b9b1a8-e017296a51a37365d3a1174f02be4f8c.png"
+                  />
                 </div>
               </div>
-              <div className={"relative min-h-0 min-w-0 rounded-full bg-white \x73hadow-[\x30_8px_24px_rgb(\x31_14_36/\x312%)]"}>
+              <div
+                className={
+                  "relative min-h-0 min-w-0 rounded-full bg-white \x73hadow-[\x30_8px_24px_rgb(\x31_14_36/\x312%)]"
+                }
+              >
                 <div className="absolute inset-4">
-                  <img className={"size-full object-contain [&]:max-w-none"} alt="" decoding="async" loading="lazy" src="/site-assets/f8771bab4355a2c8-bbad8e97f6ed9607bb4b97ed05f21110.png" />
+                  <img
+                    className={"size-full object-contain [&]:max-w-none"}
+                    alt=""
+                    decoding="async"
+                    loading="lazy"
+                    src="/site-assets/f8771bab4355a2c8-bbad8e97f6ed9607bb4b97ed05f21110.png"
+                  />
                 </div>
               </div>
-              <div className={"relative min-h-0 min-w-0 rounded-full bg-white \x73hadow-[\x30_8px_24px_rgb(\x31_14_36/\x312%)]"}>
+              <div
+                className={
+                  "relative min-h-0 min-w-0 rounded-full bg-white \x73hadow-[\x30_8px_24px_rgb(\x31_14_36/\x312%)]"
+                }
+              >
                 <div className="absolute inset-4">
-                  <img className={"size-full object-contain [&]:max-w-none"} alt="" decoding="async" loading="lazy" src="/site-assets/6b0e58ea2470c358-c45111fe79f447f74baa0a959314adb0.png" />
+                  <img
+                    className={"size-full object-contain [&]:max-w-none"}
+                    alt=""
+                    decoding="async"
+                    loading="lazy"
+                    src="/site-assets/6b0e58ea2470c358-c45111fe79f447f74baa0a959314adb0.png"
+                  />
                 </div>
               </div>
-              <div className={"relative min-h-0 min-w-0 rounded-full bg-white \x73hadow-[\x30_8px_24px_rgb(\x31_14_36/\x312%)]"}>
+              <div
+                className={
+                  "relative min-h-0 min-w-0 rounded-full bg-white \x73hadow-[\x30_8px_24px_rgb(\x31_14_36/\x312%)]"
+                }
+              >
                 <div className="absolute inset-4">
-                  <img className={"size-full object-contain [&]:max-w-none"} alt="" decoding="async" loading="lazy" src="/site-assets/f70c6662db9f1a47-dbf5e7d1bb2d323971a0681d3566827f.png" />
+                  <img
+                    className={"size-full object-contain [&]:max-w-none"}
+                    alt=""
+                    decoding="async"
+                    loading="lazy"
+                    src="/site-assets/f70c6662db9f1a47-dbf5e7d1bb2d323971a0681d3566827f.png"
+                  />
                 </div>
               </div>
-              <div className={"relative min-h-0 min-w-0 rounded-full bg-white \x73hadow-[\x30_8px_24px_rgb(\x31_14_36/\x312%)]"}>
+              <div
+                className={
+                  "relative min-h-0 min-w-0 rounded-full bg-white \x73hadow-[\x30_8px_24px_rgb(\x31_14_36/\x312%)]"
+                }
+              >
                 <div className="absolute inset-4">
-                  <img className={"size-full object-contain [&]:max-w-none"} alt="" decoding="async" loading="lazy" src="/site-assets/a819cba5b82ca1e6-31ca272de7196825f4a72c1372acddd4.png" />
+                  <img
+                    className={"size-full object-contain [&]:max-w-none"}
+                    alt=""
+                    decoding="async"
+                    loading="lazy"
+                    src="/site-assets/a819cba5b82ca1e6-31ca272de7196825f4a72c1372acddd4.png"
+                  />
                 </div>
               </div>
-              <div className={"relative min-h-0 min-w-0 rounded-full bg-white \x73hadow-[\x30_8px_24px_rgb(\x31_14_36/\x312%)]"}>
+              <div
+                className={
+                  "relative min-h-0 min-w-0 rounded-full bg-white \x73hadow-[\x30_8px_24px_rgb(\x31_14_36/\x312%)]"
+                }
+              >
                 <div className="absolute inset-4">
-                  <img className={"size-full object-contain [&]:max-w-none"} alt="" decoding="async" loading="lazy" src="/site-assets/2ff7c9bca89d098e-263849edaa9f7198e4851806d420ec04.png" />
+                  <img
+                    className={"size-full object-contain [&]:max-w-none"}
+                    alt=""
+                    decoding="async"
+                    loading="lazy"
+                    src="/site-assets/2ff7c9bca89d098e-263849edaa9f7198e4851806d420ec04.png"
+                  />
                 </div>
               </div>
-              <div className={"relative min-h-0 min-w-0 rounded-full bg-white \x73hadow-[\x30_8px_24px_rgb(\x31_14_36/\x312%)]"}>
+              <div
+                className={
+                  "relative min-h-0 min-w-0 rounded-full bg-white \x73hadow-[\x30_8px_24px_rgb(\x31_14_36/\x312%)]"
+                }
+              >
                 <div className="absolute inset-4">
-                  <img className={"size-full object-contain [&]:max-w-none"} alt="" decoding="async" loading="lazy" src="/site-assets/387879ba8b7a3241-86f79df517a979773e88202ee4c9e752.png" />
+                  <img
+                    className={"size-full object-contain [&]:max-w-none"}
+                    alt=""
+                    decoding="async"
+                    loading="lazy"
+                    src="/site-assets/387879ba8b7a3241-86f79df517a979773e88202ee4c9e752.png"
+                  />
                 </div>
               </div>
-              <div className={"relative min-h-0 min-w-0 rounded-full bg-white \x73hadow-[\x30_8px_24px_rgb(\x31_14_36/\x312%)]"}>
+              <div
+                className={
+                  "relative min-h-0 min-w-0 rounded-full bg-white \x73hadow-[\x30_8px_24px_rgb(\x31_14_36/\x312%)]"
+                }
+              >
                 <div className="absolute inset-4">
-                  <img className={"size-full object-contain [&]:max-w-none"} alt="" decoding="async" loading="lazy" src="/site-assets/d380101b6cc6f02c-cd3c311e5b31fcced836aac74441df32.png" />
+                  <img
+                    className={"size-full object-contain [&]:max-w-none"}
+                    alt=""
+                    decoding="async"
+                    loading="lazy"
+                    src="/site-assets/d380101b6cc6f02c-cd3c311e5b31fcced836aac74441df32.png"
+                  />
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div className={"col-span-full flex w-full max-w-md flex-col justify-center gap-8 justify-self-center \x6dax-site-desktop:\x69nset-site-media-copy \x73ite-desktop:\x63ol-span-4 \x73ite-desktop:\x63ol-start-8 \x73ite-desktop:\x6dax-w-none"}>
+        <div
+          className={
+            "col-span-full flex w-full max-w-md flex-col justify-center gap-8 justify-self-center \x6dax-site-desktop:\x69nset-site-media-copy \x73ite-desktop:\x63ol-span-4 \x73ite-desktop:\x63ol-start-8 \x73ite-desktop:\x6dax-w-none"
+          }
+        >
           <div className="flex max-w-xs flex-col gap-6 mobile:max-w-77">
-            <h2 className={"type-feature-heading text-text-primary \x6dobile:\x77hitespace-pre-line"}>Clear answers. Official sources.</h2>
-            <p className="type-site-body text-text-secondary">Every answer is exclusively sourced from federal, state, and local websites.</p>
+            <h2
+              className={"type-feature-heading text-text-primary \x6dobile:\x77hitespace-pre-line"}
+            >
+              Clear answers. Official sources.
+            </h2>
+            <p className="type-site-body text-text-secondary">
+              Every answer is exclusively sourced from federal, state, and local websites.
+            </p>
           </div>
-          <a className={"site-underline-link relative inline-block \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none w-fit rounded-4 type-site-cta text-text-primary \x66ocus-visible:\x6futline-2 \x66ocus-visible:\x6futline-offset-4"} href="/how-it-works">Learn about sources</a>
+          <a
+            className={
+              "site-underline-link relative inline-block \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none w-fit rounded-4 type-site-cta text-text-primary \x66ocus-visible:\x6futline-2 \x66ocus-visible:\x6futline-offset-4"
+            }
+            href="/how-it-works"
+          >
+            Learn about sources
+          </a>
         </div>
       </div>
       <div className="site-grid w-full items-center gap-y-10">
-        <div className={"col-span-full flex min-w-0 justify-center \x73ite-desktop:\x63ol-span-4 \x73ite-desktop:\x63ol-start-3"}>
-          <div className={"squircle relative aspect-square w-full max-w-md shrink-0 overflow-hidden \x72ounded-site-bento browser-card @container"} data-slot="browser-feature">
-            <div className={"artwork-scale relative block h-[453px] w-[453px] \x6frigin-top-left select-none [--artwork-width:453px]"} aria-hidden="true">
-              <div className={"browser-dock absolute top-[131px] left-[56px] flex h-[192px] w-[800px] items-center gap-8 rounded-[68px] \x62g-background-primary/\x350 p-9"}>
-                <span className={"grid size-[120px] shrink-0 place-items-center rounded-32 \x62order \x62order-border-quaternary bg-background-primary \x73hadow-elevation-1"}>
+        <div
+          className={
+            "col-span-full flex min-w-0 justify-center \x73ite-desktop:\x63ol-span-4 \x73ite-desktop:\x63ol-start-3"
+          }
+        >
+          <div
+            className={
+              "squircle relative aspect-square w-full max-w-md shrink-0 overflow-hidden \x72ounded-site-bento browser-card @container"
+            }
+            data-slot="browser-feature"
+          >
+            <div
+              className={
+                "artwork-scale relative block h-[453px] w-[453px] \x6frigin-top-left select-none [--artwork-width:453px]"
+              }
+              aria-hidden="true"
+            >
+              <div
+                className={
+                  "browser-dock absolute top-[131px] left-[56px] flex h-[192px] w-[800px] items-center gap-8 rounded-[68px] \x62g-background-primary/\x350 p-9"
+                }
+              >
+                <span
+                  className={
+                    "grid size-[120px] shrink-0 place-items-center rounded-32 \x62order \x62order-border-quaternary bg-background-primary \x73hadow-elevation-1"
+                  }
+                >
                   <span className="block size-24 overflow-hidden rounded-full">
-                    <img className={"size-24 [&]:max-w-none"} alt="" src="/site-assets/498713f9417f8018-18990e53fb6ce15232c1802791e04e82.png" />
+                    <img
+                      className={"size-24 [&]:max-w-none"}
+                      alt=""
+                      src="/site-assets/498713f9417f8018-18990e53fb6ce15232c1802791e04e82.png"
+                    />
                   </span>
                 </span>
-                <span className={"grid size-[120px] shrink-0 place-items-center rounded-32 \x62order \x62order-border-quaternary bg-background-primary \x73hadow-elevation-1"}>
-                  <img className={"size-24 [&]:max-w-none"} alt="" src="/site-assets/550c3a12e5730639-4ebe0fc9e915ed3e215baea050368cc5.png" />
+                <span
+                  className={
+                    "grid size-[120px] shrink-0 place-items-center rounded-32 \x62order \x62order-border-quaternary bg-background-primary \x73hadow-elevation-1"
+                  }
+                >
+                  <img
+                    className={"size-24 [&]:max-w-none"}
+                    alt=""
+                    src="/site-assets/550c3a12e5730639-4ebe0fc9e915ed3e215baea050368cc5.png"
+                  />
                 </span>
-                <span className={"grid size-[120px] shrink-0 place-items-center rounded-32 \x62order \x62order-border-quaternary bg-background-primary \x73hadow-elevation-1"}>
-                  <img className={"size-24 [&]:max-w-none"} alt="" src="/site-assets/bdb01ace473549ad-79384b5751416f2cf2409ddb1fbd7b8d.png" />
+                <span
+                  className={
+                    "grid size-[120px] shrink-0 place-items-center rounded-32 \x62order \x62order-border-quaternary bg-background-primary \x73hadow-elevation-1"
+                  }
+                >
+                  <img
+                    className={"size-24 [&]:max-w-none"}
+                    alt=""
+                    src="/site-assets/bdb01ace473549ad-79384b5751416f2cf2409ddb1fbd7b8d.png"
+                  />
                 </span>
-                <span className={"grid size-[120px] shrink-0 place-items-center rounded-32 \x62order \x62order-border-quaternary bg-background-primary \x73hadow-elevation-1"}>
-                  <img className={"size-24 [&]:max-w-none"} alt="" src="/site-assets/980a56907b2ce966-88da1b7579a6cfd3a1ff9e9993656760.png" />
+                <span
+                  className={
+                    "grid size-[120px] shrink-0 place-items-center rounded-32 \x62order \x62order-border-quaternary bg-background-primary \x73hadow-elevation-1"
+                  }
+                >
+                  <img
+                    className={"size-24 [&]:max-w-none"}
+                    alt=""
+                    src="/site-assets/980a56907b2ce966-88da1b7579a6cfd3a1ff9e9993656760.png"
+                  />
                 </span>
               </div>
             </div>
           </div>
         </div>
-        <div className={"col-span-full flex w-full max-w-md flex-col justify-center gap-8 justify-self-center \x6dax-site-desktop:\x69nset-site-media-copy \x73ite-desktop:\x63ol-span-4 \x73ite-desktop:\x63ol-start-8 \x73ite-desktop:\x6dax-w-none"}>
+        <div
+          className={
+            "col-span-full flex w-full max-w-md flex-col justify-center gap-8 justify-self-center \x6dax-site-desktop:\x69nset-site-media-copy \x73ite-desktop:\x63ol-span-4 \x73ite-desktop:\x63ol-start-8 \x73ite-desktop:\x6dax-w-none"
+          }
+        >
           <div className="flex max-w-xs flex-col gap-6 mobile:max-w-77">
-            <h2 className={"type-feature-heading text-text-primary \x6dobile:\x77hitespace-pre-line"}>No app to download.</h2>
-            <p className="type-site-body text-text-secondary">Just open America.gov in your browser on your phone, tablet, or computer.</p>
+            <h2
+              className={"type-feature-heading text-text-primary \x6dobile:\x77hitespace-pre-line"}
+            >
+              No app to download.
+            </h2>
+            <p className="type-site-body text-text-secondary">
+              Just open America.gov in your browser on your phone, tablet, or computer.
+            </p>
           </div>
-          <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 bg-transparent focus-visible:bg-background-tertiary active:text-text-disabled \x64isabled:\x62g-transparent disabled:text-text-disabled site-underline-link h-auto min-h-0 w-fit rounded-4 p-0 type-site-cta text-text-primary \x68over:\x62g-transparent"} type="button" tabIndex={0}>Ask a question</button>
+          <button
+            className={
+              "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 bg-transparent focus-visible:bg-background-tertiary active:text-text-disabled \x64isabled:\x62g-transparent disabled:text-text-disabled site-underline-link h-auto min-h-0 w-fit rounded-4 p-0 type-site-cta text-text-primary \x68over:\x62g-transparent"
+            }
+            type="button"
+            tabIndex={0}
+          >
+            Ask a question
+          </button>
         </div>
       </div>
     </section>
@@ -1140,85 +4045,304 @@ function ImportedSection29000WebsitesInto() {
 
 function ImportedSectionMoreComingIn2027() {
   return (
-    <section className={"relative z-10 overflow-x-clip overflow-y-visible pt-0 mobile:pt-0 \x73ite-desktop:\x70t-0"} id="upcoming-features" aria-labelledby="coming-in-2027">
+    <section
+      className={
+        "relative z-10 overflow-x-clip overflow-y-visible pt-0 mobile:pt-0 \x73ite-desktop:\x70t-0"
+      }
+      id="upcoming-features"
+      aria-labelledby="coming-in-2027"
+    >
       <div className={"site-container relative z-10 flex justify-center \x6dax-mobile:\x70x-8"}>
         <div className="flex w-full max-w-172 flex-col items-center gap-8 text-center">
           <div className="flex w-full flex-col items-center gap-5 mobile:gap-6">
-            <h2 className={"type-section-heading text-text-primary \x6dax-mobile:\x74ext-[\x348px] \x73ite-desktop:\x74ext-[\x396px] \x73ite-desktop:\x74racking-[\x2d0.\x306em]"} id="coming-in-2027">More coming in 2027</h2>
-            <p className={"max-w-128 px-px type-site-body \x74ext-text-primary/\x370"}>Going beyond answers, you’ll be able to complete forms, track progress, and organize everything in one place.</p>
+            <h2
+              className={
+                "type-section-heading text-text-primary \x6dax-mobile:\x74ext-[\x348px] \x73ite-desktop:\x74ext-[\x396px] \x73ite-desktop:\x74racking-[\x2d0.\x306em]"
+              }
+              id="coming-in-2027"
+            >
+              More coming in 2027
+            </h2>
+            <p className={"max-w-128 px-px type-site-body \x74ext-text-primary/\x370"}>
+              Going beyond answers, you’ll be able to complete forms, track progress, and organize
+              everything in one place.
+            </p>
           </div>
-          <a className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-14 min-h-14 rounded-40 px-6 pb-0.5 type-body-m leading-none bg-background-tertiary text-text-primary hover:bg-background-secondary active:bg-background-tertiary disabled:bg-background-tertiary disabled:text-text-disabled \x6dotion-reduce:\x74ransition-none"} href="/coming-soon">See what’s ahead</a>
+          <a
+            className={
+              "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-14 min-h-14 rounded-40 px-6 pb-0.5 type-body-m leading-none bg-background-tertiary text-text-primary hover:bg-background-secondary active:bg-background-tertiary disabled:bg-background-tertiary disabled:text-text-disabled \x6dotion-reduce:\x74ransition-none"
+            }
+            href="/coming-soon"
+          >
+            See what’s ahead
+          </a>
         </div>
       </div>
       <ul className={"\x73r-only"} role="list" aria-label="Previews of services planned for 2027">
-        <li>Find federal jobs matched to your experience. The preview shows uploading a resume and comparing job matches, with details about the agency, location, salary, and remote work.</li>
-        <li>Choose a campground. The preview shows a map and four campgrounds near Greer, Arizona, with photos and addresses.</li>
-        <li>Compare medication costs. The preview shows adding Albuterol HFA and choosing its form, strength, and package size.</li>
-        <li>Choose preferred pharmacies. The preview shows nearby pharmacies on a map, with their names, addresses, and selections.</li>
-        <li>Update your legal name across agencies. The preview shows selecting Social Security, MyTravelGov, CBP Trusted Traveler Programs, and Global Entry / TSA PreCheck.</li>
-        <li>Find housing. The preview shows a photo and address for Mocksville Place, a multifamily housing development in North Carolina.</li>
-        <li>Apply for a passport and track its progress. The preview shows confirming a passport photo, submitting an application, and tracking it from submitted to processing with an estimated arrival date.</li>
+        <li>
+          Find federal jobs matched to your experience. The preview shows uploading a resume and
+          comparing job matches, with details about the agency, location, salary, and remote work.
+        </li>
+        <li>
+          Choose a campground. The preview shows a map and four campgrounds near Greer, Arizona,
+          with photos and addresses.
+        </li>
+        <li>
+          Compare medication costs. The preview shows adding Albuterol HFA and choosing its form,
+          strength, and package size.
+        </li>
+        <li>
+          Choose preferred pharmacies. The preview shows nearby pharmacies on a map, with their
+          names, addresses, and selections.
+        </li>
+        <li>
+          Update your legal name across agencies. The preview shows selecting Social Security,
+          MyTravelGov, CBP Trusted Traveler Programs, and Global Entry / TSA PreCheck.
+        </li>
+        <li>
+          Find housing. The preview shows a photo and address for Mocksville Place, a multifamily
+          housing development in North Carolina.
+        </li>
+        <li>
+          Apply for a passport and track its progress. The preview shows confirming a passport
+          photo, submitting an application, and tracking it from submitted to processing with an
+          estimated arrival date.
+        </li>
         <li>Sign in to access services. The preview shows a Login button.</li>
       </ul>
       <div className="home-roadmap-artwork" lang="en">
         <div className="absolute inset-0">
-          <div className="home-roadmap-canvas type-body-s artwork-scale select-none" aria-hidden="true" lang="en">
+          <div
+            className="home-roadmap-canvas type-body-s artwork-scale select-none"
+            aria-hidden="true"
+            lang="en"
+          >
             <div className="roadmap-pharmacies roadmap-card" data-roadmap-preview="true">
               <div className="contents" inert>
                 <p className="roadmap-card-title">Add your preferred pharmacies</p>
                 <div className="roadmap-map relative h-[314px] overflow-hidden">
-                  <img className={"map-artwork absolute right-0 bottom-0 h-[552px] w-[895px] max-w-none [&]:max-w-none"} alt="" loading="lazy" src="/site-assets/33d2190bb40b91ff.png" />
-                  <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-9 rounded-40 px-3 pb-0.5 type-body-m leading-none \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-control-label roadmap-map-control absolute top-3 left-3 gap-1 pr-2"} type="button" tabIndex={0}>20006 <svg fill="none" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M10 12.23L4.71 6.94L3.29 8.35L10 15.06L16.71 8.35L15.29 6.94L10 12.23Z" fill="currentColor" /></svg></button>
-                  <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-map-control absolute top-3 right-3"} type="button" tabIndex={0} aria-label="Expand pharmacy map">
-                    <img className={"map-glyph [&]:max-w-none"} style={{ aspectRatio: "14 / 14" }} alt="" />
+                  <img
+                    className={
+                      "map-artwork absolute right-0 bottom-0 h-[552px] w-[895px] max-w-none [&]:max-w-none"
+                    }
+                    alt=""
+                    loading="lazy"
+                    src="/site-assets/33d2190bb40b91ff.png"
+                  />
+                  <button
+                    className={
+                      "inline-flex shrink-0 cursor-pointer items-center justify-center font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-9 rounded-40 px-3 pb-0.5 type-body-m leading-none \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-control-label roadmap-map-control absolute top-3 left-3 gap-1 pr-2"
+                    }
+                    type="button"
+                    tabIndex={0}
+                  >
+                    20006{" "}
+                    <svg
+                      fill="none"
+                      height="16"
+                      viewBox="0 0 20 20"
+                      width="16"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M10 12.23L4.71 6.94L3.29 8.35L10 15.06L16.71 8.35L15.29 6.94L10 12.23Z"
+                        fill="currentColor"
+                      />
+                    </svg>
                   </button>
-                  <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 bg-blue-700 text-white \x73hadow-elevation-1 hover:bg-blue-800 focus-visible:bg-blue-700 active:bg-blue-700 \x61ctive:\x73hadow-none disabled:bg-blue-700-10 disabled:text-text-disabled \x64isabled:\x73hadow-none absolute \x74op-(\x2d-marker-top) \x6ceft-(\x2d-marker-left)"} style={{ "--marker-left": "140px", "--marker-top": "146px" } as CSSProperties} type="button" tabIndex={0} aria-label="Selected pharmacy location">
-                    <img className={"size-5 [&]:max-w-none"} style={{ aspectRatio: "20 / 20" }} alt="" />
+                  <button
+                    className={
+                      "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-map-control absolute top-3 right-3"
+                    }
+                    type="button"
+                    tabIndex={0}
+                    aria-label="Expand pharmacy map"
+                  >
+                    <img
+                      className={"map-glyph [&]:max-w-none"}
+                      style={{ aspectRatio: "14 / 14" }}
+                      alt=""
+                    />
                   </button>
-                  <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none absolute \x74op-(\x2d-marker-top) \x6ceft-(\x2d-marker-left) roadmap-map-control"} style={{ "--marker-left": "253px", "--marker-top": "196px" } as CSSProperties} type="button" tabIndex={0} aria-label="Pharmacy location">
-                    <img className={"size-5 map-glyph [&]:max-w-none"} style={{ aspectRatio: "20 / 20" }} alt="" />
+                  <button
+                    className={
+                      "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 bg-blue-700 text-white \x73hadow-elevation-1 hover:bg-blue-800 focus-visible:bg-blue-700 active:bg-blue-700 \x61ctive:\x73hadow-none disabled:bg-blue-700-10 disabled:text-text-disabled \x64isabled:\x73hadow-none absolute \x74op-(\x2d-marker-top) \x6ceft-(\x2d-marker-left)"
+                    }
+                    style={{ "--marker-left": "140px", "--marker-top": "146px" } as CSSProperties}
+                    type="button"
+                    tabIndex={0}
+                    aria-label="Selected pharmacy location"
+                  >
+                    <img
+                      className={"size-5 [&]:max-w-none"}
+                      style={{ aspectRatio: "20 / 20" }}
+                      alt=""
+                    />
                   </button>
-                  <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none absolute \x74op-(\x2d-marker-top) \x6ceft-(\x2d-marker-left) roadmap-map-control"} style={{ "--marker-left": "193px", "--marker-top": "128px" } as CSSProperties} type="button" tabIndex={0} aria-label="Pharmacy location">
-                    <img className={"size-5 map-glyph [&]:max-w-none"} style={{ aspectRatio: "20 / 20" }} alt="" />
+                  <button
+                    className={
+                      "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none absolute \x74op-(\x2d-marker-top) \x6ceft-(\x2d-marker-left) roadmap-map-control"
+                    }
+                    style={{ "--marker-left": "253px", "--marker-top": "196px" } as CSSProperties}
+                    type="button"
+                    tabIndex={0}
+                    aria-label="Pharmacy location"
+                  >
+                    <img
+                      className={"size-5 map-glyph [&]:max-w-none"}
+                      style={{ aspectRatio: "20 / 20" }}
+                      alt=""
+                    />
                   </button>
-                  <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none absolute \x74op-(\x2d-marker-top) \x6ceft-(\x2d-marker-left) roadmap-map-control"} style={{ "--marker-left": "99px", "--marker-top": "121px" } as CSSProperties} type="button" tabIndex={0} aria-label="Pharmacy location">
-                    <img className={"size-5 map-glyph [&]:max-w-none"} style={{ aspectRatio: "20 / 20" }} alt="" />
+                  <button
+                    className={
+                      "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none absolute \x74op-(\x2d-marker-top) \x6ceft-(\x2d-marker-left) roadmap-map-control"
+                    }
+                    style={{ "--marker-left": "193px", "--marker-top": "128px" } as CSSProperties}
+                    type="button"
+                    tabIndex={0}
+                    aria-label="Pharmacy location"
+                  >
+                    <img
+                      className={"size-5 map-glyph [&]:max-w-none"}
+                      style={{ aspectRatio: "20 / 20" }}
+                      alt=""
+                    />
                   </button>
-                  <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none absolute \x74op-(\x2d-marker-top) \x6ceft-(\x2d-marker-left) roadmap-map-control"} style={{ "--marker-left": "158px", "--marker-top": "222px" } as CSSProperties} type="button" tabIndex={0} aria-label="Pharmacy location">
-                    <img className={"size-5 map-glyph [&]:max-w-none"} style={{ aspectRatio: "20 / 20" }} alt="" />
+                  <button
+                    className={
+                      "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none absolute \x74op-(\x2d-marker-top) \x6ceft-(\x2d-marker-left) roadmap-map-control"
+                    }
+                    style={{ "--marker-left": "99px", "--marker-top": "121px" } as CSSProperties}
+                    type="button"
+                    tabIndex={0}
+                    aria-label="Pharmacy location"
+                  >
+                    <img
+                      className={"size-5 map-glyph [&]:max-w-none"}
+                      style={{ aspectRatio: "20 / 20" }}
+                      alt=""
+                    />
+                  </button>
+                  <button
+                    className={
+                      "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none absolute \x74op-(\x2d-marker-top) \x6ceft-(\x2d-marker-left) roadmap-map-control"
+                    }
+                    style={{ "--marker-left": "158px", "--marker-top": "222px" } as CSSProperties}
+                    type="button"
+                    tabIndex={0}
+                    aria-label="Pharmacy location"
+                  >
+                    <img
+                      className={"size-5 map-glyph [&]:max-w-none"}
+                      style={{ aspectRatio: "20 / 20" }}
+                      alt=""
+                    />
                   </button>
                   <div className={"absolute bottom-4 left-1/2 flex \x2dtranslate-x-1/\x32 gap-2"}>
-                    <div className={"flex w-[282px] shrink-0 items-center gap-3 rounded-16 bg-background-primary p-4 \x73hadow-elevation-1 \x6futline \x6futline-border-tertiary"}>
-                      <img className={"size-12 shrink-0 rounded-8 object-cover [&]:max-w-none"} alt="" loading="lazy" src="/site-assets/b64f8a648b217823.png" />
+                    <div
+                      className={
+                        "flex w-[282px] shrink-0 items-center gap-3 rounded-16 bg-background-primary p-4 \x73hadow-elevation-1 \x6futline \x6futline-border-tertiary"
+                      }
+                    >
+                      <img
+                        className={"size-12 shrink-0 rounded-8 object-cover [&]:max-w-none"}
+                        alt=""
+                        loading="lazy"
+                        src="/site-assets/b64f8a648b217823.png"
+                      />
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-medium">Ridgeview Pharmacy</p>
                         <p className="truncate text-secondary">1124 Patton Ave, Reston, VA</p>
                       </div>
-                      <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-9 rounded-40 px-3 pb-0.5 type-body-m leading-none bg-blue-700 text-white \x73hadow-elevation-1 hover:bg-blue-800 focus-visible:bg-blue-700 active:bg-blue-700 \x61ctive:\x73hadow-none disabled:bg-blue-700-10 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-control-label w-15.5"} type="button" tabIndex={0} aria-label="Ridgeview Pharmacy selected">
-                        <svg fill="none" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M18 5.4L16.6 4L7.9 13.2L3.4 9L2 10.4L8 16L18 5.4Z" fill="currentColor" />
+                      <button
+                        className={
+                          "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-9 rounded-40 px-3 pb-0.5 type-body-m leading-none bg-blue-700 text-white \x73hadow-elevation-1 hover:bg-blue-800 focus-visible:bg-blue-700 active:bg-blue-700 \x61ctive:\x73hadow-none disabled:bg-blue-700-10 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-control-label w-15.5"
+                        }
+                        type="button"
+                        tabIndex={0}
+                        aria-label="Ridgeview Pharmacy selected"
+                      >
+                        <svg
+                          fill="none"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          width="20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M18 5.4L16.6 4L7.9 13.2L3.4 9L2 10.4L8 16L18 5.4Z"
+                            fill="currentColor"
+                          />
                         </svg>
                       </button>
                     </div>
-                    <div className={"flex w-[282px] shrink-0 items-center gap-3 rounded-16 bg-background-primary p-4 \x73hadow-elevation-1 \x6futline \x6futline-border-tertiary"}>
-                      <img className={"size-12 shrink-0 rounded-8 object-cover [&]:max-w-none"} alt="" loading="lazy" src="/site-assets/a4764ee297453a76.png" />
+                    <div
+                      className={
+                        "flex w-[282px] shrink-0 items-center gap-3 rounded-16 bg-background-primary p-4 \x73hadow-elevation-1 \x6futline \x6futline-border-tertiary"
+                      }
+                    >
+                      <img
+                        className={"size-12 shrink-0 rounded-8 object-cover [&]:max-w-none"}
+                        alt=""
+                        loading="lazy"
+                        src="/site-assets/a4764ee297453a76.png"
+                      />
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-medium">Town Center Pharmacy</p>
                         <p className="truncate text-secondary">1800 Old Reston Ave, Reston, VA</p>
                       </div>
-                      <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-9 rounded-40 px-3 pb-0.5 type-body-m leading-none bg-blue-700 text-white \x73hadow-elevation-1 hover:bg-blue-800 focus-visible:bg-blue-700 active:bg-blue-700 \x61ctive:\x73hadow-none disabled:bg-blue-700-10 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-control-label w-15.5"} type="button" tabIndex={0} aria-label="Town Center Pharmacy selected">
-                        <svg fill="none" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M18 5.4L16.6 4L7.9 13.2L3.4 9L2 10.4L8 16L18 5.4Z" fill="currentColor" />
+                      <button
+                        className={
+                          "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-9 rounded-40 px-3 pb-0.5 type-body-m leading-none bg-blue-700 text-white \x73hadow-elevation-1 hover:bg-blue-800 focus-visible:bg-blue-700 active:bg-blue-700 \x61ctive:\x73hadow-none disabled:bg-blue-700-10 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-control-label w-15.5"
+                        }
+                        type="button"
+                        tabIndex={0}
+                        aria-label="Town Center Pharmacy selected"
+                      >
+                        <svg
+                          fill="none"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          width="20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M18 5.4L16.6 4L7.9 13.2L3.4 9L2 10.4L8 16L18 5.4Z"
+                            fill="currentColor"
+                          />
                         </svg>
                       </button>
                     </div>
-                    <div className={"flex w-[282px] shrink-0 items-center gap-3 rounded-16 bg-background-primary p-4 \x73hadow-elevation-1 \x6futline \x6futline-border-tertiary"}>
-                      <img className={"size-12 shrink-0 rounded-8 object-cover [&]:max-w-none"} alt="" loading="lazy" src="/site-assets/b5121cea21d0696a.png" />
+                    <div
+                      className={
+                        "flex w-[282px] shrink-0 items-center gap-3 rounded-16 bg-background-primary p-4 \x73hadow-elevation-1 \x6futline \x6futline-border-tertiary"
+                      }
+                    >
+                      <img
+                        className={"size-12 shrink-0 rounded-8 object-cover [&]:max-w-none"}
+                        alt=""
+                        loading="lazy"
+                        src="/site-assets/b5121cea21d0696a.png"
+                      />
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-medium">Lakeside Drug</p>
-                        <p className="truncate text-secondary">2200 Sunrise Valley Dr, Reston, VA</p>
+                        <p className="truncate text-secondary">
+                          2200 Sunrise Valley Dr, Reston, VA
+                        </p>
                       </div>
-                      <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-9 rounded-40 px-3 pb-0.5 type-body-m leading-none bg-background-tertiary text-text-primary hover:bg-background-secondary active:bg-background-tertiary disabled:bg-background-tertiary disabled:text-text-disabled roadmap-control-label w-15.5"} type="button" tabIndex={0} aria-label="Add Lakeside Drug">Add</button>
+                      <button
+                        className={
+                          "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-9 rounded-40 px-3 pb-0.5 type-body-m leading-none bg-background-tertiary text-text-primary hover:bg-background-secondary active:bg-background-tertiary disabled:bg-background-tertiary disabled:text-text-disabled roadmap-control-label w-15.5"
+                        }
+                        type="button"
+                        tabIndex={0}
+                        aria-label="Add Lakeside Drug"
+                      >
+                        Add
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -1228,35 +4352,158 @@ function ImportedSectionMoreComingIn2027() {
               <div className="contents" inert>
                 <p className="roadmap-card-title">Choose a campground near Greer, AZ</p>
                 <div className="roadmap-map relative h-[294px] overflow-hidden">
-                  <img className={"roadmap-camp-map map-artwork [&]:max-w-none"} alt="" loading="lazy" src="/site-assets/b86c1ca5c392c15f.png" />
-                  <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-map-control absolute \x74op-(\x2d-marker-top) \x6ceft-(\x2d-marker-left)"} style={{ "--marker-left": "84px", "--marker-top": "48px" } as CSSProperties} type="button" tabIndex={0} aria-label="Campground location">
-                    <img className={"map-glyph [&]:max-w-none"} style={{ aspectRatio: "16 / 15" }} alt="" />
+                  <img
+                    className={"roadmap-camp-map map-artwork [&]:max-w-none"}
+                    alt=""
+                    loading="lazy"
+                    src="/site-assets/b86c1ca5c392c15f.png"
+                  />
+                  <button
+                    className={
+                      "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-map-control absolute \x74op-(\x2d-marker-top) \x6ceft-(\x2d-marker-left)"
+                    }
+                    style={{ "--marker-left": "84px", "--marker-top": "48px" } as CSSProperties}
+                    type="button"
+                    tabIndex={0}
+                    aria-label="Campground location"
+                  >
+                    <img
+                      className={"map-glyph [&]:max-w-none"}
+                      style={{ aspectRatio: "16 / 15" }}
+                      alt=""
+                    />
                   </button>
-                  <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-map-control absolute \x74op-(\x2d-marker-top) \x6ceft-(\x2d-marker-left)"} style={{ "--marker-left": "236px", "--marker-top": "92px" } as CSSProperties} type="button" tabIndex={0} aria-label="Campground location">
-                    <img className={"map-glyph [&]:max-w-none"} style={{ aspectRatio: "16 / 15" }} alt="" />
+                  <button
+                    className={
+                      "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-map-control absolute \x74op-(\x2d-marker-top) \x6ceft-(\x2d-marker-left)"
+                    }
+                    style={{ "--marker-left": "236px", "--marker-top": "92px" } as CSSProperties}
+                    type="button"
+                    tabIndex={0}
+                    aria-label="Campground location"
+                  >
+                    <img
+                      className={"map-glyph [&]:max-w-none"}
+                      style={{ aspectRatio: "16 / 15" }}
+                      alt=""
+                    />
                   </button>
-                  <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-map-control absolute \x74op-(\x2d-marker-top) \x6ceft-(\x2d-marker-left)"} style={{ "--marker-left": "56px", "--marker-top": "158px" } as CSSProperties} type="button" tabIndex={0} aria-label="Campground location">
-                    <img className={"map-glyph [&]:max-w-none"} style={{ aspectRatio: "16 / 15" }} alt="" />
+                  <button
+                    className={
+                      "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-map-control absolute \x74op-(\x2d-marker-top) \x6ceft-(\x2d-marker-left)"
+                    }
+                    style={{ "--marker-left": "56px", "--marker-top": "158px" } as CSSProperties}
+                    type="button"
+                    tabIndex={0}
+                    aria-label="Campground location"
+                  >
+                    <img
+                      className={"map-glyph [&]:max-w-none"}
+                      style={{ aspectRatio: "16 / 15" }}
+                      alt=""
+                    />
                   </button>
-                  <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-map-control absolute \x74op-(\x2d-marker-top) \x6ceft-(\x2d-marker-left)"} style={{ "--marker-left": "282px", "--marker-top": "198px" } as CSSProperties} type="button" tabIndex={0} aria-label="Campground location">
-                    <img className={"map-glyph [&]:max-w-none"} style={{ aspectRatio: "16 / 15" }} alt="" />
+                  <button
+                    className={
+                      "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-map-control absolute \x74op-(\x2d-marker-top) \x6ceft-(\x2d-marker-left)"
+                    }
+                    style={{ "--marker-left": "282px", "--marker-top": "198px" } as CSSProperties}
+                    type="button"
+                    tabIndex={0}
+                    aria-label="Campground location"
+                  >
+                    <img
+                      className={"map-glyph [&]:max-w-none"}
+                      style={{ aspectRatio: "16 / 15" }}
+                      alt=""
+                    />
                   </button>
-                  <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-9 rounded-40 px-3 pb-0.5 type-body-m leading-none \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-control-label roadmap-map-control absolute top-2 left-2 gap-1 pr-2"} type="button" tabIndex={0}>85927 <svg fill="none" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M10 12.23L4.71 6.94L3.29 8.35L10 15.06L16.71 8.35L15.29 6.94L10 12.23Z" fill="currentColor" /></svg></button>
+                  <button
+                    className={
+                      "inline-flex shrink-0 cursor-pointer items-center justify-center font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-9 rounded-40 px-3 pb-0.5 type-body-m leading-none \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-control-label roadmap-map-control absolute top-2 left-2 gap-1 pr-2"
+                    }
+                    type="button"
+                    tabIndex={0}
+                  >
+                    85927{" "}
+                    <svg
+                      fill="none"
+                      height="16"
+                      viewBox="0 0 20 20"
+                      width="16"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M10 12.23L4.71 6.94L3.29 8.35L10 15.06L16.71 8.35L15.29 6.94L10 12.23Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </button>
                   <div className="absolute right-2 bottom-2 flex flex-col gap-2">
-                    <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-map-control"} type="button" tabIndex={0} aria-label="Locate campground">
-                      <img className={"map-glyph [&]:max-w-none"} style={{ aspectRatio: "14 / 14" }} alt="" />
+                    <button
+                      className={
+                        "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-map-control"
+                      }
+                      type="button"
+                      tabIndex={0}
+                      aria-label="Locate campground"
+                    >
+                      <img
+                        className={"map-glyph [&]:max-w-none"}
+                        style={{ aspectRatio: "14 / 14" }}
+                        alt=""
+                      />
                     </button>
-                    <div className={"roadmap-map-control flex flex-col overflow-hidden rounded-full bg-background-primary \x73hadow-elevation-1"}>
-                      <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 bg-transparent text-text-primary hover:bg-background-tertiary focus-visible:bg-background-tertiary active:text-text-disabled \x64isabled:\x62g-transparent disabled:text-text-disabled"} type="button" tabIndex={0} aria-label="Zoom in">
-                        <img className={"map-glyph [&]:max-w-none"} style={{ aspectRatio: "14 / 14" }} alt="" />
+                    <div
+                      className={
+                        "roadmap-map-control flex flex-col overflow-hidden rounded-full bg-background-primary \x73hadow-elevation-1"
+                      }
+                    >
+                      <button
+                        className={
+                          "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 bg-transparent text-text-primary hover:bg-background-tertiary focus-visible:bg-background-tertiary active:text-text-disabled \x64isabled:\x62g-transparent disabled:text-text-disabled"
+                        }
+                        type="button"
+                        tabIndex={0}
+                        aria-label="Zoom in"
+                      >
+                        <img
+                          className={"map-glyph [&]:max-w-none"}
+                          style={{ aspectRatio: "14 / 14" }}
+                          alt=""
+                        />
                       </button>
-                      <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 bg-transparent text-text-primary hover:bg-background-tertiary focus-visible:bg-background-tertiary active:text-text-disabled \x64isabled:\x62g-transparent disabled:text-text-disabled"} type="button" tabIndex={0} aria-label="Zoom out">
-                        <img className={"map-glyph [&]:max-w-none"} style={{ aspectRatio: "14 / 14" }} alt="" />
+                      <button
+                        className={
+                          "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 bg-transparent text-text-primary hover:bg-background-tertiary focus-visible:bg-background-tertiary active:text-text-disabled \x64isabled:\x62g-transparent disabled:text-text-disabled"
+                        }
+                        type="button"
+                        tabIndex={0}
+                        aria-label="Zoom out"
+                      >
+                        <img
+                          className={"map-glyph [&]:max-w-none"}
+                          style={{ aspectRatio: "14 / 14" }}
+                          alt=""
+                        />
                       </button>
                     </div>
                   </div>
-                  <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-map-control absolute top-2 right-2"} type="button" tabIndex={0} aria-label="Orient map">
-                    <img className={"map-glyph [&]:max-w-none"} style={{ aspectRatio: "14 / 14" }} alt="" />
+                  <button
+                    className={
+                      "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 size-8 rounded-full p-0 \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-map-control absolute top-2 right-2"
+                    }
+                    type="button"
+                    tabIndex={0}
+                    aria-label="Orient map"
+                  >
+                    <img
+                      className={"map-glyph [&]:max-w-none"}
+                      style={{ aspectRatio: "14 / 14" }}
+                      alt=""
+                    />
                   </button>
                 </div>
               </div>
@@ -1264,48 +4511,147 @@ function ImportedSectionMoreComingIn2027() {
             <div className="roadmap-medication roadmap-card" data-roadmap-preview="true">
               <div className="contents" inert>
                 <p className="roadmap-card-title">Add your medications</p>
-                <div className={"flex h-14 items-center rounded-full \x62order \x62order-border-tertiary px-5 text-secondary"}>Search medications</div>
+                <div
+                  className={
+                    "flex h-14 items-center rounded-full \x62order \x62order-border-tertiary px-5 text-secondary"
+                  }
+                >
+                  Search medications
+                </div>
                 <div className="roadmap-inset flex flex-col gap-4 p-6">
-                  <div className={"flex items-center gap-2 \x62order-b \x62order-border-tertiary pb-4"}>
-                    <div className={"relative size-8 overflow-hidden rounded-8 \x62order \x62order-border-quaternary"}>
-                      <img className={"absolute top-[-36.36%] left-[-33.01%] h-[172.73%] w-[161.47%] max-w-none [&]:max-w-none"} alt="" loading="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABkCAYAAADkBDymAAABY2lDQ1BrQ0dDb2xvclNwYWNlRGlzcGxheVAzAAAokX2QsUvDUBDGv1aloHUQHRwcMolDlJIKuji0FURxCFXB6pS+pqmQxkeSIgU3/4GC/4EKzm4Whzo6OAiik+jm5KTgouV5L4mkInqP435877vjOCA5bnBu9wOoO75bXMorm6UtJfWMBL0gDObxnK6vSv6uP+P9PvTeTstZv///jcGK6TGqn5QZxl0fSKjE+p7PJe8Tj7m0FHFLshXyieRyyOeBZ71YIL4mVljNqBC/EKvlHt3q4brdYNEOcvu06WysyTmUE1jEDjxw2DDQhAId2T/8s4G/gF1yN+FSn4UafOrJkSInmMTLcMAwA5VYQ4ZSk3eO7ncX3U+NtYMnYKEjhLiItZUOcDZHJ2vH2tQ8MDIEXLW54RqB1EeZrFaB11NguASM3lDPtlfNauH26Tww8CjE2ySQOgS6LSE+joToHlPzA3DpfAEDp2ITpJYOWwAAAARjSUNQDA0AAW4D4+8AAAA4ZVhJZk1NACoAAAAIAAGHaQAEAAAAAQAAABoAAAAAAAKgAgAEAAAAAQAAAF2gAwAEAAAAAQAAAGQAAAAAVDfTIQAAAZ9pVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDYuMC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iPgogICAgICAgICA8ZXhpZjpQaXhlbFhEaW1lbnNpb24+MTgwODwvZXhpZjpQaXhlbFhEaW1lbnNpb24+CiAgICAgICAgIDxleGlmOlBpeGVsWURpbWVuc2lvbj4xOTM0PC9leGlmOlBpeGVsWURpbWVuc2lvbj4KICAgICAgPC9yZGY6RGVzY3JpcHRpb24+CiAgIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+Ctm+zXcAAAgLSURBVHgB7ZvZbtxGEEWL+6wa2ZbjGDHyAcmDvyL+bL/kE/ISIECC2EJgK45tafbhlnu7h5xFEmQ9SNUEmgJFstlkNU/fKRZ7Cf45/70WvzwqgfBRrXljhoCHriAED91DVyCgYNIr3UNXIKBg0ivdQ1cgoGDSK91DVyCgYNIr3UNXIKBg0ivdQ1cgoGDSK91DVyCgYNIr3UNXIKBg0ivdQ1cgoGDSK91DVyCgYNIr3UNXIKBg0ivdQ1cgoGAyVrD5TSaDIJC6roXbKIok5DGuLMvSpPMmPN/FxUnoeZ5LUQpgxzKdXsmHDx9kPltImiVy9vyZTMZjSdPErKyUri3OQa+qSr58mUp/OJHTJ2fy51/v5e3bX+Xdu3c4PpU3b95ILxvLbH4pz55OAD7tGnNxDjrdR75ZS5IWEoah9Pt9wJ7IYnkmw9FICvwKZrMpXEsheV5IlmWdczNORS90FZsNXEtVw5WkUlWlLJcLrEukb2Q+n0Hhc1RGZIAzvYtL4Nr49E1eSllHMuiPpShy+XjxUf779AnA57Jer2VyciLPv3shgZQyHKQymYw7x90x91LDXfQkTgZQuUhVV8alRHAzC6p9tYbKEcXg3TkcjOB6ks4BZ4Gdci8sEMPAEqFLjb8gQPFwXMDP05eXcDcCjTN8rJDOl24XF8egN+EfkIOnPcJ/AsZaw9ejJkzs3kXYTZkdg374sWOPLGhTUPDvYFjesG63jkFvy3V9B64mgG+H4I0Lup6hOymOvUi34OhC9hhyP8ALlHE7wZvjDrsZN5VO/01Fm9YWuhS+PEMDPY4jieJ459eZsWOLm0o3EBG9YEtlU+FRYkEnAB4nicRoBGNlEPn+r6IL/N2EDphEyZAxwkrIKdUP4IzZ2VSwRrhYVXA1QSxJ3C3szkE3uAE9wqd+jbgxprLLBOFiJRvE6lzL1Qrqj/CB1Jcsjbog7oMyugWdn5oATrfBr1F+JG3yjfn836ARrCwKpLP8/MfYHcG89+kHFXrvgyBMJIiybRMA2mCqwih832nT8xhvb9601u/f25DyBQ5GL8bBtFhqQ/koQjk6bDN3ZMdB6CRHBRM+d0GYL1F7tP1/fHxw0vkDR6EfcaOfR5IBv60ANoyZY/4SOra4Bf02gA3gLfgAx6wGtwr/7TXvXLkbN9IqeZewVbp9OCbbU02Gb39o7ZyOQd+LRo5Vv3Uxjas/Pq0N8j72HYPeqBePABdysOy1r5szx+cPMrt94Bz03Wuxgb59YaKkNqX5Nexyuo34eumcg34wagufnw16Im8Uzl46HpnjDrJ3DjqbAdplu2vg2u9/C1oqs7Wn3XuEtvy37DhXYgtyp2+W26SxMlo/3nRk8OxhXqa4vjgH3QKz6Bt4BmsDfMvYfi61361N1k5s3YJ+p2gBmfVh6oSZ77zAyUpwq2n3TkTNi9VuD38P1y9mEzGaLTG6B1tTP7gOHSDaleUW9Jso3iRotLtzwBG78pqF2Q4ux/livZTVv+dSLi/BPpUQPVDZ2SuJsyEyH+RubvMoW7egHz0y3bjVtJFpe7bVOZKXSw4yRbs7zhpho0UGPXzYR0fIGh0gF39Lcf6bVGXOHHLy+hcZ/vgzKkHv0fUstwhv3rGYD2EbskiiRs3wOwTsUcgE9KVuO7DNUDxkoEeRwYnI5HsJphecwoGKQG1waB57nOxdbjb+wKnOQm+e2zoB2+tPhVuVAxlOFBifXiF+5wgB9Koa0hFieP4+qgrX1Ojuw+SB9edzezvADsZPpXqVY3RBxmwqi6PQd5/6lsuWDjfwOaY3CdRXGDpdoA+13x+YGRkhXAi7qTkwqeTXLNSdL2ey/vpJqs1ManRqBycvZUzV81YqyMWxmRigYJoBANQCOcRCddf02VBsgU7qNSYM1GWBWRt4SebQOsa1l8hDf17C9RjoGO/OIdYbzt4A9BSTDpqQX4m5Y9Bvo0B1b/kbhcJ/c4oMJ4FFAJz2+qiNSsISA5CMM6eMMcQakwqW04XMvs6lXm2gbgy53uCl29zsNnsPnO6ce7Fq3ntqAt875BuSPUdUOmdnEHqW9eGjMe0RlWFic+Tnu7IqN4hsVrJcYP4SFY6X6Bqq99D3gBq4VCGjDMLGbgucEgdgAudY9cAMRhKZwcXEyZVkvcyMcWSrDAcpFXAvASBXHCuD/dWStVBgHE17xz3Lj7vrlNLrGmos4Yvx8QNOUCoHF2FnS99s6KvByEzoxXjG+Rx+HVnGJ2MoHr4dauewuwK+PMT9wnyN+2B0GJx9jjVIeohydh9Vj4vbWnMKOsWMQND8j8Cll9YYKJpIkQSyXItcfl3AjyMKAfUIo3eZn1+mOaIWTgKrGJXA/ZgYHgqP4V6q2RXO5ZKjssoCF2YD5NF9bF3rBu/xP6jR0oeaA0AHfcyUHo368vR0bHz0YjHHjLsvMhr25IeXP2Ey2LC9xt7N3iCfX8n7iz/kczqSdHQqGapp9OKVhIjrNRfnpjTeBYPugwtdCH01B5iaiOXIVZtmAORZTC8RMq4kRljJae8pJgOHik0ALLtulbME91yaGXWESr9OV1KXR8SbeyLPYPJEhhMq30ZBHP2rvXQO+r2AsUK43uuih8+s+xp/+Odz0oKHrlAtHrqHrkBAwaRXuoeuQEDBpFe6h65AQMGkV7qHrkBAwaRXuoeuQEDBpFe6h65AQMGkV7qHrkBAwaRXuoeuQEDBpFe6h65AQMGkV7qHrkBAwaRXuoeuQEDBpFe6h65AQMHk/5CUDQqQJm4EAAAAAElFTkSuQmCC" />
-                      <img className={"absolute -top-2 -left-2 max-w-none [&]:max-w-none"} alt="" loading="lazy" />
+                  <div
+                    className={"flex items-center gap-2 \x62order-b \x62order-border-tertiary pb-4"}
+                  >
+                    <div
+                      className={
+                        "relative size-8 overflow-hidden rounded-8 \x62order \x62order-border-quaternary"
+                      }
+                    >
+                      <img
+                        className={
+                          "absolute top-[-36.36%] left-[-33.01%] h-[172.73%] w-[161.47%] max-w-none [&]:max-w-none"
+                        }
+                        alt=""
+                        loading="lazy"
+                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABkCAYAAADkBDymAAABY2lDQ1BrQ0dDb2xvclNwYWNlRGlzcGxheVAzAAAokX2QsUvDUBDGv1aloHUQHRwcMolDlJIKuji0FURxCFXB6pS+pqmQxkeSIgU3/4GC/4EKzm4Whzo6OAiik+jm5KTgouV5L4mkInqP435877vjOCA5bnBu9wOoO75bXMorm6UtJfWMBL0gDObxnK6vSv6uP+P9PvTeTstZv///jcGK6TGqn5QZxl0fSKjE+p7PJe8Tj7m0FHFLshXyieRyyOeBZ71YIL4mVljNqBC/EKvlHt3q4brdYNEOcvu06WysyTmUE1jEDjxw2DDQhAId2T/8s4G/gF1yN+FSn4UafOrJkSInmMTLcMAwA5VYQ4ZSk3eO7ncX3U+NtYMnYKEjhLiItZUOcDZHJ2vH2tQ8MDIEXLW54RqB1EeZrFaB11NguASM3lDPtlfNauH26Tww8CjE2ySQOgS6LSE+joToHlPzA3DpfAEDp2ITpJYOWwAAAARjSUNQDA0AAW4D4+8AAAA4ZVhJZk1NACoAAAAIAAGHaQAEAAAAAQAAABoAAAAAAAKgAgAEAAAAAQAAAF2gAwAEAAAAAQAAAGQAAAAAVDfTIQAAAZ9pVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDYuMC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iPgogICAgICAgICA8ZXhpZjpQaXhlbFhEaW1lbnNpb24+MTgwODwvZXhpZjpQaXhlbFhEaW1lbnNpb24+CiAgICAgICAgIDxleGlmOlBpeGVsWURpbWVuc2lvbj4xOTM0PC9leGlmOlBpeGVsWURpbWVuc2lvbj4KICAgICAgPC9yZGY6RGVzY3JpcHRpb24+CiAgIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+Ctm+zXcAAAgLSURBVHgB7ZvZbtxGEEWL+6wa2ZbjGDHyAcmDvyL+bL/kE/ISIECC2EJgK45tafbhlnu7h5xFEmQ9SNUEmgJFstlkNU/fKRZ7Cf45/70WvzwqgfBRrXljhoCHriAED91DVyCgYNIr3UNXIKBg0ivdQ1cgoGDSK91DVyCgYNIr3UNXIKBg0ivdQ1cgoGDSK91DVyCgYNIr3UNXIKBg0ivdQ1cgoGDSK91DVyCgYNIr3UNXIKBg0ivdQ1cgoGAyVrD5TSaDIJC6roXbKIok5DGuLMvSpPMmPN/FxUnoeZ5LUQpgxzKdXsmHDx9kPltImiVy9vyZTMZjSdPErKyUri3OQa+qSr58mUp/OJHTJ2fy51/v5e3bX+Xdu3c4PpU3b95ILxvLbH4pz55OAD7tGnNxDjrdR75ZS5IWEoah9Pt9wJ7IYnkmw9FICvwKZrMpXEsheV5IlmWdczNORS90FZsNXEtVw5WkUlWlLJcLrEukb2Q+n0Hhc1RGZIAzvYtL4Nr49E1eSllHMuiPpShy+XjxUf779AnA57Jer2VyciLPv3shgZQyHKQymYw7x90x91LDXfQkTgZQuUhVV8alRHAzC6p9tYbKEcXg3TkcjOB6ks4BZ4Gdci8sEMPAEqFLjb8gQPFwXMDP05eXcDcCjTN8rJDOl24XF8egN+EfkIOnPcJ/AsZaw9ejJkzs3kXYTZkdg374sWOPLGhTUPDvYFjesG63jkFvy3V9B64mgG+H4I0Lup6hOymOvUi34OhC9hhyP8ALlHE7wZvjDrsZN5VO/01Fm9YWuhS+PEMDPY4jieJ459eZsWOLm0o3EBG9YEtlU+FRYkEnAB4nicRoBGNlEPn+r6IL/N2EDphEyZAxwkrIKdUP4IzZ2VSwRrhYVXA1QSxJ3C3szkE3uAE9wqd+jbgxprLLBOFiJRvE6lzL1Qrqj/CB1Jcsjbog7oMyugWdn5oATrfBr1F+JG3yjfn836ARrCwKpLP8/MfYHcG89+kHFXrvgyBMJIiybRMA2mCqwih832nT8xhvb9601u/f25DyBQ5GL8bBtFhqQ/koQjk6bDN3ZMdB6CRHBRM+d0GYL1F7tP1/fHxw0vkDR6EfcaOfR5IBv60ANoyZY/4SOra4Bf02gA3gLfgAx6wGtwr/7TXvXLkbN9IqeZewVbp9OCbbU02Gb39o7ZyOQd+LRo5Vv3Uxjas/Pq0N8j72HYPeqBePABdysOy1r5szx+cPMrt94Bz03Wuxgb59YaKkNqX5Nexyuo34eumcg34wagufnw16Im8Uzl46HpnjDrJ3DjqbAdplu2vg2u9/C1oqs7Wn3XuEtvy37DhXYgtyp2+W26SxMlo/3nRk8OxhXqa4vjgH3QKz6Bt4BmsDfMvYfi61361N1k5s3YJ+p2gBmfVh6oSZ77zAyUpwq2n3TkTNi9VuD38P1y9mEzGaLTG6B1tTP7gOHSDaleUW9Jso3iRotLtzwBG78pqF2Q4ux/livZTVv+dSLi/BPpUQPVDZ2SuJsyEyH+RubvMoW7egHz0y3bjVtJFpe7bVOZKXSw4yRbs7zhpho0UGPXzYR0fIGh0gF39Lcf6bVGXOHHLy+hcZ/vgzKkHv0fUstwhv3rGYD2EbskiiRs3wOwTsUcgE9KVuO7DNUDxkoEeRwYnI5HsJphecwoGKQG1waB57nOxdbjb+wKnOQm+e2zoB2+tPhVuVAxlOFBifXiF+5wgB9Koa0hFieP4+qgrX1Ojuw+SB9edzezvADsZPpXqVY3RBxmwqi6PQd5/6lsuWDjfwOaY3CdRXGDpdoA+13x+YGRkhXAi7qTkwqeTXLNSdL2ey/vpJqs1ManRqBycvZUzV81YqyMWxmRigYJoBANQCOcRCddf02VBsgU7qNSYM1GWBWRt4SebQOsa1l8hDf17C9RjoGO/OIdYbzt4A9BSTDpqQX4m5Y9Bvo0B1b/kbhcJ/c4oMJ4FFAJz2+qiNSsISA5CMM6eMMcQakwqW04XMvs6lXm2gbgy53uCl29zsNnsPnO6ce7Fq3ntqAt875BuSPUdUOmdnEHqW9eGjMe0RlWFic+Tnu7IqN4hsVrJcYP4SFY6X6Bqq99D3gBq4VCGjDMLGbgucEgdgAudY9cAMRhKZwcXEyZVkvcyMcWSrDAcpFXAvASBXHCuD/dWStVBgHE17xz3Lj7vrlNLrGmos4Yvx8QNOUCoHF2FnS99s6KvByEzoxXjG+Rx+HVnGJ2MoHr4dauewuwK+PMT9wnyN+2B0GJx9jjVIeohydh9Vj4vbWnMKOsWMQND8j8Cll9YYKJpIkQSyXItcfl3AjyMKAfUIo3eZn1+mOaIWTgKrGJXA/ZgYHgqP4V6q2RXO5ZKjssoCF2YD5NF9bF3rBu/xP6jR0oeaA0AHfcyUHo368vR0bHz0YjHHjLsvMhr25IeXP2Ey2LC9xt7N3iCfX8n7iz/kczqSdHQqGapp9OKVhIjrNRfnpjTeBYPugwtdCH01B5iaiOXIVZtmAORZTC8RMq4kRljJae8pJgOHik0ALLtulbME91yaGXWESr9OV1KXR8SbeyLPYPJEhhMq30ZBHP2rvXQO+r2AsUK43uuih8+s+xp/+Odz0oKHrlAtHrqHrkBAwaRXuoeuQEDBpFe6h65AQMGkV7qHrkBAwaRXuoeuQEDBpFe6h65AQMGkV7qHrkBAwaRXuoeuQEDBpFe6h65AQMGkV7qHrkBAwaRXuoeuQEDBpFe6h65AQMHk/5CUDQqQJm4EAAAAAElFTkSuQmCC"
+                      />
+                      <img
+                        className={"absolute -top-2 -left-2 max-w-none [&]:max-w-none"}
+                        alt=""
+                        loading="lazy"
+                      />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="font-medium">Albuterol</p>
                       <p className="text-secondary">90 mcg</p>
                     </div>
-                    <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-9 rounded-40 px-3 pb-0.5 type-body-m leading-none bg-background-tertiary text-text-primary hover:bg-background-secondary active:bg-background-tertiary disabled:bg-background-tertiary disabled:text-text-disabled roadmap-small-button"} type="button" tabIndex={0}>Remove</button>
+                    <button
+                      className={
+                        "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-9 rounded-40 px-3 pb-0.5 type-body-m leading-none bg-background-tertiary text-text-primary hover:bg-background-secondary active:bg-background-tertiary disabled:bg-background-tertiary disabled:text-text-disabled roadmap-small-button"
+                      }
+                      type="button"
+                      tabIndex={0}
+                    >
+                      Remove
+                    </button>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="w-20 shrink-0 text-secondary">Form</span>
                     <div className="flex h-10 flex-1 items-center rounded-full bg-background-tertiary p-1">
-                      <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-11 min-h-11 rounded-40 px-5 pb-0.5 type-body-m leading-none \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-segment \x73hadow-elevation-1"} type="button" tabIndex={0}>Inhaler</button>
-                      <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-11 min-h-11 rounded-40 px-5 pb-0.5 type-body-m leading-none bg-transparent hover:bg-background-tertiary focus-visible:bg-background-tertiary active:text-text-disabled \x64isabled:\x62g-transparent disabled:text-text-disabled roadmap-segment text-secondary"} type="button" tabIndex={0}>Tablet</button>
+                      <button
+                        className={
+                          "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-11 min-h-11 rounded-40 px-5 pb-0.5 type-body-m leading-none \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-segment \x73hadow-elevation-1"
+                        }
+                        type="button"
+                        tabIndex={0}
+                      >
+                        Inhaler
+                      </button>
+                      <button
+                        className={
+                          "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-11 min-h-11 rounded-40 px-5 pb-0.5 type-body-m leading-none bg-transparent hover:bg-background-tertiary focus-visible:bg-background-tertiary active:text-text-disabled \x64isabled:\x62g-transparent disabled:text-text-disabled roadmap-segment text-secondary"
+                        }
+                        type="button"
+                        tabIndex={0}
+                      >
+                        Tablet
+                      </button>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="w-20 shrink-0 text-secondary">Size</span>
                     <div className="flex h-10 flex-1 items-center rounded-full bg-background-tertiary p-1">
-                      <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-11 min-h-11 rounded-40 px-5 pb-0.5 type-body-m leading-none bg-transparent hover:bg-background-tertiary focus-visible:bg-background-tertiary active:text-text-disabled \x64isabled:\x62g-transparent disabled:text-text-disabled roadmap-segment text-secondary"} type="button" tabIndex={0}>6g</button>
-                      <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-11 min-h-11 rounded-40 px-5 pb-0.5 type-body-m leading-none \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-segment \x73hadow-elevation-1"} type="button" tabIndex={0}>8g</button>
-                      <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-11 min-h-11 rounded-40 px-5 pb-0.5 type-body-m leading-none bg-transparent hover:bg-background-tertiary focus-visible:bg-background-tertiary active:text-text-disabled \x64isabled:\x62g-transparent disabled:text-text-disabled roadmap-segment text-secondary"} type="button" tabIndex={0}>20g</button>
+                      <button
+                        className={
+                          "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-11 min-h-11 rounded-40 px-5 pb-0.5 type-body-m leading-none bg-transparent hover:bg-background-tertiary focus-visible:bg-background-tertiary active:text-text-disabled \x64isabled:\x62g-transparent disabled:text-text-disabled roadmap-segment text-secondary"
+                        }
+                        type="button"
+                        tabIndex={0}
+                      >
+                        6g
+                      </button>
+                      <button
+                        className={
+                          "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-11 min-h-11 rounded-40 px-5 pb-0.5 type-body-m leading-none \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-segment \x73hadow-elevation-1"
+                        }
+                        type="button"
+                        tabIndex={0}
+                      >
+                        8g
+                      </button>
+                      <button
+                        className={
+                          "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-11 min-h-11 rounded-40 px-5 pb-0.5 type-body-m leading-none bg-transparent hover:bg-background-tertiary focus-visible:bg-background-tertiary active:text-text-disabled \x64isabled:\x62g-transparent disabled:text-text-disabled roadmap-segment text-secondary"
+                        }
+                        type="button"
+                        tabIndex={0}
+                      >
+                        20g
+                      </button>
                     </div>
                   </div>
                 </div>
-                <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-14 min-h-14 rounded-40 px-6 pb-0.5 type-body-m leading-none bg-blue-700 text-white \x73hadow-elevation-1 hover:bg-blue-800 focus-visible:bg-blue-700 active:bg-blue-700 \x61ctive:\x73hadow-none disabled:bg-blue-700-10 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-action"} type="button" tabIndex={0}>Compare prices</button>
+                <button
+                  className={
+                    "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-14 min-h-14 rounded-40 px-6 pb-0.5 type-body-m leading-none bg-blue-700 text-white \x73hadow-elevation-1 hover:bg-blue-800 focus-visible:bg-blue-700 active:bg-blue-700 \x61ctive:\x73hadow-none disabled:bg-blue-700-10 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-action"
+                  }
+                  type="button"
+                  tabIndex={0}
+                >
+                  Compare prices
+                </button>
               </div>
             </div>
             <div className="roadmap-resume" data-roadmap-preview="true">
               <div className="contents" inert>
-                <div className={"roadmap-card-title flex h-50 items-center justify-center squircle rounded-40 \x62order-2 \x62order-dotted \x62order-blue-600 \x62g-blue-600/\x35 text-link"}>Drop resume anywhere</div>
+                <div
+                  className={
+                    "roadmap-card-title flex h-50 items-center justify-center squircle rounded-40 \x62order-2 \x62order-dotted \x62order-blue-600 \x62g-blue-600/\x35 text-link"
+                  }
+                >
+                  Drop resume anywhere
+                </div>
                 <div className="absolute top-[167px] left-[298px] z-2 flex items-start gap-1">
                   <div className="relative h-12 w-[39px] shrink-0">
-                    <img className={"absolute top-[-65.625px] left-[-87.5px] max-w-none [&]:max-w-none"} alt="" loading="lazy" />
+                    <img
+                      className={
+                        "absolute top-[-65.625px] left-[-87.5px] max-w-none [&]:max-w-none"
+                      }
+                      alt=""
+                      loading="lazy"
+                    />
                   </div>
-                  <span className="rounded-full bg-blue-600 px-1 py-px whitespace-nowrap text-primary-invert">Resume_2026.pdf</span>
+                  <span className="rounded-full bg-blue-600 px-1 py-px whitespace-nowrap text-primary-invert">
+                    Resume_2026.pdf
+                  </span>
                 </div>
-                <img className={"artwork-cursor absolute top-[181px] left-[379px] z-2 h-[30px] w-auto [&]:max-w-none"} style={{ aspectRatio: "51 / 61" }} alt="" />
+                <img
+                  className={
+                    "artwork-cursor absolute top-[181px] left-[379px] z-2 h-[30px] w-auto [&]:max-w-none"
+                  }
+                  style={{ aspectRatio: "51 / 61" }}
+                  alt=""
+                />
               </div>
             </div>
             <div className="roadmap-name roadmap-card" data-roadmap-preview="true">
@@ -1313,77 +4659,312 @@ function ImportedSectionMoreComingIn2027() {
                 <p className="roadmap-card-title">Choose where you want to update your name</p>
                 <div className={"roadmap-inset \x64ivide-y \x64ivide-border-tertiary px-6 py-2"}>
                   <div className="flex h-16 items-center gap-3">
-                    <img className={"size-9 shrink-0 object-contain [&]:max-w-none"} alt="" loading="lazy" src="/site-assets/e4d437cfab12b57f-eb32dffcf14636c1c156b39fdfcf090b.png" />
-                    <span className={"group/checkbox flex w-full items-center gap-3 rounded-8 text-left \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none cursor-pointer roadmap-agency-checkbox"} data-checked="" role="checkbox" tabIndex={0} id="base-ui-_r1r_11_" aria-checked="true" aria-labelledby="_r1r_10_-label">
-                      <span className={"flex size-5 shrink-0 items-center justify-center rounded-[6px] \x62order text-white transition-colors duration-300 ease-out-quint \x62order-blue-700 bg-blue-700"}>
+                    <img
+                      className={"size-9 shrink-0 object-contain [&]:max-w-none"}
+                      alt=""
+                      loading="lazy"
+                      src="/site-assets/e4d437cfab12b57f-eb32dffcf14636c1c156b39fdfcf090b.png"
+                    />
+                    <span
+                      className={
+                        "group/checkbox flex w-full items-center gap-3 rounded-8 text-left \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none cursor-pointer roadmap-agency-checkbox"
+                      }
+                      data-checked=""
+                      role="checkbox"
+                      tabIndex={0}
+                      id="base-ui-_r1r_11_"
+                      aria-checked="true"
+                      aria-labelledby="_r1r_10_-label"
+                    >
+                      <span
+                        className={
+                          "flex size-5 shrink-0 items-center justify-center rounded-[6px] \x62order text-white transition-colors duration-300 ease-out-quint \x62order-blue-700 bg-blue-700"
+                        }
+                      >
                         <span data-checked="">
-                          <svg data-checked="" fill="none" height="14" viewBox="0 0 20 20" width="14" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                            <path className={"[stroke-dasharray:100] transition-[stroke-dashoffset,opacity] [transition-timing-function:var(--ease-out-quint),linear] \x6dotion-reduce:\x74ransition-none opacity-100 [stroke-dashoffset:0] [transition-duration:300ms,0ms]"} d="M2.7 9.7 7.95 14.6 17.3 4.7" stroke="currentColor" strokeLinecap="square" strokeLinejoin="miter" strokeWidth="2" {...({ pathLength: "100" } as any)} />
+                          <svg
+                            data-checked=""
+                            fill="none"
+                            height="14"
+                            viewBox="0 0 20 20"
+                            width="14"
+                            xmlns="http://www.w3.org/2000/svg"
+                            aria-hidden="true"
+                          >
+                            <path
+                              className={
+                                "[stroke-dasharray:100] transition-[stroke-dashoffset,opacity] [transition-timing-function:var(--ease-out-quint),linear] \x6dotion-reduce:\x74ransition-none opacity-100 [stroke-dashoffset:0] [transition-duration:300ms,0ms]"
+                              }
+                              d="M2.7 9.7 7.95 14.6 17.3 4.7"
+                              stroke="currentColor"
+                              strokeLinecap="square"
+                              strokeLinejoin="miter"
+                              strokeWidth="2"
+                              pathLength={100}
+                            />
                           </svg>
                         </span>
                       </span>
-                      <span className="min-w-0 flex-1 text-pretty text-secondary type-body-m" id="_r1r_10_-label">
+                      <span
+                        className="min-w-0 flex-1 text-pretty text-secondary type-body-m"
+                        id="_r1r_10_-label"
+                      >
                         <label htmlFor="_r1r_10_">Social Security Administration</label>
                       </span>
                     </span>
-                    <input style={{ clipPath: "inset(50%)", overflow: "hidden", whiteSpace: "nowrap", border: "0px", padding: "0px", width: "1px", height: "1px", margin: "-1px", position: "fixed", top: "0px", left: "0px" } as CSSProperties} id="_r1r_10_" tabIndex={-1} aria-hidden="true" type="checkbox" defaultChecked />
+                    <input
+                      style={
+                        {
+                          clipPath: "inset(50%)",
+                          overflow: "hidden",
+                          whiteSpace: "nowrap",
+                          border: "0px",
+                          padding: "0px",
+                          width: "1px",
+                          height: "1px",
+                          margin: "-1px",
+                          position: "fixed",
+                          top: "0px",
+                          left: "0px",
+                        } as CSSProperties
+                      }
+                      id="_r1r_10_"
+                      tabIndex={-1}
+                      aria-hidden="true"
+                      type="checkbox"
+                      defaultChecked
+                    />
                   </div>
                   <div className="flex h-16 items-center gap-3">
-                    <img className={"size-9 shrink-0 object-contain [&]:max-w-none"} alt="" loading="lazy" src="/site-assets/0fb1b30ae5543ce7-f9df3057238739aa153e5c030737469a.png" />
-                    <span className={"group/checkbox flex w-full items-center gap-3 rounded-8 text-left \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none cursor-pointer roadmap-agency-checkbox"} data-checked="" role="checkbox" tabIndex={0} id="base-ui-_r1r_15_" aria-checked="true" aria-labelledby="_r1r_14_-label">
-                      <span className={"flex size-5 shrink-0 items-center justify-center rounded-[6px] \x62order text-white transition-colors duration-300 ease-out-quint \x62order-blue-700 bg-blue-700"}>
+                    <img
+                      className={"size-9 shrink-0 object-contain [&]:max-w-none"}
+                      alt=""
+                      loading="lazy"
+                      src="/site-assets/0fb1b30ae5543ce7-f9df3057238739aa153e5c030737469a.png"
+                    />
+                    <span
+                      className={
+                        "group/checkbox flex w-full items-center gap-3 rounded-8 text-left \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none cursor-pointer roadmap-agency-checkbox"
+                      }
+                      data-checked=""
+                      role="checkbox"
+                      tabIndex={0}
+                      id="base-ui-_r1r_15_"
+                      aria-checked="true"
+                      aria-labelledby="_r1r_14_-label"
+                    >
+                      <span
+                        className={
+                          "flex size-5 shrink-0 items-center justify-center rounded-[6px] \x62order text-white transition-colors duration-300 ease-out-quint \x62order-blue-700 bg-blue-700"
+                        }
+                      >
                         <span data-checked="">
-                          <svg data-checked="" fill="none" height="14" viewBox="0 0 20 20" width="14" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                            <path className={"[stroke-dasharray:100] transition-[stroke-dashoffset,opacity] [transition-timing-function:var(--ease-out-quint),linear] \x6dotion-reduce:\x74ransition-none opacity-100 [stroke-dashoffset:0] [transition-duration:300ms,0ms]"} d="M2.7 9.7 7.95 14.6 17.3 4.7" stroke="currentColor" strokeLinecap="square" strokeLinejoin="miter" strokeWidth="2" {...({ pathLength: "100" } as any)} />
+                          <svg
+                            data-checked=""
+                            fill="none"
+                            height="14"
+                            viewBox="0 0 20 20"
+                            width="14"
+                            xmlns="http://www.w3.org/2000/svg"
+                            aria-hidden="true"
+                          >
+                            <path
+                              className={
+                                "[stroke-dasharray:100] transition-[stroke-dashoffset,opacity] [transition-timing-function:var(--ease-out-quint),linear] \x6dotion-reduce:\x74ransition-none opacity-100 [stroke-dashoffset:0] [transition-duration:300ms,0ms]"
+                              }
+                              d="M2.7 9.7 7.95 14.6 17.3 4.7"
+                              stroke="currentColor"
+                              strokeLinecap="square"
+                              strokeLinejoin="miter"
+                              strokeWidth="2"
+                              pathLength={100}
+                            />
                           </svg>
                         </span>
                       </span>
-                      <span className="min-w-0 flex-1 text-pretty text-secondary type-body-m" id="_r1r_14_-label">
+                      <span
+                        className="min-w-0 flex-1 text-pretty text-secondary type-body-m"
+                        id="_r1r_14_-label"
+                      >
                         <label htmlFor="_r1r_14_">State Department</label>
                       </span>
                     </span>
-                    <input style={{ clipPath: "inset(50%)", overflow: "hidden", whiteSpace: "nowrap", border: "0px", padding: "0px", width: "1px", height: "1px", margin: "-1px", position: "fixed", top: "0px", left: "0px" } as CSSProperties} id="_r1r_14_" tabIndex={-1} aria-hidden="true" type="checkbox" defaultChecked />
+                    <input
+                      style={
+                        {
+                          clipPath: "inset(50%)",
+                          overflow: "hidden",
+                          whiteSpace: "nowrap",
+                          border: "0px",
+                          padding: "0px",
+                          width: "1px",
+                          height: "1px",
+                          margin: "-1px",
+                          position: "fixed",
+                          top: "0px",
+                          left: "0px",
+                        } as CSSProperties
+                      }
+                      id="_r1r_14_"
+                      tabIndex={-1}
+                      aria-hidden="true"
+                      type="checkbox"
+                      defaultChecked
+                    />
                   </div>
                   <div className="flex h-16 items-center gap-3">
-                    <img className={"size-9 shrink-0 object-contain [&]:max-w-none"} alt="" loading="lazy" src="/site-assets/6b39d439968082a9.png" />
-                    <span className={"group/checkbox flex w-full items-center gap-3 rounded-8 text-left \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none cursor-pointer roadmap-agency-checkbox"} data-checked="" role="checkbox" tabIndex={0} id="base-ui-_r1r_19_" aria-checked="true" aria-labelledby="_r1r_18_-label">
-                      <span className={"flex size-5 shrink-0 items-center justify-center rounded-[6px] \x62order text-white transition-colors duration-300 ease-out-quint \x62order-blue-700 bg-blue-700"}>
+                    <img
+                      className={"size-9 shrink-0 object-contain [&]:max-w-none"}
+                      alt=""
+                      loading="lazy"
+                      src="/site-assets/6b39d439968082a9.png"
+                    />
+                    <span
+                      className={
+                        "group/checkbox flex w-full items-center gap-3 rounded-8 text-left \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none cursor-pointer roadmap-agency-checkbox"
+                      }
+                      data-checked=""
+                      role="checkbox"
+                      tabIndex={0}
+                      id="base-ui-_r1r_19_"
+                      aria-checked="true"
+                      aria-labelledby="_r1r_18_-label"
+                    >
+                      <span
+                        className={
+                          "flex size-5 shrink-0 items-center justify-center rounded-[6px] \x62order text-white transition-colors duration-300 ease-out-quint \x62order-blue-700 bg-blue-700"
+                        }
+                      >
                         <span data-checked="">
-                          <svg data-checked="" fill="none" height="14" viewBox="0 0 20 20" width="14" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                            <path className={"[stroke-dasharray:100] transition-[stroke-dashoffset,opacity] [transition-timing-function:var(--ease-out-quint),linear] \x6dotion-reduce:\x74ransition-none opacity-100 [stroke-dashoffset:0] [transition-duration:300ms,0ms]"} d="M2.7 9.7 7.95 14.6 17.3 4.7" stroke="currentColor" strokeLinecap="square" strokeLinejoin="miter" strokeWidth="2" {...({ pathLength: "100" } as any)} />
+                          <svg
+                            data-checked=""
+                            fill="none"
+                            height="14"
+                            viewBox="0 0 20 20"
+                            width="14"
+                            xmlns="http://www.w3.org/2000/svg"
+                            aria-hidden="true"
+                          >
+                            <path
+                              className={
+                                "[stroke-dasharray:100] transition-[stroke-dashoffset,opacity] [transition-timing-function:var(--ease-out-quint),linear] \x6dotion-reduce:\x74ransition-none opacity-100 [stroke-dashoffset:0] [transition-duration:300ms,0ms]"
+                              }
+                              d="M2.7 9.7 7.95 14.6 17.3 4.7"
+                              stroke="currentColor"
+                              strokeLinecap="square"
+                              strokeLinejoin="miter"
+                              strokeWidth="2"
+                              pathLength={100}
+                            />
                           </svg>
                         </span>
                       </span>
-                      <span className="min-w-0 flex-1 text-pretty text-secondary type-body-m" id="_r1r_18_-label">
+                      <span
+                        className="min-w-0 flex-1 text-pretty text-secondary type-body-m"
+                        id="_r1r_18_-label"
+                      >
                         <label htmlFor="_r1r_18_">Global Entry</label>
                       </span>
                     </span>
-                    <input style={{ clipPath: "inset(50%)", overflow: "hidden", whiteSpace: "nowrap", border: "0px", padding: "0px", width: "1px", height: "1px", margin: "-1px", position: "fixed", top: "0px", left: "0px" } as CSSProperties} id="_r1r_18_" tabIndex={-1} aria-hidden="true" type="checkbox" defaultChecked />
+                    <input
+                      style={
+                        {
+                          clipPath: "inset(50%)",
+                          overflow: "hidden",
+                          whiteSpace: "nowrap",
+                          border: "0px",
+                          padding: "0px",
+                          width: "1px",
+                          height: "1px",
+                          margin: "-1px",
+                          position: "fixed",
+                          top: "0px",
+                          left: "0px",
+                        } as CSSProperties
+                      }
+                      id="_r1r_18_"
+                      tabIndex={-1}
+                      aria-hidden="true"
+                      type="checkbox"
+                      defaultChecked
+                    />
                   </div>
                 </div>
-                <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-14 min-h-14 rounded-40 px-6 pb-0.5 type-body-m leading-none bg-blue-700 text-white \x73hadow-elevation-1 hover:bg-blue-800 focus-visible:bg-blue-700 active:bg-blue-700 \x61ctive:\x73hadow-none disabled:bg-blue-700-10 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-action"} type="button" tabIndex={0}>Change name</button>
+                <button
+                  className={
+                    "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-14 min-h-14 rounded-40 px-6 pb-0.5 type-body-m leading-none bg-blue-700 text-white \x73hadow-elevation-1 hover:bg-blue-800 focus-visible:bg-blue-700 active:bg-blue-700 \x61ctive:\x73hadow-none disabled:bg-blue-700-10 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-action"
+                  }
+                  type="button"
+                  tabIndex={0}
+                >
+                  Change name
+                </button>
               </div>
             </div>
-            <div className={"roadmap-housing overflow-hidden rounded-40 bg-background-primary squircle \x6futline \x6futline-border-quaternary"} data-roadmap-preview="true">
+            <div
+              className={
+                "roadmap-housing overflow-hidden rounded-40 bg-background-primary squircle \x6futline \x6futline-border-quaternary"
+              }
+              data-roadmap-preview="true"
+            >
               <div className="contents" inert>
                 <div className="relative h-[161px] overflow-hidden">
-                  <img className={"absolute top-[-21px] left-[-13px] h-[214px] w-[322px] max-w-none object-cover [&]:max-w-none"} alt="" loading="lazy" src="/site-assets/0c8c0fba40af8f68.png" />
+                  <img
+                    className={
+                      "absolute top-[-21px] left-[-13px] h-[214px] w-[322px] max-w-none object-cover [&]:max-w-none"
+                    }
+                    alt=""
+                    loading="lazy"
+                    src="/site-assets/0c8c0fba40af8f68.png"
+                  />
                 </div>
                 <div className="type-body-s flex flex-col gap-1 p-5">
                   <p className="font-medium">Mocksville Place, Multifamily housing development</p>
-                  <p className="text-secondary">401 N Main St,<br />Mocksville, NC 27028</p>
+                  <p className="text-secondary">
+                    401 N Main St,
+                    <br />
+                    Mocksville, NC 27028
+                  </p>
                 </div>
               </div>
             </div>
             <div className="roadmap-login" data-roadmap-preview="true">
               <div className="contents" inert>
-                <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 min-h-14 rounded-40 px-6 type-body-m leading-none \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-login-button h-17 gap-4 py-3 pr-8 pl-3"} type="button" tabIndex={0}><span className="relative size-11"><img className={"absolute top-[-31px] left-[-41px] max-w-none [&]:max-w-none"} alt="" loading="lazy" width="126" height="126" src="/site-assets/5ee5fdab0b17f084.png" /></span>Login.gov</button>
+                <button
+                  className={
+                    "inline-flex shrink-0 cursor-pointer items-center justify-center font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 min-h-14 rounded-40 px-6 type-body-m leading-none \x62order \x62order-border-tertiary bg-background-primary text-text-primary \x73hadow-elevation-1 \x68over:\x62order-border-primary \x61ctive:\x62order-border-tertiary \x64isabled:\x62order-transparent \x64isabled:\x62g-background-primary/\x385 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-login-button h-17 gap-4 py-3 pr-8 pl-3"
+                  }
+                  type="button"
+                  tabIndex={0}
+                >
+                  <span className="relative size-11">
+                    <img
+                      className={"absolute top-[-31px] left-[-41px] max-w-none [&]:max-w-none"}
+                      alt=""
+                      loading="lazy"
+                      width="126"
+                      height="126"
+                      src="/site-assets/5ee5fdab0b17f084.png"
+                    />
+                  </span>
+                  Login.gov
+                </button>
               </div>
             </div>
-            <div className="roadmap-passport roadmap-passport-status roadmap-card gap-5" data-roadmap-preview="true">
+            <div
+              className="roadmap-passport roadmap-passport-status roadmap-card gap-5"
+              data-roadmap-preview="true"
+            >
               <div className="contents" inert>
                 <div className="type-body-s flex items-center gap-4">
-                  <img className={"h-[46px] w-[33px] object-cover [&]:max-w-none"} alt="" loading="lazy" width="33" height="46" src="/site-assets/1ca0aff235cc1c41.png" />
+                  <img
+                    className={"h-[46px] w-[33px] object-cover [&]:max-w-none"}
+                    alt=""
+                    loading="lazy"
+                    width="33"
+                    height="46"
+                    src="/site-assets/1ca0aff235cc1c41.png"
+                  />
                   <div>
                     <p className="font-medium">Passport</p>
                     <p className="text-secondary">Arrives by Nov 5, 2026</p>
@@ -1408,13 +4989,39 @@ function ImportedSectionMoreComingIn2027() {
             <div className="roadmap-photo roadmap-card" data-roadmap-preview="true">
               <div className="contents" inert>
                 <p className="roadmap-card-title">Confirm your photo</p>
-                <div className={"relative h-52 overflow-hidden \x72ounded-b-16 \x6dask-[\x6cinear-gradient(\x74o_bottom,\x74ransparent,#\x3000_62px)]"}>
+                <div
+                  className={
+                    "relative h-52 overflow-hidden \x72ounded-b-16 \x6dask-[\x6cinear-gradient(\x74o_bottom,\x74ransparent,#\x3000_62px)]"
+                  }
+                >
                   <div className={"absolute \x2dinset-x-1.\x35 top-[-73px] h-[281px]"}>
-                    <img className={"absolute top-[-53.87%] left-[-0.08%] h-[153.87%] w-[100.23%] max-w-none [&]:max-w-none"} alt="" loading="lazy" src="/site-assets/f060990176119dd2.png" />
+                    <img
+                      className={
+                        "absolute top-[-53.87%] left-[-0.08%] h-[153.87%] w-[100.23%] max-w-none [&]:max-w-none"
+                      }
+                      alt=""
+                      loading="lazy"
+                      src="/site-assets/f060990176119dd2.png"
+                    />
                   </div>
-                  <img className={"absolute top-[3px] left-[-6px] h-[205px] w-[326px] max-w-none [&]:max-w-none"} alt="" loading="lazy" src="/site-assets/91753b5ac816ae01.png" />
+                  <img
+                    className={
+                      "absolute top-[3px] left-[-6px] h-[205px] w-[326px] max-w-none [&]:max-w-none"
+                    }
+                    alt=""
+                    loading="lazy"
+                    src="/site-assets/91753b5ac816ae01.png"
+                  />
                 </div>
-                <button className={"inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-14 min-h-14 rounded-40 px-6 pb-0.5 type-body-m leading-none bg-blue-700 text-white \x73hadow-elevation-1 hover:bg-blue-800 focus-visible:bg-blue-700 active:bg-blue-700 \x61ctive:\x73hadow-none disabled:bg-blue-700-10 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-action"} type="button" tabIndex={0}>Submit passport application</button>
+                <button
+                  className={
+                    "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 h-14 min-h-14 rounded-40 px-6 pb-0.5 type-body-m leading-none bg-blue-700 text-white \x73hadow-elevation-1 hover:bg-blue-800 focus-visible:bg-blue-700 active:bg-blue-700 \x61ctive:\x73hadow-none disabled:bg-blue-700-10 disabled:text-text-disabled \x64isabled:\x73hadow-none roadmap-action"
+                  }
+                  type="button"
+                  tabIndex={0}
+                >
+                  Submit passport application
+                </button>
               </div>
             </div>
           </div>
@@ -1424,37 +5031,120 @@ function ImportedSectionMoreComingIn2027() {
   );
 }
 
-function ImportedFooter({ openFeedback, onOpenFeedback }: { openFeedback: boolean; onOpenFeedback: () => void }) {
+function ImportedFooter({
+  openFeedback,
+  onOpenFeedback,
+}: {
+  openFeedback: boolean;
+  onOpenFeedback: () => void;
+}) {
   return (
-    <footer className={"pb-24 text-pretty text-black \x64ark:\x74ext-text-primary \x73ite-desktop:\x70b-30 \x70t-site-section \x6dobile:\x70t-site-section-lg"} data-slot="site-footer">
-      <div className={"mx-auto w-[calc(100%-var(--site-grid-margin)*2)] site-grid gap-y-20 \x73ite-desktop:\x67ap-y-36 \x73ite-desktop:[\x2d-site-grid-margin:\x396px]"}>
+    <footer
+      className={
+        "pb-24 text-pretty text-black \x64ark:\x74ext-text-primary \x73ite-desktop:\x70b-30 \x70t-site-section \x6dobile:\x70t-site-section-lg"
+      }
+      data-slot="site-footer"
+    >
+      <div
+        className={
+          "mx-auto w-[calc(100%-var(--site-grid-margin)*2)] site-grid gap-y-20 \x73ite-desktop:\x67ap-y-36 \x73ite-desktop:[\x2d-site-grid-margin:\x396px]"
+        }
+      >
         <nav className="col-span-full min-w-0 text-center wrap-anywhere" aria-label="Footer">
-          <ul className={"type-section-heading flex flex-col items-center gap-2.5 \x6dax-mobile:\x67ap-6"}>
+          <ul
+            className={
+              "type-section-heading flex flex-col items-center gap-2.5 \x6dax-mobile:\x67ap-6"
+            }
+          >
             <li className="max-w-full">
-              <a className={"max-w-full rounded-8 bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none block px-2"} href="/how-it-works">How it works</a>
+              <a
+                className={
+                  "max-w-full rounded-8 bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none block px-2"
+                }
+                href="/how-it-works"
+              >
+                How it works
+              </a>
             </li>
             <li className="max-w-full">
-              <a className={"max-w-full rounded-8 bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none block px-2"} href="/privacy">Privacy</a>
+              <a
+                className={
+                  "max-w-full rounded-8 bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none block px-2"
+                }
+                href="/privacy"
+              >
+                Privacy
+              </a>
             </li>
             <li className="max-w-full">
-              <a className={"max-w-full rounded-8 bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none block px-2"} href="/about">About</a>
+              <a
+                className={
+                  "max-w-full rounded-8 bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none block px-2"
+                }
+                href="/about"
+              >
+                About
+              </a>
             </li>
             <li className="max-w-full">
-              <a className={"max-w-full rounded-8 bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none block px-2"} href="/coming-soon">Coming soon</a>
+              <a
+                className={
+                  "max-w-full rounded-8 bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none block px-2"
+                }
+                href="/coming-soon"
+              >
+                Coming soon
+              </a>
             </li>
             <li className="max-w-full">
-              <a className={"max-w-full rounded-8 bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none block px-2"} href="/releases">Releases</a>
+              <a
+                className={
+                  "max-w-full rounded-8 bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none block px-2"
+                }
+                href="/releases"
+              >
+                Releases
+              </a>
             </li>
             <li className="max-w-full">
-              <a className={"max-w-full rounded-8 bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none block px-2"} href="/faq">Frequently asked questions</a>
+              <a
+                className={
+                  "max-w-full rounded-8 bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none block px-2"
+                }
+                href="/faq"
+              >
+                Frequently asked questions
+              </a>
             </li>
             <li className="max-w-full">
-              <button className={"shrink-0 cursor-pointer items-center justify-center gap-2 transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 focus-visible:bg-background-tertiary \x64isabled:\x62g-transparent disabled:text-text-disabled max-w-full rounded-8 bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none type-section-heading block h-auto min-h-0 px-2 py-0 font-normal text-inherit \x68over:\x62g-transparent \x61ctive:\x73cale-100 active:text-inherit"} type="button" tabIndex={0} aria-haspopup="dialog" aria-expanded={openFeedback} onClick={event => { event.preventDefault(); event.stopPropagation(); onOpenFeedback(); }}>Submit feedback</button>
+              <button
+                className={
+                  "shrink-0 cursor-pointer items-center justify-center gap-2 transition-[color,background-color,border-color,box-shadow,scale,opacity] duration-200 ease-out-quint \x61ctive:\x73cale-press \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 focus-visible:bg-background-tertiary \x64isabled:\x62g-transparent disabled:text-text-disabled max-w-full rounded-8 bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none type-section-heading block h-auto min-h-0 px-2 py-0 font-normal text-inherit \x68over:\x62g-transparent \x61ctive:\x73cale-100 active:text-inherit"
+                }
+                type="button"
+                tabIndex={0}
+                aria-haspopup="dialog"
+                aria-expanded={openFeedback}
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  onOpenFeedback();
+                }}
+              >
+                Submit feedback
+              </button>
             </li>
           </ul>
         </nav>
         <div className="@container/footer col-span-full flex min-w-0 flex-col items-center gap-4 mobile:gap-2.5">
-          <svg className="h-auto w-full" viewBox="0 0 1390 263.577" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-label="America.gov" role="img">
+          <svg
+            className="h-auto w-full"
+            viewBox="0 0 1390 263.577"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-label="America.gov"
+            role="img"
+          >
             <path d="M531.113 169.119C524.608 185.522 509.336 216.065 474.834 216.065C438.635 216.065 417.141 184.108 417.141 140.273C417.141 99.2655 441.463 66.4598 478.793 66.4598C510.468 66.4598 531.113 89.9328 530.264 122.173L528.285 123.87H437.503V128.112C437.503 165.442 455.037 193.44 485.581 193.44C505.943 193.44 518.669 180.431 526.588 166.291L531.113 169.119ZM438.352 114.82H503.68C502.266 90.7812 491.802 76.6408 473.137 76.6408C452.492 76.6408 441.463 93.8921 438.352 114.82Z" />
             <path d="M576.927 65.8942L578.624 67.591C578.341 73.53 578.342 82.5798 578.059 91.9125C587.957 78.9033 601.815 66.4598 615.389 66.4598C625.288 66.4598 632.358 72.6815 632.358 82.8626C632.358 90.7812 626.984 98.1342 618.217 98.1342C605.491 98.1342 605.774 87.6703 597.855 87.6703C591.068 87.6703 583.432 95.589 578.059 103.79V188.067C578.059 201.359 583.998 207.298 598.421 207.298V212.671H531.961V207.298C546.667 207.298 552.606 201.359 552.606 188.067V106.053C552.606 95.3061 552.04 88.5188 542.708 88.5188C538.183 88.5188 535.072 89.9328 533.375 90.4984L531.395 85.6907L576.927 65.8942Z" />
             <path d="M671.951 66.177L673.648 67.8738C673.082 77.7721 672.799 99.5483 672.799 116.234V188.067C672.799 201.359 679.021 207.298 693.444 207.298V212.671H626.984V207.298C641.69 207.298 647.347 201.359 647.347 188.067V106.053C647.347 95.3061 646.781 88.5188 637.448 88.5188C633.206 88.5188 630.095 89.9328 628.398 90.4984L626.419 85.6907L671.951 66.177ZM639.145 23.7558C639.145 13.292 647.629 5.65615 657.245 5.65615C667.709 5.65615 675.344 13.5748 675.344 23.7558C675.344 33.3713 667.143 41.8555 657.245 41.8555C647.347 41.8555 639.145 33.3713 639.145 23.7558Z" />
@@ -1466,84 +5156,309 @@ function ImportedFooter({ openFeedback, onOpenFeedback }: { openFeedback: boolea
             <path d="M1125.01 142.252C1125.01 96.7202 1156.97 66.4598 1193.73 66.4598C1235.02 66.4598 1260.19 101.528 1260.19 140.555C1260.19 186.087 1227.95 216.065 1191.19 216.065C1149.9 216.065 1125.01 180.997 1125.01 142.252ZM1231.63 151.302C1231.63 116.234 1218.34 76.358 1188.92 76.358C1166.86 76.358 1153.57 96.1546 1153.29 131.506C1153.01 166.291 1166.58 206.167 1195.99 206.167C1218.34 206.167 1231.63 186.653 1231.63 151.302Z" />
             <path d="M1390 69.8535V74.944C1384.06 76.6409 1376.99 81.4486 1370.77 96.1546L1320.71 216.631H1318.73L1267.83 94.7405C1261.89 80.3173 1258.78 76.6409 1251.71 74.944V69.8535H1313.64V75.2268C1302.05 75.2268 1288.75 80.0345 1298.09 102.659L1327.78 174.492L1357.19 103.508C1366.24 81.7314 1354.93 75.2268 1344.18 75.2268V69.8535H1390Z" />
           </svg>
-          <div className={"type-body-m font-body font-normal grid w-full min-w-0 grid-cols-1 items-center gap-8 pt-4 pb-8 @\x35xl/\x66ooter:\x67rid-cols-[\x6dinmax(\x30,\x6dax-content)\x5fauto_minmax(\x30,\x6dax-content)] @\x35xl/\x66ooter:\x6austify-center @\x35xl/\x66ooter:\x67ap-x-12 @\x35xl/\x66ooter:\x67ap-y-6"}>
-            <p className={"flex min-w-0 max-w-full flex-col items-center gap-4 text-center leading-normal @\x35xl/\x66ooter:\x66lex-row @\x35xl/\x66ooter:\x74ext-start"}>
-              <span className={"size-10 shrink-0 \x62g-current \x6dask-contain \x6dask-center \x6dask-no-repeat \x6dask-[\x75rl(/\x69mages/\x68ome/\x66ooter/\x67sa.\x73vg)]"} aria-hidden="true" />
-              <span className={"min-w-0 max-w-80 whitespace-normal @\x35xl/\x66ooter:\x6dax-w-none"}>Powered by U.S.
-    <a className={"max-w-full bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none inline-block rounded-4"} href="https://gsa.gov" rel="noopener noreferrer" target="_blank">General Services Administration</a></span>
+          <div
+            className={
+              "type-body-m font-body font-normal grid w-full min-w-0 grid-cols-1 items-center gap-8 pt-4 pb-8 @\x35xl/\x66ooter:\x67rid-cols-[\x6dinmax(\x30,\x6dax-content)\x5fauto_minmax(\x30,\x6dax-content)] @\x35xl/\x66ooter:\x6austify-center @\x35xl/\x66ooter:\x67ap-x-12 @\x35xl/\x66ooter:\x67ap-y-6"
+            }
+          >
+            <p
+              className={
+                "flex min-w-0 max-w-full flex-col items-center gap-4 text-center leading-normal @\x35xl/\x66ooter:\x66lex-row @\x35xl/\x66ooter:\x74ext-start"
+              }
+            >
+              <span
+                className={
+                  "size-10 shrink-0 \x62g-current \x6dask-contain \x6dask-center \x6dask-no-repeat \x6dask-[\x75rl(/\x69mages/\x68ome/\x66ooter/\x67sa.\x73vg)]"
+                }
+                aria-hidden="true"
+              />
+              <span
+                className={"min-w-0 max-w-80 whitespace-normal @\x35xl/\x66ooter:\x6dax-w-none"}
+              >
+                Powered by U.S.
+                <a
+                  className={
+                    "max-w-full bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none inline-block rounded-4"
+                  }
+                  href="https://gsa.gov"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  General Services Administration
+                </a>
+              </span>
             </p>
-            <div className={"flex min-w-0 items-center justify-center gap-4 @\x35xl/\x66ooter:\x67ap-6"}>
-              <span className={"h-20.5 w-[30.3px] shrink-0 \x2dscale-x-100 \x62g-current \x6dask-contain \x6dask-center \x6dask-no-repeat"} style={{ maskImage: "url(\"/site-assets/4ac7788a10c93abc-e504a3e19c3adb8d8bedf4e9525515a7.png\")" } as CSSProperties} aria-hidden="true" />
-              <p className="max-w-78.5 text-center font-medium">Every federal agency, working together</p>
-              <span className={"h-20.5 w-[30.3px] shrink-0 \x62g-current \x6dask-contain \x6dask-center \x6dask-no-repeat"} style={{ maskImage: "url(\"/site-assets/4ac7788a10c93abc-e504a3e19c3adb8d8bedf4e9525515a7.png\")" } as CSSProperties} aria-hidden="true" />
+            <div
+              className={
+                "flex min-w-0 items-center justify-center gap-4 @\x35xl/\x66ooter:\x67ap-6"
+              }
+            >
+              <span
+                className={
+                  "h-20.5 w-[30.3px] shrink-0 \x2dscale-x-100 \x62g-current \x6dask-contain \x6dask-center \x6dask-no-repeat"
+                }
+                style={
+                  {
+                    maskImage:
+                      'url("/site-assets/4ac7788a10c93abc-e504a3e19c3adb8d8bedf4e9525515a7.png")',
+                  } as CSSProperties
+                }
+                aria-hidden="true"
+              />
+              <p className="max-w-78.5 text-center font-medium">
+                Every federal agency, working together
+              </p>
+              <span
+                className={
+                  "h-20.5 w-[30.3px] shrink-0 \x62g-current \x6dask-contain \x6dask-center \x6dask-no-repeat"
+                }
+                style={
+                  {
+                    maskImage:
+                      'url("/site-assets/4ac7788a10c93abc-e504a3e19c3adb8d8bedf4e9525515a7.png")',
+                  } as CSSProperties
+                }
+                aria-hidden="true"
+              />
             </div>
-            <div className={"mt-4 flex min-w-0 max-w-full flex-wrap items-center justify-center gap-y-2 @\x35xl/\x66ooter:\x63ol-span-full @\x35xl/\x66ooter:\x72ow-start-2 @\x35xl/\x66ooter:\x6dt-6"}>
+            <div
+              className={
+                "mt-4 flex min-w-0 max-w-full flex-wrap items-center justify-center gap-y-2 @\x35xl/\x66ooter:\x63ol-span-full @\x35xl/\x66ooter:\x72ow-start-2 @\x35xl/\x66ooter:\x6dt-6"
+              }
+            >
               <span className="min-w-0 max-w-full">
-                <a className={"max-w-full rounded-8 bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none inline-block px-2 py-2 text-center @\x35xl/\x66ooter:\x70x-3"} href="/privacy-policy">Privacy policy</a>
+                <a
+                  className={
+                    "max-w-full rounded-8 bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none inline-block px-2 py-2 text-center @\x35xl/\x66ooter:\x70x-3"
+                  }
+                  href="/privacy-policy"
+                >
+                  Privacy policy
+                </a>
               </span>
               <span className="min-w-0 max-w-full">
-                <a className={"max-w-full rounded-8 bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none inline-block px-2 py-2 text-center @\x35xl/\x66ooter:\x70x-3"} href="/terms">Terms of use</a>
+                <a
+                  className={
+                    "max-w-full rounded-8 bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none inline-block px-2 py-2 text-center @\x35xl/\x66ooter:\x70x-3"
+                  }
+                  href="/terms"
+                >
+                  Terms of use
+                </a>
               </span>
               <div className="inline-flex max-w-full items-center">
                 <div className="relative inline-block max-w-40 shrink-0">
                   <div>
-                    <span role="combobox" aria-autocomplete="list" aria-expanded="false" aria-owns="bb-customSelect-2RjJb-panel" aria-activedescendant="bb-customSelect-2RjJb-selectedOption" hidden>
+                    <span
+                      role="combobox"
+                      aria-autocomplete="list"
+                      aria-expanded="false"
+                      aria-owns="bb-customSelect-2RjJb-panel"
+                      aria-activedescendant="bb-customSelect-2RjJb-selectedOption"
+                      hidden
+                    >
                       <span>English</span>
                     </span>
-                    <select className={"peer max-w-full field-sizing-content cursor-pointer appearance-none truncate rounded-8 \x62order \x62order-transparent bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x6futline-none select-none \x68over:\x75nderline \x66ocus-visible:\x75nderline type-body-m font-body font-normal min-h-11 pe-8 ps-3 text-inherit \x64isabled:\x70ointer-events-none disabled:opacity-50 \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none"} aria-label="Language" defaultValue="en">
-                      <option className={"\x62g-[\x43anvas] \x74ext-[\x43anvasText]"} value="en" lang="en">English</option>
-                      <option className={"\x62g-[\x43anvas] \x74ext-[\x43anvasText]"} value="fr" lang="fr">Français</option>
-                      <option className={"\x62g-[\x43anvas] \x74ext-[\x43anvasText]"} value="es" lang="es">Español</option>
+                    <select
+                      className={
+                        "peer max-w-full field-sizing-content cursor-pointer appearance-none truncate rounded-8 \x62order \x62order-transparent bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x6futline-none select-none \x68over:\x75nderline \x66ocus-visible:\x75nderline type-body-m font-body font-normal min-h-11 pe-8 ps-3 text-inherit \x64isabled:\x70ointer-events-none disabled:opacity-50 \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none"
+                      }
+                      aria-label="Language"
+                      defaultValue="en"
+                    >
+                      <option
+                        className={"\x62g-[\x43anvas] \x74ext-[\x43anvasText]"}
+                        value="en"
+                        lang="en"
+                      >
+                        English
+                      </option>
+                      <option
+                        className={"\x62g-[\x43anvas] \x74ext-[\x43anvasText]"}
+                        value="fr"
+                        lang="fr"
+                      >
+                        Français
+                      </option>
+                      <option
+                        className={"\x62g-[\x43anvas] \x74ext-[\x43anvasText]"}
+                        value="es"
+                        lang="es"
+                      >
+                        Español
+                      </option>
                     </select>
                     <div id="bb-customSelect-2RjJb-panel" role="listbox" hidden>
-                      <div role="option" id="bb-customSelect-2RjJb-selectedOption">English</div>
+                      <div role="option" id="bb-customSelect-2RjJb-selectedOption">
+                        English
+                      </div>
                       <div role="option">Français</div>
                       <div role="option">Español</div>
                     </div>
                   </div>
-                  <svg className={"pointer-events-none absolute \x65nd-2.\x35 top-1/2 \x2dtranslate-y-1/\x32 text-inherit \x70eer-open:\x72otate-180"} fill="none" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path fillRule="evenodd" clipRule="evenodd" d="M10 12.23L4.71 6.94L3.29 8.35L10 15.06L16.71 8.35L15.29 6.94L10 12.23Z" fill="currentColor" />
+                  <svg
+                    className={
+                      "pointer-events-none absolute \x65nd-2.\x35 top-1/2 \x2dtranslate-y-1/\x32 text-inherit \x70eer-open:\x72otate-180"
+                    }
+                    fill="none"
+                    height="16"
+                    viewBox="0 0 20 20"
+                    width="16"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M10 12.23L4.71 6.94L3.29 8.35L10 15.06L16.71 8.35L15.29 6.94L10 12.23Z"
+                      fill="currentColor"
+                    />
                   </svg>
                 </div>
               </div>
             </div>
-            <p className={"min-w-0 max-w-80 justify-self-center text-center leading-normal @\x35xl/\x66ooter:\x63ol-start-3 @\x35xl/\x66ooter:\x72ow-start-1 @\x35xl/\x66ooter:\x6dax-w-none @\x35xl/\x66ooter:\x6austify-self-end @\x35xl/\x66ooter:\x74ext-end"}>Designed &amp; Engineered in D.C. <span>by <a className={"max-w-full bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none inline-block rounded-4"} href="https://ndstudio.gov" rel="noopener noreferrer" target="_blank">National Design Studio</a></span></p>
+            <p
+              className={
+                "min-w-0 max-w-80 justify-self-center text-center leading-normal @\x35xl/\x66ooter:\x63ol-start-3 @\x35xl/\x66ooter:\x72ow-start-1 @\x35xl/\x66ooter:\x6dax-w-none @\x35xl/\x66ooter:\x6austify-self-end @\x35xl/\x66ooter:\x74ext-end"
+              }
+            >
+              Designed &amp; Engineered in D.C.{" "}
+              <span>
+                by{" "}
+                <a
+                  className={
+                    "max-w-full bg-transparent \x64ecoration-[\x6dax(\x31.\x35px,\x30.\x303em)] \x75nderline-offset-[\x6dax(\x34px,\x30.\x312em)] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none inline-block rounded-4"
+                  }
+                  href="https://ndstudio.gov"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  National Design Studio
+                </a>
+              </span>
+            </p>
           </div>
-          <p className={"type-site-notice text-center text-text-tertiary \x65mpty:\x68idden"} role="status" aria-live="polite" />
+          <p
+            className={"type-site-notice text-center text-text-tertiary \x65mpty:\x68idden"}
+            role="status"
+            aria-live="polite"
+          />
         </div>
       </div>
     </footer>
   );
 }
 
-function ImportedNavMenu({ openFeedback, onOpenFeedback }: { openFeedback: boolean; onOpenFeedback: () => void }) {
+function ImportedNavMenu({
+  openFeedback,
+  onOpenFeedback,
+}: {
+  openFeedback: boolean;
+  onOpenFeedback: () => void;
+}) {
   return (
     <nav className="flex flex-col gap-12" aria-label="Menu">
       <ul className="flex flex-col items-center gap-1">
         <li className="max-w-full" style={{ opacity: "1", transform: "none" }}>
-          <a className={"block rounded-8 text-center text-inherit decoration-from-font [text-underline-position:from-font] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none font-sans-display text-[clamp(1.5rem,4.5dvh,2rem)] leading-[1.25] font-medium tracking-(--tracking-body) \x6dobile:\x74ext-[\x32rem] underline site-home-link"} aria-current="page" href="/" tabIndex={0}>Home</a>
+          <a
+            className={
+              "block rounded-8 text-center text-inherit decoration-from-font [text-underline-position:from-font] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none font-sans-display text-[clamp(1.5rem,4.5dvh,2rem)] leading-[1.25] font-medium tracking-(--tracking-body) \x6dobile:\x74ext-[\x32rem] underline site-home-link"
+            }
+            aria-current="page"
+            href="/"
+            tabIndex={0}
+          >
+            Home
+          </a>
         </li>
         <li className="max-w-full" style={{ opacity: "1", transform: "none" }}>
-          <a className={"block rounded-8 text-center text-inherit decoration-from-font [text-underline-position:from-font] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none font-sans-display text-[clamp(1.5rem,4.5dvh,2rem)] leading-[1.25] font-medium tracking-(--tracking-body) \x6dobile:\x74ext-[\x32rem]"} href="/how-it-works" tabIndex={0}>How it works</a>
+          <a
+            className={
+              "block rounded-8 text-center text-inherit decoration-from-font [text-underline-position:from-font] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none font-sans-display text-[clamp(1.5rem,4.5dvh,2rem)] leading-[1.25] font-medium tracking-(--tracking-body) \x6dobile:\x74ext-[\x32rem]"
+            }
+            href="/how-it-works"
+            tabIndex={0}
+          >
+            How it works
+          </a>
         </li>
         <li className="max-w-full" style={{ opacity: "1", transform: "none" }}>
-          <a className={"block rounded-8 text-center text-inherit decoration-from-font [text-underline-position:from-font] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none font-sans-display text-[clamp(1.5rem,4.5dvh,2rem)] leading-[1.25] font-medium tracking-(--tracking-body) \x6dobile:\x74ext-[\x32rem]"} href="/privacy" tabIndex={0}>Privacy</a>
+          <a
+            className={
+              "block rounded-8 text-center text-inherit decoration-from-font [text-underline-position:from-font] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none font-sans-display text-[clamp(1.5rem,4.5dvh,2rem)] leading-[1.25] font-medium tracking-(--tracking-body) \x6dobile:\x74ext-[\x32rem]"
+            }
+            href="/privacy"
+            tabIndex={0}
+          >
+            Privacy
+          </a>
         </li>
         <li className="max-w-full" style={{ opacity: "1", transform: "none" }}>
-          <a className={"block rounded-8 text-center text-inherit decoration-from-font [text-underline-position:from-font] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none font-sans-display text-[clamp(1.5rem,4.5dvh,2rem)] leading-[1.25] font-medium tracking-(--tracking-body) \x6dobile:\x74ext-[\x32rem]"} href="/about" tabIndex={0}>About</a>
+          <a
+            className={
+              "block rounded-8 text-center text-inherit decoration-from-font [text-underline-position:from-font] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none font-sans-display text-[clamp(1.5rem,4.5dvh,2rem)] leading-[1.25] font-medium tracking-(--tracking-body) \x6dobile:\x74ext-[\x32rem]"
+            }
+            href="/about"
+            tabIndex={0}
+          >
+            About
+          </a>
         </li>
         <li className="max-w-full" style={{ opacity: "1", transform: "none" }}>
-          <a className={"block rounded-8 text-center text-inherit decoration-from-font [text-underline-position:from-font] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none font-sans-display text-[clamp(1.5rem,4.5dvh,2rem)] leading-[1.25] font-medium tracking-(--tracking-body) \x6dobile:\x74ext-[\x32rem]"} href="/coming-soon" tabIndex={0}>Coming soon</a>
+          <a
+            className={
+              "block rounded-8 text-center text-inherit decoration-from-font [text-underline-position:from-font] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none font-sans-display text-[clamp(1.5rem,4.5dvh,2rem)] leading-[1.25] font-medium tracking-(--tracking-body) \x6dobile:\x74ext-[\x32rem]"
+            }
+            href="/coming-soon"
+            tabIndex={0}
+          >
+            Coming soon
+          </a>
         </li>
         <li className="max-w-full" style={{ opacity: "1" }} data-site-import-responsive="1287">
-          <a className={"block rounded-8 text-center text-inherit decoration-from-font [text-underline-position:from-font] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none font-sans-display text-[clamp(1.5rem,4.5dvh,2rem)] leading-[1.25] font-medium tracking-(--tracking-body) \x6dobile:\x74ext-[\x32rem]"} href="/releases" tabIndex={0}>Releases</a>
+          <a
+            className={
+              "block rounded-8 text-center text-inherit decoration-from-font [text-underline-position:from-font] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none font-sans-display text-[clamp(1.5rem,4.5dvh,2rem)] leading-[1.25] font-medium tracking-(--tracking-body) \x6dobile:\x74ext-[\x32rem]"
+            }
+            href="/releases"
+            tabIndex={0}
+          >
+            Releases
+          </a>
         </li>
         <li className="max-w-full" style={{ opacity: "1" }} data-site-import-responsive="1289">
-          <a className={"block rounded-8 text-center text-inherit decoration-from-font [text-underline-position:from-font] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none font-sans-display text-[clamp(1.5rem,4.5dvh,2rem)] leading-[1.25] font-medium tracking-(--tracking-body) \x6dobile:\x74ext-[\x32rem]"} href="/faq" tabIndex={0}>FAQ</a>
+          <a
+            className={
+              "block rounded-8 text-center text-inherit decoration-from-font [text-underline-position:from-font] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none font-sans-display text-[clamp(1.5rem,4.5dvh,2rem)] leading-[1.25] font-medium tracking-(--tracking-body) \x6dobile:\x74ext-[\x32rem]"
+            }
+            href="/faq"
+            tabIndex={0}
+          >
+            FAQ
+          </a>
         </li>
         <li className="max-w-full" style={{ opacity: "1" }} data-site-import-responsive="1291">
-          <button className={"shrink-0 cursor-pointer items-center justify-center gap-2 duration-200 ease-out-quint \x61ctive:\x73cale-press \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 type-body-m bg-transparent focus-visible:bg-background-tertiary \x64isabled:\x62g-transparent disabled:text-text-disabled h-auto min-h-0 max-w-full whitespace-normal p-0 transition-none \x68over:\x62g-transparent \x61ctive:\x73cale-100 active:text-inherit block rounded-8 text-center text-inherit decoration-from-font [text-underline-position:from-font] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none font-sans-display text-[clamp(1.5rem,4.5dvh,2rem)] leading-[1.25] font-medium tracking-(--tracking-body) \x6dobile:\x74ext-[\x32rem]"} type="button" tabIndex={0} aria-haspopup="dialog" aria-expanded={openFeedback} onClick={event => { event.preventDefault(); event.stopPropagation(); onOpenFeedback(); }}>
-            <span className={"font-sans-display text-[clamp(1.5rem,4.5dvh,2rem)] leading-[1.25] font-medium tracking-(--tracking-body) \x6dobile:\x74ext-[\x32rem]"}>Submit feedback</span>
+          <button
+            className={
+              "shrink-0 cursor-pointer items-center justify-center gap-2 duration-200 ease-out-quint \x61ctive:\x73cale-press \x64isabled:\x70ointer-events-none [&\x5fsvg]:\x70ointer-events-none [&\x5fsvg]:\x73hrink-0 type-body-m bg-transparent focus-visible:bg-background-tertiary \x64isabled:\x62g-transparent disabled:text-text-disabled h-auto min-h-0 max-w-full whitespace-normal p-0 transition-none \x68over:\x62g-transparent \x61ctive:\x73cale-100 active:text-inherit block rounded-8 text-center text-inherit decoration-from-font [text-underline-position:from-font] \x68over:\x75nderline \x66ocus-visible:\x75nderline \x66ocus-visible:\x73hadow-[\x30_0_0_2px_#\x66ff,\x30_0_0_4px_var(\x2d-color-black-100)] \x66ocus-visible:\x6futline-none font-sans-display text-[clamp(1.5rem,4.5dvh,2rem)] leading-[1.25] font-medium tracking-(--tracking-body) \x6dobile:\x74ext-[\x32rem]"
+            }
+            type="button"
+            tabIndex={0}
+            aria-haspopup="dialog"
+            aria-expanded={openFeedback}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              onOpenFeedback();
+            }}
+          >
+            <span
+              className={
+                "font-sans-display text-[clamp(1.5rem,4.5dvh,2rem)] leading-[1.25] font-medium tracking-(--tracking-body) \x6dobile:\x74ext-[\x32rem]"
+              }
+            >
+              Submit feedback
+            </span>
           </button>
         </li>
       </ul>
@@ -1551,10 +5466,11 @@ function ImportedNavMenu({ openFeedback, onOpenFeedback }: { openFeedback: boole
   );
 }
 
-
 function useImportedLayout() {
   useEffect(() => {
-    const scrollingAreas = Array.from(document.querySelectorAll<HTMLElement>("[data-site-import-scroll-root]"));
+    const scrollingAreas = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-site-import-scroll-root]"),
+    );
     const scrollTop = () =>
       scrollingAreas.find(
         (node) =>
@@ -1562,7 +5478,9 @@ function useImportedLayout() {
           node.scrollHeight > node.clientHeight &&
           /^(auto|scroll)$/.test(getComputedStyle(node).overflowY),
       )?.scrollTop ?? window.scrollY;
-    const scrollHeaders = Array.from(document.querySelectorAll<HTMLElement>("[data-site-import-scroll-header]"))
+    const scrollHeaders = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-site-import-scroll-header]"),
+    )
       .slice(0, 128)
       .flatMap((node) => {
         try {
@@ -1596,7 +5514,9 @@ function useImportedLayout() {
       for (const { node, states, original, originalFill, transform, priority } of scrollHeaders) {
         if (!reset && node.getAttribute("data-import-menu-open") === "true") continue;
         const state = states[innerWidth < 768 ? "mobile" : "desktop"];
-        if ([states.desktop, states.mobile].some((entry) => entry && Object.hasOwn(entry, "fill"))) {
+        if (
+          [states.desktop, states.mobile].some((entry) => entry && Object.hasOwn(entry, "fill"))
+        ) {
           if (originalFill === null) node.removeAttribute("fill");
           else node.setAttribute("fill", originalFill);
         }
@@ -1613,7 +5533,8 @@ function useImportedLayout() {
             node.classList.toggle(token, original.has(token));
           }
         }
-        if (reset || !state || !Number.isFinite(state.threshold) || scrollTop() < state.threshold) continue;
+        if (reset || !state || !Number.isFinite(state.threshold) || scrollTop() < state.threshold)
+          continue;
         let until = state.until;
         if (
           typeof state.untilAnchor === "string" &&
@@ -1624,11 +5545,17 @@ function useImportedLayout() {
           const anchor = document.querySelector<HTMLElement>(
             '[data-site-import-header-end="' + state.untilAnchor + '"]',
           );
-          if (anchor) until = anchor.getBoundingClientRect().top + scrollTop() + innerHeight * state.untilProgress;
+          if (anchor)
+            until =
+              anchor.getBoundingClientRect().top + scrollTop() + innerHeight * state.untilProgress;
         }
         if (Number.isFinite(until) && scrollTop() >= until) continue;
         if (state.fill === null) node.removeAttribute("fill");
-        else if (typeof state.fill === "string" && state.fill.length <= 256 && !/url\(/i.test(state.fill))
+        else if (
+          typeof state.fill === "string" &&
+          state.fill.length <= 256 &&
+          !/url\(/i.test(state.fill)
+        )
           node.setAttribute("fill", state.fill);
         if (
           typeof state.transform === "string" &&

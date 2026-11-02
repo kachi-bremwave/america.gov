@@ -80,10 +80,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "America Explained at a Glance" },
-      { name: "description", content: "Whatever you need from government, start here. Official answers, simple and direct." },
+      {
+        name: "description",
+        content:
+          "Whatever you need from government, start here. Official answers, simple and direct.",
+      },
       { name: "author", content: "America.gov" },
       { property: "og:title", content: "America Explained at a Glance" },
-      { property: "og:description", content: "Whatever you need from government, start here. Official answers, simple and direct." },
+      {
+        property: "og:description",
+        content:
+          "Whatever you need from government, start here. Official answers, simple and direct.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@America" },
@@ -112,7 +120,9 @@ declare module "@tanstack/react-router" {
 }
 
 function RootShell({ children }: { children: ReactNode }) {
-  const importedDocument = useImportedMatches({ select: matches => matches.at(-1)?.staticData.importedDocument });
+  const importedDocument = useImportedMatches({
+    select: (matches) => matches.at(-1)?.staticData.importedDocument,
+  });
   return (
     <html lang="en" suppressHydrationWarning {...importedDocument?.html}>
       <head>
@@ -121,7 +131,9 @@ function RootShell({ children }: { children: ReactNode }) {
             __html: `(function(){try{var t=localStorage.getItem('america-gov-theme');var d=t==='dark'||((!t||t==='system')&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d){document.documentElement.classList.add('dark');document.documentElement.setAttribute('data-theme','dark');}else{document.documentElement.classList.remove('dark');document.documentElement.setAttribute('data-theme','light');}}catch(e){}})();`,
           }}
         />
-        <style href="site-import-inline" precedence="imported-inline">{"@layer imported-inline;"}</style>
+        <style href="site-import-inline" precedence="imported-inline">
+          {"@layer imported-inline;"}
+        </style>
         <HeadContent />
       </head>
       <body suppressHydrationWarning {...importedDocument?.body}>

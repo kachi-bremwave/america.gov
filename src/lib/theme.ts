@@ -20,8 +20,7 @@ export function applyTheme(theme: Theme) {
   const root = document.documentElement;
   const isDark =
     theme === "dark" ||
-    (theme === "system" &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches);
+    (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
 
   if (isDark) {
     root.classList.add("dark");
@@ -43,9 +42,7 @@ export function useTheme() {
     const initial = getInitialTheme();
     if (initial === "dark") return "dark";
     if (initial === "light") return "light";
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   });
 
   const setTheme = (newTheme: Theme) => {
@@ -58,8 +55,7 @@ export function useTheme() {
     applyTheme(newTheme);
     const isDark =
       newTheme === "dark" ||
-      (newTheme === "system" &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches);
+      (newTheme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
     setResolvedTheme(isDark ? "dark" : "light");
   };
 
