@@ -1,0 +1,6 @@
+{
+  "name": "America Explained at a Glance",
+  "description": "Whatever you need from government, start here. Official answers, simple and direct.",
+  "permissions": [],
+  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
