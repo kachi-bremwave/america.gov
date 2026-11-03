@@ -2602,21 +2602,21 @@ function Index() {
           <div
             className={`fixed left-1/2 -translate-x-1/2 z-40 transition-all duration-300 ease-out ${
               isScrolledDown
-                ? "bottom-4 sm:bottom-6 opacity-100 translate-y-0 pointer-events-auto"
+                ? "bottom-5 sm:bottom-8 opacity-100 translate-y-0 pointer-events-auto"
                 : "bottom-0 opacity-0 translate-y-8 pointer-events-none"
-            } w-[calc(100vw-32px)] max-w-[540px]`}
+            } w-[calc(100vw-32px)] max-w-2xl sm:max-w-3xl md:max-w-[760px]`}
             data-slot="ask-floating-dock"
           >
             <div className="relative flex w-full flex-col items-center">
-              {/* Chat Input Capsule - Floating Bottom Dock matching reference */}
-              <div className="relative w-full rounded-full shadow-2xl bg-white dark:bg-[#121622] border border-black/10 dark:border-white/10 ring-1 ring-black/5 dark:ring-white/5 p-1.5 sm:p-2 min-h-[56px] transition-all duration-200 hover:border-black/20 dark:hover:border-white/20">
+              {/* Chat Input Capsule - Big Hero-matching Floating Dock */}
+              <div className="relative w-full rounded-full sm:rounded-[48px] shadow-[0_16px_45px_rgba(0,0,0,0.18)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.65)] bg-white/95 dark:bg-[#121622]/95 backdrop-blur-md border border-black/10 dark:border-white/10 ring-1 ring-black/5 dark:ring-white/5 p-2 sm:p-2.5 min-h-[64px] sm:min-h-[72px] md:min-h-[78px] transition-all duration-200 hover:border-black/25 dark:hover:border-white/25">
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
                     if (!floatingMessage.trim()) return;
                     window.location.href = `/chat?q=${encodeURIComponent(floatingMessage.trim())}`;
                   }}
-                  className="flex items-center w-full gap-2 pl-4 pr-1 sm:pl-6 sm:pr-1.5 min-h-[44px]"
+                  className="flex items-center w-full gap-2.5 sm:gap-3 pl-5 pr-2 sm:pl-7 sm:pr-2.5 min-h-[52px] sm:min-h-[60px] md:min-h-[66px]"
                 >
                   <input
                     type="text"
@@ -2624,9 +2624,9 @@ function Index() {
                     value={floatingMessage}
                     onChange={(e) => setFloatingMessage(e.target.value)}
                     placeholder="Ask anything…"
-                    className="flex-1 min-w-0 bg-transparent text-[15px] sm:text-base text-[#000c1f] dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 outline-none"
+                    className="flex-1 min-w-0 bg-transparent text-base sm:text-lg md:text-[1.1875rem] text-[#000c1f] dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 outline-none leading-normal"
                   />
-                  <div className="flex items-center gap-1 shrink-0">
+                  <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                     <button
                       type="button"
                       onClick={() => {
@@ -2635,16 +2635,17 @@ function Index() {
                         ) as HTMLInputElement | null;
                         input?.click();
                       }}
-                      className="inline-flex size-8 sm:size-9 items-center justify-center rounded-full text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
+                      className="inline-flex size-9 sm:size-10 md:size-11 items-center justify-center rounded-full text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
                       aria-label="Upload PDF"
                       title="Upload PDF"
                     >
                       <svg
                         fill="none"
-                        height="18"
+                        height="20"
                         viewBox="0 0 20 20"
-                        width="18"
+                        width="20"
                         xmlns="http://www.w3.org/2000/svg"
+                        className="size-5 sm:size-5.5"
                       >
                         <path
                           d="M13 4V14C13 15.66 11.66 17 10 17C8.34 17 7 15.66 7 14V4C7 3.45 7.45 3 8 3C8.55 3 9 3.45 9 4V15H11V4C11 2.34 9.66 1 8 1C6.34 1 5 2.34 5 4V14C5 16.76 7.24 19 10 19C12.76 19 15 16.76 15 14V4"
@@ -2654,16 +2655,17 @@ function Index() {
                     </button>
                     <button
                       type="button"
-                      className="inline-flex size-8 sm:size-9 items-center justify-center rounded-full text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
+                      className="inline-flex size-9 sm:size-10 md:size-11 items-center justify-center rounded-full text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
                       aria-label="Voice input"
                       title="Voice input"
                     >
                       <svg
                         fill="none"
-                        height="18"
+                        height="20"
                         viewBox="0 0 20 20"
-                        width="18"
+                        width="20"
                         xmlns="http://www.w3.org/2000/svg"
+                        className="size-5 sm:size-5.5"
                       >
                         <path
                           d="M10 11C11.66 11 13 9.66 13 8V4C13 2.34 11.66 1 10 1C8.34 1 7 2.34 7 4V8C7 9.66 8.34 11 10 11ZM9 4C9 3.45 9.45 3 10 3C10.55 3 11 3.45 11 4V8C11 8.55 10.55 9 10 9C9.45 9 9 8.55 9 8V4Z"
@@ -2678,19 +2680,20 @@ function Index() {
                     <button
                       type="submit"
                       disabled={!floatingMessage.trim()}
-                      className={`inline-flex size-8 sm:size-9 items-center justify-center rounded-full transition-all ml-1 ${
+                      className={`inline-flex size-10 sm:size-11 md:size-12 items-center justify-center rounded-full transition-all ml-1 ${
                         floatingMessage.trim()
-                          ? "bg-blue-600 hover:bg-blue-700 active:scale-95 text-white shadow-md cursor-pointer"
+                          ? "bg-[#1853d4] hover:bg-[#1242b0] active:scale-95 text-white shadow-md cursor-pointer"
                           : "bg-black/5 dark:bg-white/10 text-gray-400 dark:text-gray-600 cursor-not-allowed opacity-40"
                       }`}
                       aria-label="Send message"
                     >
                       <svg
                         fill="none"
-                        height="18"
+                        height="22"
                         viewBox="0 0 20 20"
-                        width="18"
+                        width="22"
                         xmlns="http://www.w3.org/2000/svg"
+                        className="size-5 sm:size-5.5"
                       >
                         <path
                           d="M10 3L8.59 4.41L13.17 9H3V11H13.17L8.59 15.59L10 17L17 10L10 3Z"
@@ -3122,16 +3125,16 @@ function ImportedSection() {
         </p>
 
         {/* Line 1: America.gov [→] uses SI */}
-        <div className="flex flex-wrap items-center justify-center gap-x-[0.28em] mb-2 sm:mb-3">
+        <div className="flex flex-wrap items-center justify-center gap-x-[0.3em] mb-2 sm:mb-3">
           <span className="inline-block">America.gov</span>
           <a
             href="/chat"
-            className="inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#1853d4] hover:bg-[#1242b0] active:scale-95 text-white h-[0.72em] w-[0.72em] shadow-md transition-all duration-200 align-middle hover:shadow-blue-500/30 mx-[0.1em] -translate-y-[0.04em]"
+            className="inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#1853d4] hover:bg-[#1242b0] active:scale-95 text-white h-[0.88em] w-[0.88em] shadow-md transition-all duration-200 align-middle hover:shadow-blue-500/30 mx-[0.12em] -translate-y-[0.03em]"
             aria-label="Open chat"
             title="Open chat with SI"
           >
             <svg
-              className="w-[52%] h-[52%]"
+              className="w-[54%] h-[54%]"
               fill="none"
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
@@ -3152,26 +3155,26 @@ function ImportedSection() {
         </div>
 
         {/* Line 3: from [DOI, State, Commerce seals] official */}
-        <div className="flex flex-wrap items-center justify-center gap-x-[0.28em] mb-2 sm:mb-3">
+        <div className="flex flex-wrap items-center justify-center gap-x-[0.3em] mb-2 sm:mb-3">
           <span className="inline-block">from</span>
           <span
-            className="relative inline-flex items-center h-[0.78em] w-[1.8em] shrink-0 align-middle mx-[0.12em] -translate-y-[0.04em]"
+            className="relative inline-flex items-center h-[0.92em] w-[2.1em] shrink-0 align-middle mx-[0.14em] -translate-y-[0.03em]"
             title="Official Agency Sources: Department of the Interior, State Department, Department of Commerce"
           >
             <img
-              className="absolute top-0 left-0 h-[0.78em] w-[0.78em] rounded-full object-contain shadow-xs border-[1.5px] border-white dark:border-[#080a0f] bg-white transition-transform hover:scale-110 z-0"
+              className="absolute top-0 left-0 h-[0.92em] w-[0.92em] rounded-full object-contain shadow-xs border-[1.5px] border-white dark:border-[#080a0f] bg-white transition-transform hover:scale-110 z-0"
               alt="DOI seal"
               loading="eager"
               src="/site-assets/6b0e58ea2470c358-c45111fe79f447f74baa0a959314adb0.png"
             />
             <img
-              className="absolute top-0 left-[0.51em] h-[0.78em] w-[0.78em] rounded-full object-contain shadow-xs border-[1.5px] border-white dark:border-[#080a0f] bg-white transition-transform hover:scale-110 z-10"
+              className="absolute top-0 left-[0.58em] h-[0.92em] w-[0.92em] rounded-full object-contain shadow-xs border-[1.5px] border-white dark:border-[#080a0f] bg-white transition-transform hover:scale-110 z-10"
               alt="State Department seal"
               loading="eager"
               src="/site-assets/ac9ec418e5b87762-f595254bb5ee2630436109fee6101659.png"
             />
             <img
-              className="absolute top-0 left-[1.02em] h-[0.78em] w-[0.78em] rounded-full object-contain shadow-xs border-[1.5px] border-white dark:border-[#080a0f] bg-white transition-transform hover:scale-110 z-20"
+              className="absolute top-0 left-[1.16em] h-[0.92em] w-[0.92em] rounded-full object-contain shadow-xs border-[1.5px] border-white dark:border-[#080a0f] bg-white transition-transform hover:scale-110 z-20"
               alt="Commerce seal"
               loading="eager"
               src="/site-assets/f8771bab4355a2c8-bbad8e97f6ed9607bb4b97ed05f21110.png"
@@ -3191,12 +3194,12 @@ function ImportedSection() {
         </div>
 
         {/* Line 6: ads, and keeps [Fingerprint] your */}
-        <div className="flex flex-wrap items-center justify-center gap-x-[0.28em] mb-2 sm:mb-3">
+        <div className="flex flex-wrap items-center justify-center gap-x-[0.3em] mb-2 sm:mb-3">
           <span className="inline-block">ads, and keeps</span>
           <button
             type="button"
             onClick={handleFingerprintClick}
-            className="inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#fce7f3] text-[#db2777] border border-pink-200/80 dark:bg-[#181a24] dark:text-[#f472b6] dark:border-[#f472b6]/35 h-[0.74em] w-[0.74em] p-0 shadow-xs hover:scale-110 active:scale-95 transition-all align-middle mx-[0.1em] -translate-y-[0.04em]"
+            className="inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#fce7f3] text-[#db2777] border border-pink-200/80 dark:bg-[#181a24] dark:text-[#f472b6] dark:border-[#f472b6]/35 h-[0.88em] w-[0.88em] p-0 shadow-xs hover:scale-110 active:scale-95 transition-all align-middle mx-[0.12em] -translate-y-[0.03em]"
             aria-label="Privacy protected with SI"
             title={copiedFingerprint ? "Privacy Guaranteed" : "Privacy Protected with SI"}
           >
@@ -3217,7 +3220,7 @@ function ImportedSection() {
               </svg>
             ) : (
               <svg
-                className="w-[62%] h-[62%]"
+                className="w-[64%] h-[64%]"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
