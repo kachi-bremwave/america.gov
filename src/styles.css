@@ -163,7 +163,8 @@
   color-scheme: dark;
 }
 
-:root[data-theme="light"], :root:not(.dark):not([data-theme="dark"]) {
+:root[data-theme="light"],
+:root:not(.dark):not([data-theme="dark"]) {
   color-scheme: light;
 }
 
@@ -179,15 +180,19 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    transition: background-color 0.25s ease, color 0.25s ease;
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease;
   }
 
-  html.dark, html[data-theme="dark"] {
+  html.dark,
+  html[data-theme="dark"] {
     color-scheme: dark;
     background-color: #080a0f;
   }
 
-  html.dark body, html[data-theme="dark"] body {
+  html.dark body,
+  html[data-theme="dark"] body {
     background-color: #080a0f;
     color: #f8fafc;
   }
@@ -233,13 +238,18 @@
   --color-page-top-color: var(--page-top-color);
 }
 @theme reference {
-  --animate-calendar-caption-fade-in: calendar-caption-fade-in .24s cubic-bezier(.22, 1, .36, 1);
-  --animate-calendar-caption-fade-out: calendar-caption-fade-out .24s cubic-bezier(.22, 1, .36, 1) forwards;
-  --animate-calendar-month-slide-in-left: calendar-month-slide-in-left .24s cubic-bezier(.22, 1, .36, 1);
-  --animate-calendar-month-slide-in-right: calendar-month-slide-in-right .24s cubic-bezier(.22, 1, .36, 1);
-  --animate-calendar-month-slide-out-left: calendar-month-slide-out-left .24s cubic-bezier(.22, 1, .36, 1) forwards;
-  --animate-calendar-month-slide-out-right: calendar-month-slide-out-right .24s cubic-bezier(.22, 1, .36, 1) forwards;
-  --animate-pulse: pulse 2s cubic-bezier(.4, 0, .6, 1) infinite;
+  --animate-calendar-caption-fade-in: calendar-caption-fade-in 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-calendar-caption-fade-out: calendar-caption-fade-out 0.24s
+    cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  --animate-calendar-month-slide-in-left: calendar-month-slide-in-left 0.24s
+    cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-calendar-month-slide-in-right: calendar-month-slide-in-right 0.24s
+    cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-calendar-month-slide-out-left: calendar-month-slide-out-left 0.24s
+    cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  --animate-calendar-month-slide-out-right: calendar-month-slide-out-right 0.24s
+    cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   --animate-spin: spin 1s linear infinite;
   --aspect-video: 16 / 9;
   --blur-2xl: 40px;
@@ -296,7 +306,7 @@
   --color-error: #d80007;
   --color-error-background: color-mix(in srgb, #ff7f7b 10%, transparent);
   --color-foreground: #000c1f;
-  --color-gray-500: oklch(55.1% .027 264.364);
+  --color-gray-500: oklch(55.1% 0.027 264.364);
   --color-green: #34c759;
   --color-green-50: #cefaee;
   --color-green-600: #007f26;
@@ -305,7 +315,7 @@
   --color-input: color-mix(in srgb, #000c1f 10%, transparent);
   --color-light-blue: #e6f3fd;
   --color-link: #0066c5;
-  --color-manifesto-fingerprint: oklch(65.6% .241 354.308);
+  --color-manifesto-fingerprint: oklch(65.6% 0.241 354.308);
   --color-manifesto-frost: color-mix(in srgb, #002664 5%, transparent);
   --color-notice-error-border: color-mix(in srgb, #d80007 12%, #fff);
   --color-notice-error-surface: color-mix(in srgb, #d80007 5%, #fff);
@@ -375,18 +385,20 @@
   --drop-shadow-soft-lg: 0 8.682px 17.364px #010e2414;
   --drop-shadow-soft-md: 0 5.859px 16.04px #010e2414;
   --drop-shadow-soft-sm: 0 3.5px 9.6px #010e2414;
-  --ease-drawer: cubic-bezier(.32, .72, 0, 1);
-  --ease-in: cubic-bezier(.4, 0, 1, 1);
-  --ease-in-out: cubic-bezier(.4, 0, .2, 1);
-  --ease-out: cubic-bezier(0, 0, .2, 1);
-  --ease-out-cubic: cubic-bezier(.215, .61, .355, 1);
-  --ease-out-quint: cubic-bezier(.22, 1, .36, 1);
-  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
-  --ease-standard: cubic-bezier(.4, 0, .2, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-out-cubic: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --font-body: "Helvetica Now Text", "Helvetica Now Fallback", Arial, Helvetica, sans-serif;
   --font-display: "Rhymes Text", "Rhymes Fallback", "Times New Roman", Times, serif;
   --font-inter: "InterVariable", Arial, Helvetica, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
   --font-rhymes: "Rhymes Text";
   --font-rhymes-display: "Rhymes Display";
   --font-sans-display: "Helvetica Now Display", Arial, Helvetica, sans-serif;
@@ -412,20 +424,25 @@
   --radius-64: 64px;
   --radius-8: 8px;
   --radius-full: 9999px;
-  --radius-lg: .5rem;
-  --radius-sm: .25rem;
-  --radius-xl: .75rem;
+  --radius-lg: 0.5rem;
+  --radius-sm: 0.25rem;
+  --radius-xl: 0.75rem;
   --shadow-artwork: 0 3rem 4rem color-mix(in srgb, #000 10%, transparent);
   --shadow-composer-sm: 0 4px 16px 0 #010e2414;
   --shadow-elevation-1: 0 10px 40px 0 #010e2414;
   --shadow-elevation-2: 0 4px 24px 0 #010e2429;
-  --shadow-glass-toast: 0 8px 8px #0000001a, 0 28px 14px #00000017, 0 64px 19px #0000000d, 0 114px 23px #00000005;
+  --shadow-glass-toast:
+    0 8px 8px #0000001a, 0 28px 14px #00000017, 0 64px 19px #0000000d, 0 114px 23px #00000005;
   --shadow-hero-photo: 0 10px 40px 0 #010e2414;
-  --shadow-modal: 2px 11px 24px #0000001a, 8px 42px 43px #00000017, 18px 95px 58px #0000000d, 31px 168px 68px #00000003;
-  --shadow-slider-thumb: 0 .5px 4px #0000001f, 0 6px 13px #0000001f;
-  --shadow-soft: 0 4.547px 4.547px #0000001a, 0 15.914px 7.957px #00000017, 0 36.375px 10.23px #0000000d, 0 63.656px 12.504px #00000003;
+  --shadow-modal:
+    2px 11px 24px #0000001a, 8px 42px 43px #00000017, 18px 95px 58px #0000000d,
+    31px 168px 68px #00000003;
+  --shadow-slider-thumb: 0 0.5px 4px #0000001f, 0 6px 13px #0000001f;
+  --shadow-soft:
+    0 4.547px 4.547px #0000001a, 0 15.914px 7.957px #00000017, 0 36.375px 10.23px #0000000d,
+    0 63.656px 12.504px #00000003;
   --shadow-widget: 0 0 0 1px color-mix(in srgb, #000c1f 5%, transparent), 0 10px 40px 0 #010e2414;
-  --spacing: .25rem;
+  --spacing: 0.25rem;
   --spacing-1: 4px;
   --spacing-12: 48px;
   --spacing-2: 8px;
@@ -434,7 +451,7 @@
   --spacing-4: 16px;
   --spacing-6: 24px;
   --spacing-em: 1em;
-  --spacing-em-half: .5em;
+  --spacing-em-half: 0.5em;
   --spacing-em-third: calc(1em / 3);
   --spacing-page-inset: 1.75rem;
   --spacing-site-gutter: 16px;
@@ -443,25 +460,25 @@
   --text-base: 1rem;
   --text-base--line-height: calc(1.5 / 1);
   --text-body-m: 1rem;
-  --text-body-s: .75rem;
+  --text-body-s: 0.75rem;
   --text-faq: 1.3125rem;
   --text-heading-l: clamp(3rem, 2.3rem + 3.01vw, 5rem);
-  --text-heading-s: clamp(1.125rem, .99rem + .56vw, 1.5rem);
-  --text-heading-xs: clamp(1rem, .96rem + .19vw, 1.125rem);
+  --text-heading-s: clamp(1.125rem, 0.99rem + 0.56vw, 1.5rem);
+  --text-heading-xs: clamp(1rem, 0.96rem + 0.19vw, 1.125rem);
   --text-home-prompt: 1.3125rem;
   --text-label-m: 1rem;
-  --text-label-s: .75rem;
+  --text-label-s: 0.75rem;
   --text-lg: 1.125rem;
-  --text-sm: .875rem;
-  --text-sm--line-height: calc(1.25 / .875);
-  --text-xs: .75rem;
-  --text-xs--line-height: calc(1 / .75);
-  --tracking-body: -.02em;
-  --tracking-normal: -.01em;
-  --tracking-sans-display: -.01em;
-  --tracking-tight: -.03em;
-  --tracking-wide: .025em;
-  --tracking-wider: .05em;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: calc(1.25 / 0.875);
+  --text-xs: 0.75rem;
+  --text-xs--line-height: calc(1 / 0.75);
+  --tracking-body: -0.02em;
+  --tracking-normal: -0.01em;
+  --tracking-sans-display: -0.01em;
+  --tracking-tight: -0.03em;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
 }
 /* site-import tokens: end */
 
@@ -486,7 +503,8 @@
 }
 
 @keyframes pulseSlow {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.15;
     transform: scale(0.95);
   }
@@ -531,7 +549,8 @@
 }
 
 @keyframes floatGentle {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -544,7 +563,8 @@
 }
 
 @keyframes glowPulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 12px rgba(236, 72, 153, 0.2);
   }
   50% {
@@ -557,9 +577,10 @@
 }
 
 .hover-lift {
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .hover-lift:hover {
   transform: translateY(-3px);
 }
-
