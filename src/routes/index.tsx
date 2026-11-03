@@ -39,6 +39,7 @@ function Index() {
   const [heroPlaying, setHeroPlaying] = useState(true);
   const [activeSlideIndex, setActiveSlideIndex] = useState(2);
   const [isScrolledDown, setIsScrolledDown] = useState(false);
+  const [floatingMessage, setFloatingMessage] = useState("");
 
   const HERO_SLIDES = [
     {
@@ -191,9 +192,9 @@ function Index() {
           </div>
         </div>
 
-        {/* Hero Card Container - Height increased, width decreased, full image without any cut */}
+        {/* Hero Card Container - Wide card with rounded corners matching reference image */}
         <div
-          className="overflow-hidden relative isolate touch-pan-y touch-pinch-zoom rounded-[36px] sm:rounded-[44px] shadow-hero-photo after:pointer-events-none after:absolute after:inset-0 after:z-10 after:rounded-[inherit] after:inset-ring after:inset-ring-border-quaternary dark:after:inset-ring-blue-900/5 w-full max-w-[540px] mx-auto aspect-[400/470] sm:aspect-[400/460]"
+          className="overflow-hidden relative isolate touch-pan-y touch-pinch-zoom rounded-[32px] sm:rounded-[44px] shadow-2xl hover:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3)] transition-all duration-300 after:pointer-events-none after:absolute after:inset-0 after:z-10 after:rounded-[inherit] after:inset-ring after:inset-ring-border-quaternary dark:after:inset-ring-blue-900/5 w-full max-w-4xl lg:max-w-[880px] xl:max-w-[940px] mx-auto aspect-[4/3] sm:aspect-[16/10]"
           data-slot="carousel-content"
         >
           <div className="relative size-full">
@@ -606,7 +607,7 @@ function Index() {
                     >
                       <div
                         className={
-                          "flex w-[round(down,min(100%,687.5px),1px)] flex-col items-center gap-[62px] mobile:col-span-full mobile:w-[round(down,100%,1px)] mobile:gap-12 \x73ite-desktop:\x63ol-span-8 \x73ite-desktop:\x63ol-start-3"
+                          "flex w-full max-w-4xl lg:max-w-[880px] xl:max-w-[940px] flex-col items-center gap-10 mobile:col-span-full mx-auto px-2 sm:px-4"
                         }
                       >
                         <div className="landing-heading flex w-full flex-col items-center gap-4 text-center px-8 mobile:gap-5 mobile:px-0">
@@ -629,9 +630,9 @@ function Index() {
                             </p>
                           </div>
                         </div>
-                        <div className="relative w-full max-w-[540px] mx-auto">
+                        <div className="relative w-full max-w-4xl lg:max-w-[880px] xl:max-w-[940px] mx-auto">
                           <div
-                            className={"absolute inset-x-3 sm:inset-x-4 top-3 sm:top-4 z-20"}
+                            className={"absolute inset-x-4 sm:inset-x-8 top-4 sm:top-6 z-20"}
                             data-site-hero-enter="2"
                           >
                             <div>
@@ -2607,15 +2608,21 @@ function Index() {
             data-slot="ask-floating-dock"
           >
             <div className="relative flex w-full flex-col items-center">
-              {/* Chat Input Capsule - Height increased, width decreased */}
-              <div className="relative w-full rounded-full shadow-2xl bg-white dark:bg-[#121622] border border-black/10 dark:border-white/10 ring-1 ring-black/5 dark:ring-white/5 p-1.5 sm:p-2 min-h-[56px] transition-colors">
+              {/* Chat Input Capsule - Floating Bottom Dock matching reference */}
+              <div className="relative w-full rounded-full shadow-2xl bg-white dark:bg-[#121622] border border-black/10 dark:border-white/10 ring-1 ring-black/5 dark:ring-white/5 p-1.5 sm:p-2 min-h-[56px] transition-all duration-200 hover:border-black/20 dark:hover:border-white/20">
                 <form
-                  onSubmit={handleDemoSubmit}
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!floatingMessage.trim()) return;
+                    window.location.href = `/chat?q=${encodeURIComponent(floatingMessage.trim())}`;
+                  }}
                   className="flex items-center w-full gap-2 pl-4 pr-1 sm:pl-6 sm:pr-1.5 min-h-[44px]"
                 >
                   <input
                     type="text"
                     name="message"
+                    value={floatingMessage}
+                    onChange={(e) => setFloatingMessage(e.target.value)}
                     placeholder="Ask anything…"
                     className="flex-1 min-w-0 bg-transparent text-[15px] sm:text-base text-[#000c1f] dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 outline-none"
                   />
@@ -2670,7 +2677,12 @@ function Index() {
                     </button>
                     <button
                       type="submit"
-                      className="inline-flex size-8 sm:size-9 items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700 active:scale-95 text-white shadow-md transition-all ml-1 cursor-pointer"
+                      disabled={!floatingMessage.trim()}
+                      className={`inline-flex size-8 sm:size-9 items-center justify-center rounded-full transition-all ml-1 ${
+                        floatingMessage.trim()
+                          ? "bg-blue-600 hover:bg-blue-700 active:scale-95 text-white shadow-md cursor-pointer"
+                          : "bg-black/5 dark:bg-white/10 text-gray-400 dark:text-gray-600 cursor-not-allowed opacity-40"
+                      }`}
                       aria-label="Send message"
                     >
                       <svg
@@ -2688,47 +2700,6 @@ function Index() {
                     </button>
                   </div>
                 </form>
-              </div>
-
-              {/* Privacy and How SI works badge - Placed BELOW the chat input */}
-              <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mt-2.5 transition-opacity duration-200">
-                <a
-                  href="/privacy-policy"
-                  className="flex items-center gap-1 hover:text-black dark:hover:text-white transition-colors underline decoration-dotted underline-offset-2"
-                >
-                  <svg
-                    className="size-3.5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                    />
-                  </svg>
-                  Your privacy
-                </a>
-                <span>·</span>
-                <a
-                  href="/#about"
-                  className="flex items-center gap-1 hover:text-black dark:hover:text-white transition-colors underline decoration-dotted underline-offset-2"
-                >
-                  <svg
-                    className="size-3.5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <circle cx="12" cy="12" r="9" />
-                    <line x1="12" y1="8" x2="12" y2="12" />
-                    <line x1="12" y1="16" x2="12.01" y2="16" />
-                  </svg>
-                  How SI works
-                </a>
               </div>
             </div>
           </div>
@@ -3138,11 +3109,11 @@ function ImportedSection() {
 
   return (
     <section
-      className="site-container site-grid @container max-mobile:[--site-grid-margin:48px] py-16 md:py-24"
+      className="site-container site-grid @container max-mobile:[--site-grid-margin:48px] py-20 md:py-32"
       id="about"
     >
       <div
-        className="home-manifesto col-span-full justify-self-center text-center text-[#000c1f] dark:text-white font-serif tracking-tight text-[1.6rem] leading-[1.3] sm:text-[2.25rem] sm:leading-[1.25] md:text-[3rem] md:leading-[1.2] lg:text-[3.5rem] lg:leading-[1.18] max-w-[960px] mx-auto px-4"
+        className="home-manifesto col-span-full justify-self-center text-center text-[#000c1f] dark:text-white font-serif tracking-tight text-[1.85rem] leading-[1.3] sm:text-[2.6rem] sm:leading-[1.22] md:text-[3.5rem] md:leading-[1.18] lg:text-[4.2rem] lg:leading-[1.14] max-w-[1050px] mx-auto px-4 selection:bg-blue-600 selection:text-white"
         lang="en"
       >
         <p className="sr-only">
@@ -3151,20 +3122,18 @@ function ImportedSection() {
         </p>
 
         {/* Line 1: America.gov [→] uses SI */}
-        <div className="flex flex-wrap items-center justify-center gap-x-2 sm:gap-x-3 mb-2 sm:mb-4">
+        <div className="flex flex-wrap items-center justify-center gap-x-[0.28em] mb-2 sm:mb-3">
           <span className="inline-block">America.gov</span>
           <a
             href="/chat"
-            className="inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#1853d4] hover:bg-[#1242b0] active:scale-95 text-white size-8 sm:size-11 md:size-14 shadow-md transition-transform duration-200"
+            className="inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#1853d4] hover:bg-[#1242b0] active:scale-95 text-white h-[0.72em] w-[0.72em] shadow-md transition-all duration-200 align-middle hover:shadow-blue-500/30 mx-[0.1em] -translate-y-[0.04em]"
             aria-label="Open chat"
-            title="Open chat"
+            title="Open chat with SI"
           >
             <svg
-              className="size-4 sm:size-5 md:size-7"
+              className="w-[52%] h-[52%]"
               fill="none"
-              height="20"
               viewBox="0 0 20 20"
-              width="20"
               xmlns="http://www.w3.org/2000/svg"
               aria-hidden="true"
             >
@@ -3178,34 +3147,31 @@ function ImportedSection() {
         </div>
 
         {/* Line 2: to get simple answers only */}
-        <div className="mb-2 sm:mb-4">
+        <div className="mb-2 sm:mb-3">
           <span className="inline-block">to get simple answers only</span>
         </div>
 
-        {/* Line 3: from [agency seals] official */}
-        <div className="flex flex-wrap items-center justify-center gap-x-2 sm:gap-x-3 mb-2 sm:mb-4">
+        {/* Line 3: from [DOI, State, Commerce seals] official */}
+        <div className="flex flex-wrap items-center justify-center gap-x-[0.28em] mb-2 sm:mb-3">
           <span className="inline-block">from</span>
           <span
-            className="relative inline-flex items-center h-8 sm:h-11 md:h-14 w-16 sm:w-22 md:w-28 shrink-0"
+            className="relative inline-flex items-center h-[0.78em] w-[1.8em] shrink-0 align-middle mx-[0.12em] -translate-y-[0.04em]"
             title="Official Agency Sources: Department of the Interior, State Department, Department of Commerce"
           >
             <img
-              className="absolute top-0 left-0 size-8 sm:size-11 md:size-14 rounded-full object-contain shadow-sm border-2 border-white dark:border-[#080a0f] bg-white"
-              sizes="64px"
+              className="absolute top-0 left-0 h-[0.78em] w-[0.78em] rounded-full object-contain shadow-xs border-[1.5px] border-white dark:border-[#080a0f] bg-white transition-transform hover:scale-110 z-0"
               alt="DOI seal"
               loading="eager"
               src="/site-assets/6b0e58ea2470c358-c45111fe79f447f74baa0a959314adb0.png"
             />
             <img
-              className="absolute top-0 left-4 sm:left-6 md:left-7 size-8 sm:size-11 md:size-14 rounded-full object-contain shadow-sm border-2 border-white dark:border-[#080a0f] bg-white z-10"
-              sizes="64px"
+              className="absolute top-0 left-[0.51em] h-[0.78em] w-[0.78em] rounded-full object-contain shadow-xs border-[1.5px] border-white dark:border-[#080a0f] bg-white transition-transform hover:scale-110 z-10"
               alt="State Department seal"
               loading="eager"
               src="/site-assets/ac9ec418e5b87762-f595254bb5ee2630436109fee6101659.png"
             />
             <img
-              className="absolute top-0 left-8 sm:left-11 md:left-14 size-8 sm:size-11 md:size-14 rounded-full object-contain shadow-sm border-2 border-white dark:border-[#080a0f] bg-white z-20"
-              sizes="64px"
+              className="absolute top-0 left-[1.02em] h-[0.78em] w-[0.78em] rounded-full object-contain shadow-xs border-[1.5px] border-white dark:border-[#080a0f] bg-white transition-transform hover:scale-110 z-20"
               alt="Commerce seal"
               loading="eager"
               src="/site-assets/f8771bab4355a2c8-bbad8e97f6ed9607bb4b97ed05f21110.png"
@@ -3215,49 +3181,47 @@ function ImportedSection() {
         </div>
 
         {/* Line 4: government sources. It’s */}
-        <div className="mb-2 sm:mb-4">
+        <div className="mb-2 sm:mb-3">
           <span className="inline-block">government sources. It’s</span>
         </div>
 
         {/* Line 5: free to use, never includes */}
-        <div className="mb-2 sm:mb-4">
+        <div className="mb-2 sm:mb-3">
           <span className="inline-block">free to use, never includes</span>
         </div>
 
-        {/* Line 6: ads, and keeps [fingerprint] your */}
-        <div className="flex flex-wrap items-center justify-center gap-x-2 sm:gap-x-3 mb-2 sm:mb-4">
+        {/* Line 6: ads, and keeps [Fingerprint] your */}
+        <div className="flex flex-wrap items-center justify-center gap-x-[0.28em] mb-2 sm:mb-3">
           <span className="inline-block">ads, and keeps</span>
           <button
             type="button"
             onClick={handleFingerprintClick}
-            className="inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#fdf2f8] dark:bg-[#341223] text-[#db2777] border border-[#f472b6]/30 size-8 sm:size-11 md:size-14 p-1.5 sm:p-2 shadow-sm hover:scale-105 active:scale-95 transition-all"
+            className="inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#fce7f3] text-[#db2777] border border-pink-200/80 dark:bg-[#181a24] dark:text-[#f472b6] dark:border-[#f472b6]/35 h-[0.74em] w-[0.74em] p-0 shadow-xs hover:scale-110 active:scale-95 transition-all align-middle mx-[0.1em] -translate-y-[0.04em]"
             aria-label="Privacy protected with SI"
-            title={copiedFingerprint ? "Privacy Guaranteed" : "Privacy Protected"}
+            title={copiedFingerprint ? "Privacy Guaranteed" : "Privacy Protected with SI"}
           >
             {copiedFingerprint ? (
               <svg
-                className="size-4 sm:size-6 md:size-7 text-green-500"
+                className="w-[58%] h-[58%] text-green-500"
                 fill="none"
-                height="20"
                 viewBox="0 0 20 20"
-                width="20"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
                   d="M2.7 9.7 7.95 14.6 17.3 4.7"
                   stroke="currentColor"
-                  strokeLinecap="square"
-                  strokeLinejoin="miter"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   strokeWidth="2.5"
                 />
               </svg>
             ) : (
               <svg
-                className="size-4 sm:size-6 md:size-7"
+                className="w-[62%] h-[62%]"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                strokeWidth="1.75"
+                strokeWidth="2"
               >
                 <path
                   strokeLinecap="round"
@@ -3271,132 +3235,8 @@ function ImportedSection() {
         </div>
 
         {/* Line 7: privacy protected. */}
-        <div className="mb-6 sm:mb-8">
+        <div>
           <span className="inline-block">privacy protected.</span>
-        </div>
-
-        {/* Centered Chat input directly beneath Manifesto text matching Image (1) */}
-        <div className="w-full max-w-[540px] mx-auto mt-6 sm:mt-10 not-italic font-sans">
-          <div className="relative w-full rounded-full shadow-lg bg-white dark:bg-[#121622] border border-black/10 dark:border-white/10 ring-1 ring-black/5 dark:ring-white/5 p-1.5 sm:p-2 min-h-[56px] transition-colors">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const form = e.currentTarget;
-                const val = (new FormData(form).get("message") as string)?.trim();
-                window.location.href = val ? `/chat?q=${encodeURIComponent(val)}` : "/chat";
-              }}
-              className="flex items-center w-full gap-2 pl-4 pr-1 sm:pl-6 sm:pr-1.5 min-h-[44px]"
-            >
-              <input
-                type="text"
-                name="message"
-                placeholder="Ask anything…"
-                className="flex-1 min-w-0 bg-transparent text-[15px] sm:text-base text-[#000c1f] dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 outline-none"
-              />
-              <div className="flex items-center gap-1 shrink-0">
-                <button
-                  type="button"
-                  className="inline-flex size-8 sm:size-9 items-center justify-center rounded-full text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
-                  aria-label="Upload PDF"
-                  title="Upload PDF"
-                >
-                  <svg
-                    fill="none"
-                    height="18"
-                    viewBox="0 0 20 20"
-                    width="18"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M13 4V14C13 15.66 11.66 17 10 17C8.34 17 7 15.66 7 14V4C7 3.45 7.45 3 8 3C8.55 3 9 3.45 9 4V15H11V4C11 2.34 9.66 1 8 1C6.34 1 5 2.34 5 4V14C5 16.76 7.24 19 10 19C12.76 19 15 16.76 15 14V4"
-                      fill="currentColor"
-                    />
-                  </svg>
-                </button>
-                <button
-                  type="button"
-                  className="inline-flex size-8 sm:size-9 items-center justify-center rounded-full text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
-                  aria-label="Voice input"
-                  title="Voice input"
-                >
-                  <svg
-                    fill="none"
-                    height="18"
-                    viewBox="0 0 20 20"
-                    width="18"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10 11C11.66 11 13 9.66 13 8V4C13 2.34 11.66 1 10 1C8.34 1 7 2.34 7 4V8C7 9.66 8.34 11 10 11ZM9 4C9 3.45 9.45 3 10 3C10.55 3 11 3.45 11 4V8C11 8.55 10.55 9 10 9C9.45 9 9 8.55 9 8V4Z"
-                      fill="currentColor"
-                    />
-                    <path
-                      d="M11 14.92C14.39 14.43 17 11.52 17 8H15C15 10.76 12.76 13 10 13C7.24 13 5 10.76 5 8H3C3 11.53 5.61 14.43 9 14.92V17H6V19H14V17H11V14.92Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                </button>
-                <button
-                  type="submit"
-                  className="inline-flex size-8 sm:size-9 items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700 active:scale-95 text-white shadow-md transition-all ml-1 cursor-pointer"
-                  aria-label="Send message"
-                >
-                  <svg
-                    fill="none"
-                    height="18"
-                    viewBox="0 0 20 20"
-                    width="18"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10 3L8.59 4.41L13.17 9H3V11H13.17L8.59 15.59L10 17L17 10L10 3Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </form>
-          </div>
-          {/* Your privacy · How SI works BELOW the chat input */}
-          <div className="flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400 mt-2.5">
-            <a
-              href="/privacy-policy"
-              className="flex items-center gap-1 hover:text-black dark:hover:text-white transition-colors underline decoration-dotted underline-offset-2"
-            >
-              <svg
-                className="size-3.5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                />
-              </svg>
-              Your privacy
-            </a>
-            <span>·</span>
-            <a
-              href="/#about"
-              className="flex items-center gap-1 hover:text-black dark:hover:text-white transition-colors underline decoration-dotted underline-offset-2"
-            >
-              <svg
-                className="size-3.5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <circle cx="12" cy="12" r="9" />
-                <line x1="12" y1="8" x2="12" y2="12" />
-                <line x1="12" y1="16" x2="12.01" y2="16" />
-              </svg>
-              How SI works
-            </a>
-          </div>
         </div>
       </div>
     </section>

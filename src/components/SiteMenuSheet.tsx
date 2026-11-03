@@ -229,11 +229,11 @@ export function SiteMenuSheet({ open, onClose, onOpenFeedback }: SiteMenuSheetPr
         <div className="flex flex-col items-center gap-2 rounded-2xl bg-[#f4f6f9] dark:bg-[#141824] p-4 mt-6 text-[#525f7f] dark:text-gray-400 border border-black/5 dark:border-white/10">
           <span className="flex shrink-0 items-center justify-center">
             <img
-              src="/site-assets/us-flag.svg"
+              src="/site-assets/us-flag-dark.svg"
               alt="US Flag"
               width="28"
               height="18"
-              className="rounded-xs shadow-2xs"
+              className="rounded-xs shadow-2xs grayscale contrast-125 opacity-80 dark:opacity-90 dark:brightness-105"
             />
           </span>
           <p className="text-xs text-center font-normal leading-relaxed text-[#3c4257] dark:text-gray-300">
